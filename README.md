@@ -11,7 +11,8 @@ Le déroulement de l'histoire consistera en une série d'explorations de donjons
 
 Au fur et à mesure de leur progression, les joueurs auront l'opportunité d'acheter des objets et des équipements qui amélioreront leurs compétences et leur permettront d'augmenter leur force ou leur vitalité. Ces améliorations joueront un rôle clé dans leur capacité à surmonter les obstacles et à vaincre les boss des donjons.
 
-L'objectif ultime de l'histoire sera d'atteindre le boss final du dernier donjon, une confrontation qui déterminera le sort du monde du jeu. En résumé, les joueurs vivront une aventure pleine d'action, de découverte et de stratégie, avec une évolution de leur personnage tout au long de l'histoire, jusqu'à un affrontement décisif avec le boss final."
+L'objectif ultime de l'histoire sera d'atteindre le boss final du dernier donjon, une confrontation qui déterminera le sort du monde du jeu. En résumé, les joueurs vivront une aventure pleine d'action, de découverte et de stratégie, avec une évolution de leur personnage tout au long de l'histoire, jusqu'à un affrontement décisif avec le boss final.
+
 
 
 
