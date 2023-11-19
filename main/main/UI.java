@@ -135,33 +135,30 @@ public class UI {
 
     public void drawPlayerLife(){
 
-        //gp.player.life = 8;
+        //gp.player.life = 5; //for testing
 
         int x = gp.tileSize/2;
         int y = gp.tileSize/2;
-        int i = 0;
+        int life = gp.player.life;
 
-        //DRAW Max Life
-        while(i < gp.player.maxLife/2){
-            g2.drawImage(fullHeart, x, y, gp.tileSize, gp.tileSize, null);
-            i++;
+        // DRAW PLAYER MAXLIFE
+        for(int i = 0; i < gp.player.maxLife/2; i++){
+            g2.drawImage(emptyHeart, x, y, gp.tileSize, gp.tileSize, null);
             x += gp.tileSize;
         }
 
         //RESET
         x = gp.tileSize/2;
-        y = gp.tileSize/2;
-        i = 0;
 
-        //DRAW CURRENT LIFE
-        while(i < gp.player.life){
-            g2.drawImage(halfHeart, x, y, gp.tileSize, gp.tileSize, null);
-            i++;
-            if(i < gp.player.life){
-                g2.drawImage(fullHeart, x, y, gp.tileSize, gp.tileSize, null);
-            }
-            i++;
+        // DRAW PLAYER LIFE
+        while (life >= 2){
+            g2.drawImage(fullHeart, x, y, gp.tileSize, gp.tileSize, null);
+            life -= 2;
             x += gp.tileSize;
+        }
+
+        if(life == 1){
+            g2.drawImage(halfHeart, x, y, gp.tileSize, gp.tileSize, null);
         }
         
     }
