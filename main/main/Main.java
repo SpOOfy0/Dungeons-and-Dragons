@@ -15,9 +15,11 @@ public class Main{
         window.addKeyListener(gamePannel.keyHandler);
 
         window.pack();
-        
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+
+        gamePannel.setUpObject();
+        //gamePannel.startGameThread();
         //GameStart frame = new GameStart();
         
     }

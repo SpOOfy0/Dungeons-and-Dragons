@@ -1,6 +1,5 @@
 package main;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -8,20 +7,14 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements ActionListener, KeyListener{
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed;
+    GamePannel gp;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, xPressed;
     public int x = 100;
     public int y = 100;
 
-    public KeyHandler() {
-        Timer timer = new Timer(10, this);
-        timer.start();
-        
+    public KeyHandler(GamePannel gp) {
+        this.gp = gp;
     }
-
-   
-    
-
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -50,6 +43,23 @@ public class KeyHandler implements ActionListener, KeyListener{
         else if (keyCode == KeyEvent.VK_DOWN) {
             downPressed = true;
         }
+        else if (keyCode == KeyEvent.VK_X) {
+            xPressed = true;
+        }
+        else if (keyCode == KeyEvent.VK_P) {
+            if(gp.gameState == gp.playState){
+                gp.gameState = gp.pauseState;
+            }
+            else if(gp.gameState == gp.pauseState){
+                gp.gameState = gp.playState;
+            }
+        }
+        else if (keyCode == KeyEvent.VK_SPACE) {
+            if(gp.gameState == gp.dialogueState){
+                gp.gameState = gp.playState;
+            }
+        }
+
     }
 
     @Override

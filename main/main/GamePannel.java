@@ -5,7 +5,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
+
+import entity.Entity;
 import entity.Player;
+import object.SuperObject;
 import tile.TileManager;
 
 
@@ -27,14 +30,25 @@ public class GamePannel extends JPanel implements Runnable {
     public final int worldWidth = tileSize * maxWorldCol; //800 pixels
     public final int worldHight = tileSize * maxWorldRow; //800 pixels
 
-    
+    public int FPS = 60;
+
+    //INITIAT AUTHER OBJECT
     public TileManager tileM = new TileManager(this);
-    KeyHandler keyHandler = new KeyHandler();
+    public KeyHandler keyHandler = new KeyHandler(this);
     Thread  gameThread;
     public CollisionChecker collisionChecker = new CollisionChecker(this);
+    public ClassSetter objSetter = new ClassSetter(this);
     public Player player = new Player(this, keyHandler);
+    public SuperObject obj[] = new SuperObject[10];
+    public Entity npc[] = new Entity[10];
+    public UI ui = new UI(this);
 
-    public int FPS = 60;
+    //GAME STATE
+    public int gameState;
+    public int playState = 1;
+    public int pauseState = 2;
+    public int dialogueState = 3;
+    
 
 
     public GamePannel(){
@@ -46,10 +60,17 @@ public class GamePannel extends JPanel implements Runnable {
         
     }
 
+    public void setUpObject(){
+        
+        objSetter.setObject();
+        objSetter.setNPC();
+        gameState = playState;
+    }
+
     public void startGameThread(){
         
-            gameThread = new Thread(this);
-            gameThread.start();
+        gameThread = new Thread(this);
+        gameThread.start();
         
     }
 
@@ -91,7 +112,18 @@ public class GamePannel extends JPanel implements Runnable {
 
     public void update(){
         
-        player.update();
+        if(gameState == playState){
+            player.update();
+            for(int i = 0; i < npc.length; i++){
+                if(npc[i] != null){
+                    npc[i].update();
+                }
+            }
+        }
+        if(gameState == pauseState){
+            //nothing
+        }
+        
         
     }
 
@@ -99,8 +131,30 @@ public class GamePannel extends JPanel implements Runnable {
 
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        //TILE
         tileM.draw(g2);
+
+        //OBJECT
+        for(int i = 0; i < obj.length; i++){
+            if(obj[i] != null){
+            obj[i].draw(g2, this);
+            }
+        }
+
+        //NPC
+        for(int i = 0; i < npc.length; i++){
+            if(npc[i] != null){
+            npc[i].draw(g2);
+            }
+        }
+
+        //PLAYER
         player.draw(g2);
+       
+
+        //UI
+        ui.draw(g2);
+
         g2.dispose();
 
     }
