@@ -1,5 +1,7 @@
 package entity.Monsters;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.Random;
 
 import entity.Entity;
@@ -77,6 +79,18 @@ public class Monster extends Entity{
             gp.monster[gp.player.monsterIndex] = null;
             gp.player.monsterIndex = 999;
         }
+    }
+
+    public void paintComponent(Graphics2D g2) {
+            
+        // Draw the life bar
+        int reamningLife = maxLife - life;
+        int lifeBarWidth =  gp.tileSize - (gp.tileSize * reamningLife / maxLife);
+        int screenX = worldX - gp.player.worldX + gp.player.screenX ;
+        int screenY = worldY - gp.player.worldY + gp.player.screenY ;
+
+        g2.setColor(Color.RED);
+        g2.fillRect(screenX, screenY - 10, lifeBarWidth, 8);
     }
 
     

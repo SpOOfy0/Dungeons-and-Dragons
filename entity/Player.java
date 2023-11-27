@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 
 import main.GamePannel;
 import main.KeyHandler;
-import entity.Monsters.Monster;
 
 
 public class Player extends Entity {

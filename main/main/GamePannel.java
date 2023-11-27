@@ -161,6 +161,7 @@ public class GamePannel extends JPanel implements Runnable {
         for(int i = 0; i < monster.length; i++){
             if(monster[i] != null){
             monster[i].draw(g2);
+            monster[i].paintComponent(g2);
             }
         }
 

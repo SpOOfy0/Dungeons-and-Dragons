@@ -1,10 +1,8 @@
 package entity.Monsters.NormalMonsters;
 
-import java.util.Random;
-import java.lang.Math;
+
 
 import main.GamePannel;
-import entity.Player;
 import entity.Monsters.Monster;
 import entity.Monsters.MonsterInterface;
 
@@ -39,14 +37,10 @@ public class Orc extends Monster implements MonsterInterface {
 
         direction = "up";
         speed = 1;
-        life = 4;
+        maxLife = 4;
+        life = maxLife;
         dommage = 1;
         
     }
-
-   
-
-
-
 
 }
