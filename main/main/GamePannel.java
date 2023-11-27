@@ -8,6 +8,7 @@ import java.awt.Color;
 
 import entity.Entity;
 import entity.Player;
+import entity.Monsters.Monster;
 import object.SuperObject;
 import tile.TileManager;
 
@@ -32,16 +33,18 @@ public class GamePannel extends JPanel implements Runnable {
 
     public int FPS = 60;
 
+    Thread  gameThread;
+
     //INITIAT AUTHER OBJECT
     public TileManager tileM = new TileManager(this);
     public KeyHandler keyHandler = new KeyHandler(this);
-    Thread  gameThread;
     public CollisionChecker collisionChecker = new CollisionChecker(this);
     public ClassSetter objSetter = new ClassSetter(this);
-    public Player player = new Player(this, keyHandler);
+    public Player player = Player.getInstance(this, keyHandler);
     public SuperObject obj[] = new SuperObject[10];
     public Entity npc[] = new Entity[10];
-    public UI ui = new UI(this);
+    public Monster monster[] = new Monster[20];
+    public UI ui = UI.getInstance(this);
 
     //GAME STATE
     public int gameState;
@@ -64,6 +67,7 @@ public class GamePannel extends JPanel implements Runnable {
         
         objSetter.setObject();
         objSetter.setNPC();
+        objSetter.setMonster();
         gameState = playState;
     }
 
@@ -119,6 +123,11 @@ public class GamePannel extends JPanel implements Runnable {
                     npc[i].update();
                 }
             }
+            for(int i = 0; i < monster.length; i++){
+                if(monster[i] != null){
+                    monster[i].update();
+                }
+            }
         }
         if(gameState == pauseState){
             //nothing
@@ -145,6 +154,13 @@ public class GamePannel extends JPanel implements Runnable {
         for(int i = 0; i < npc.length; i++){
             if(npc[i] != null){
             npc[i].draw(g2);
+            }
+        }
+
+        //MONSTER
+        for(int i = 0; i < monster.length; i++){
+            if(monster[i] != null){
+            monster[i].draw(g2);
             }
         }
 

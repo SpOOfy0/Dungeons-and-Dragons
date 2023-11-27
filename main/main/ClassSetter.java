@@ -1,7 +1,9 @@
 package main;
 
 import entity.NPC_1;
+import entity.Monsters.NormalMonsters.Orc;
 import object.OBJ_healPotion;
+
 
 public class ClassSetter {
     
@@ -26,5 +28,11 @@ public class ClassSetter {
         gp.npc[0] = new NPC_1(gp);
         gp.npc[0].worldX = 14 * gp.tileSize;
         gp.npc[0].worldY = 25 * gp.tileSize;
+    }
+
+    public void setMonster() {
+        gp.monster[0] = new Orc(gp);
+        gp.monster[0].worldX = 14 * gp.tileSize;
+        gp.monster[0].worldY = 20 * gp.tileSize;
     }
 }

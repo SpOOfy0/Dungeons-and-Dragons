@@ -13,6 +13,7 @@ import object.SuperObject;
 
 public class UI {
 
+    private static UI instance;
     GamePannel gp;
     Graphics2D g2;
     Font arial_40;
@@ -30,7 +31,7 @@ public class UI {
     DecimalFormat df = new DecimalFormat("#0.00");
 
 
-    public UI(GamePannel gp) {
+    private UI(GamePannel gp) {
         this.gp = gp;
 
         arial_40 = new Font("Arial", Font.PLAIN, 40);
@@ -43,6 +44,18 @@ public class UI {
         halfHeart = heart.image2;
         emptyHeart = heart.image3;
     }
+
+    public static UI getInstance(GamePannel gp) {
+
+        if (instance == null) {
+            instance = new UI(gp);
+        }
+
+        return instance;
+    }
+
+    
+    
 
     public double setTimer(double time){
 
@@ -135,7 +148,7 @@ public class UI {
 
     public void drawPlayerLife(){
 
-        //gp.player.life = 5; //for testing
+       //gp.player.life = 5; //for testing
 
         int x = gp.tileSize/2;
         int y = gp.tileSize/2;

@@ -20,6 +20,9 @@ public class Entity {
     public int spriteCounter = 0;
     public int spriteNum = 1;
     public int actionCounter = 0;
+    public int monsterDommageCounter = 0;
+    public int attackSpeed = 30;
+    public int attackDelay = 0;
 
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
@@ -41,9 +44,14 @@ public class Entity {
 
     public void speak(){}
 
+    public void monsterDead(){}
+
+
     public void update(){
         
         setAction();
+        monsterDead();
+
 
         collisionOn = false;
         gp.collisionChecker.checkTile(this);

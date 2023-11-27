@@ -6,8 +6,12 @@ import java.awt.image.BufferedImage;
 
 import main.GamePannel;
 import main.KeyHandler;
+import entity.Monsters.Monster;
+
 
 public class Player extends Entity {
+
+    private static Player instance;
 
     public KeyHandler keyHandler;
 
@@ -18,8 +22,14 @@ public class Player extends Entity {
     //PLAYER'S OBJECT
     public int healPotion = 0;
 
+    //INDEX OF THE OBJECT THAT THE PLAYER IS CURRENTLY COLLIDING WITH
+    public int objIndex = 999;
+    public int npcIndex = 999;
+    public int monsterIndex = 999;
+
+
   
-    public Player(GamePannel gp, KeyHandler keyH){
+    private Player(GamePannel gp, KeyHandler keyH){
         super(gp);
 
         this.keyHandler = keyH;
@@ -33,6 +43,16 @@ public class Player extends Entity {
         solidAreaDefaultY = solidArea.y;
         setDefaultValues();
         getPlayerImage();
+        swordAttaque(monsterIndex);
+    }
+
+    public static Player getInstance(GamePannel gp, KeyHandler keyH) {
+
+        if(instance == null){
+            instance = new Player(gp, keyH);
+        }
+
+        return new Player(gp, keyH);
     }
 
     public void setDefaultValues(){
@@ -46,6 +66,7 @@ public class Player extends Entity {
         //PLAYER STATUS
         maxLife = 8;
         life = maxLife;
+        attackSpeed = 30;
     }
 
     public void getPlayerImage(){
@@ -85,12 +106,17 @@ public class Player extends Entity {
 
         //CHECK OBJECT COLLISION
         gp.collisionChecker.checkTile(this); //Player is considered as an entity beacause it extends Entity
-        int objIndex = gp.collisionChecker.checkObject(this, true);
+        objIndex = gp.collisionChecker.checkObject(this, true);
         pickUpObject(objIndex);
 
         //CHECK NPC COLLISION
-        int npcIndex = gp.collisionChecker.checkEntity(this,gp.npc);
+        npcIndex = gp.collisionChecker.checkEntity(this,gp.npc);
         interactNPC(npcIndex);
+
+        //CHECK MONSTER COLLISION
+        monsterIndex = gp.collisionChecker.checkEntity(this,gp.monster);
+        interactMonster(monsterIndex);
+
 
         //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
         if(collisionOn == true){
@@ -132,6 +158,7 @@ public class Player extends Entity {
             switch(objectName){
                 case "healPotion":
                     healPotion++;
+                    life += 1; //Create a method for that 
                     gp.obj[objIndex] = null;
                     gp.ui.showMessage("You got a heal potion!");
                     break;
@@ -150,6 +177,32 @@ public class Player extends Entity {
         }
         gp.keyHandler.xPressed = false;
     }
+
+    public void swordAttaque(int monsterIndex){
+
+        if(monsterIndex != 999 && gp.keyHandler.sPressed == true && attackDelay > attackSpeed){
+            gp.monster[monsterIndex].life -= 1;
+            gp.keyHandler.sPressed = false;
+            attackDelay = 0;
+            //add the image of the player attacking with the sword
+
+        }
+    }
+    
+    public void interactMonster(int monsterIndex){
+
+        swordAttaque(monsterIndex);
+        monsterDommageCounter ++;
+        attackDelay ++;
+
+        if(monsterIndex != 999 && monsterDommageCounter > 30){
+            System.out.println(gp.monster[monsterIndex].life);
+            gp.monster[monsterIndex].attackPlayer();
+            monsterDommageCounter = 0;
+        }
+        
+    }
+    
 
     public void draw(Graphics2D g2){
 
