@@ -9,8 +9,13 @@ import java.awt.image.BufferedImage;
 public class Ability extends Entity{
 
     protected static String ballDirection = "none";
+
     public boolean abilityCollision = false;
     public int abilityCollisionIndex = 999;
+
+    protected int range;
+    protected int remaningDistance;
+    int rangeChecked = 0;
     
     public Ability(GamePannel gp) {
 
@@ -45,18 +50,11 @@ public class Ability extends Entity{
             solidArea.x = worldX;
             solidArea.y = worldY; 
             abilityCollisionIndex = monsterCollision();
+            rangeAbility();
             
         }
         }
              
-    
-
-
-
-    public void setAction() {
-
-    }
-
     public int monsterCollision() {
         for(int i = 0; i < gp.monster.length; i++){
             if (gp.monster[i] != null){
@@ -68,6 +66,7 @@ public class Ability extends Entity{
                         if (gp.monster[i].worldX + j == worldX && gp.monster[i].worldY + k == worldY || gp.monster[i].worldX - j == worldX && gp.monster[i].worldY - k == worldY) {
                                 //Collision detected
                                 abilityCollision = true;
+                                ballDirection = "none";
                                 return i;
                         }
                         
@@ -76,6 +75,26 @@ public class Ability extends Entity{
             }
         }
         return 999;        
+    }
+
+    public void rangeAbility(){
+        if(gp.ability != null){
+            
+            if((ballDirection == "up" || ballDirection == "down")){
+                remaningDistance = Math.abs(worldY - gp.player.positionYActivityOn);
+                rangeChecked = 1;
+            }
+            else if((ballDirection == "left" || ballDirection == "right")){
+                remaningDistance = Math.abs(worldX - gp.player.positionXActivityOn);
+                rangeChecked = 1;
+            }
+            if(remaningDistance >= range*gp.tileSize){
+                gp.player.ballOn = 0;
+                ballDirection = "none";
+                gp.ability = null;       
+            }
+        }
+
     }
 
     public void draw(Graphics2D g2) {

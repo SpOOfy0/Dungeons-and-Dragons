@@ -29,6 +29,9 @@ public class Player extends Entity {
 
     public int ballOn = 0;
 
+    public int positionXActivityOn;
+    public int positionYActivityOn;
+
 
   
     private Player(GamePannel gp, KeyHandler keyH){
@@ -185,6 +188,7 @@ public class Player extends Entity {
         if(monsterIndex != 999 && gp.keyHandler.sPressed == true && attackDelay > attackSpeed){
             gp.monster[monsterIndex].life -= 1;
             gp.keyHandler.sPressed = false;
+
             attackDelay = 0;
             //add the image of the player attacking with the sword
 
@@ -198,6 +202,8 @@ public class Player extends Entity {
             gp.ability = gp.fireBall;
             gp.keyHandler.dPressed = false;
             attackDelay = 0;
+            positionXActivityOn = worldX;
+            positionYActivityOn = worldY;
             ballOn = 1;
             
         }
