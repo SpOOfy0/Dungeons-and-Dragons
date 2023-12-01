@@ -2,6 +2,7 @@ package main;
 
 import entity.NPC_1;
 import entity.Monsters.NormalMonsters.Orc;
+import entity.Abilities.FireBall.FireBall;
 import object.OBJ_healPotion;
 
 
@@ -35,4 +36,10 @@ public class ClassSetter {
         gp.monster[0].worldX = 14 * gp.tileSize;
         gp.monster[0].worldY = 20 * gp.tileSize;
     }
+
+    /*public void setAbility() {
+        gp.ability[0] = new FireBall(gp);
+        gp.ability[0].worldX = gp.player.worldX + gp.tileSize;
+        gp.ability[0].worldY = gp.player.worldY + gp.tileSize;
+    }*/
 }

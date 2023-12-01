@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import entity.Abilities.FireBall.FireBall;
 import main.GamePannel;
 import main.KeyHandler;
 
@@ -25,6 +26,8 @@ public class Player extends Entity {
     public int objIndex = 999;
     public int npcIndex = 999;
     public int monsterIndex = 999;
+
+    public int ballOn = 0;
 
 
   
@@ -187,15 +190,42 @@ public class Player extends Entity {
 
         }
     }
+
+    public int fireAttaque(int monsterIndex){
+
+        if(gp.keyHandler.dPressed == true && attackDelay > attackSpeed && ballOn == 0){
+            gp.fireBall = new FireBall(gp);
+            gp.ability = gp.fireBall;
+            gp.keyHandler.dPressed = false;
+            attackDelay = 0;
+            ballOn = 1;
+            
+        }
+        return ballOn;
+    }
+
+    public int abilityDommage(int Index){
+
+        if(Index != 999 && ballOn == 1){
+            gp.monster[Index].life -= 1;
+            gp.ability = null;
+            ballOn = 0;
+        }
+        return ballOn;
+    }
     
     public void interactMonster(int monsterIndex){
 
         swordAttaque(monsterIndex);
+        fireAttaque(monsterIndex);
+        if(gp.ability != null){
+            abilityDommage(gp.ability.abilityCollisionIndex);
+        }
         monsterDommageCounter ++;
         attackDelay ++;
-
+        
+            
         if(monsterIndex != 999 && monsterDommageCounter > 30){
-            System.out.println(gp.monster[monsterIndex].life);
             gp.monster[monsterIndex].attackPlayer();
             monsterDommageCounter = 0;
         }

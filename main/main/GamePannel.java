@@ -9,6 +9,8 @@ import java.awt.Color;
 import entity.Entity;
 import entity.Player;
 import entity.Monsters.Monster;
+import entity.Abilities.Ability;
+import entity.Abilities.FireBall.FireBall;
 import object.SuperObject;
 import tile.TileManager;
 
@@ -44,8 +46,11 @@ public class GamePannel extends JPanel implements Runnable {
     public SuperObject obj[] = new SuperObject[10];
     public Entity npc[] = new Entity[10];
     public Monster monster[] = new Monster[20];
+    //public Ability ability[] = new Ability[10];
+    public Ability ability = new Ability(this);
+    public FireBall fireBall ;
+    //public List<FireBall> fireBall = new ArrayList<>();
     public UI ui = UI.getInstance(this);
-
     //GAME STATE
     public int gameState;
     public int playState = 1;
@@ -68,6 +73,7 @@ public class GamePannel extends JPanel implements Runnable {
         objSetter.setObject();
         objSetter.setNPC();
         objSetter.setMonster();
+        //objSetter.setAbility();
         gameState = playState;
     }
 
@@ -128,6 +134,14 @@ public class GamePannel extends JPanel implements Runnable {
                     monster[i].update();
                 }
             }
+            /*for(int i = 0; i < ability.length; i++){
+                if(ability[i] != null){
+                    ability[i].update();
+                }
+            }*/
+            if(ability != null){
+                ability.update();
+            }
         }
         if(gameState == pauseState){
             //nothing
@@ -163,6 +177,16 @@ public class GamePannel extends JPanel implements Runnable {
             monster[i].draw(g2);
             monster[i].paintComponent(g2);
             }
+        }
+
+        //ABILITY
+        /*for(int i = 0; i < ability.length; i++){
+            if(ability[i] != null){
+            ability[i].draw(g2);
+            }
+        }*/
+        if(ability != null){
+            ability.draw(g2);
         }
 
         //PLAYER

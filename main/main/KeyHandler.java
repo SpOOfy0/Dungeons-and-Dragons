@@ -8,7 +8,7 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements ActionListener, KeyListener{
 
     GamePannel gp;
-    public boolean upPressed, downPressed, leftPressed, rightPressed, xPressed , sPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, xPressed, sPressed, dPressed;
     public int x = 100;
     public int y = 100;
 
@@ -62,6 +62,9 @@ public class KeyHandler implements ActionListener, KeyListener{
         else if (keyCode == KeyEvent.VK_S) {
             sPressed = true;
         }
+        else if (keyCode == KeyEvent.VK_D) {
+            dPressed = true;
+        }
 
     }
 
@@ -87,6 +90,7 @@ public class KeyHandler implements ActionListener, KeyListener{
         else if (keyCode == KeyEvent.VK_S) {
             sPressed = false;
         }
+        
     }
 
     /*public static void main(String agrs[]){

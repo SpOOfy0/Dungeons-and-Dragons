@@ -11,13 +11,9 @@ public class Orc extends Monster implements MonsterInterface {
     public Orc (GamePannel gp) {
         super(gp);
 
-        direction = "up";
-        speed = 1;
-
         getTihsMonsterImage();
         MonsterSetting();
-    
-        
+   
     }
 
     @Override

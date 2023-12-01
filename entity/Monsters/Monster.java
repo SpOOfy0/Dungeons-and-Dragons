@@ -11,7 +11,7 @@ import main.GamePannel;
 public class Monster extends Entity{
     
     public int dommage;
-
+    
     public Monster(GamePannel gp) {
         super(gp);
         
@@ -19,7 +19,7 @@ public class Monster extends Entity{
   
     }
 
-     @Override
+    
      public void setAction() {
 
         if(Math.abs(gp.player.worldX - worldX) <= 3*gp.tileSize && Math.abs(gp.player.worldY - worldY) <= 3*gp.tileSize) {
@@ -74,11 +74,14 @@ public class Monster extends Entity{
 
     public void monsterDead() {
         
-        if(gp.player.monsterIndex != 999 && gp.monster[gp.player.monsterIndex].life <= 0) {
-
-            gp.monster[gp.player.monsterIndex] = null;
-            gp.player.monsterIndex = 999;
+        for(int i = 0; i < gp.monster.length; i++) {
+            if(gp.monster[i] != null) {
+                if(gp.monster[i].life <= 0) {
+                    gp.monster[i] = null;
+                }
+            }
         }
+        
     }
 
     public void paintComponent(Graphics2D g2) {
