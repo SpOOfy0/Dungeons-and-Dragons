@@ -81,12 +81,6 @@ public class NPC_1 extends Entity{
             stop = 0;
             dialogueIndex = 0;
         }
-        /*else{
-            //gp.ui.currentDialogue = null;
-            dialogueIndex = 0;
-            gp.gameState = gp.playState;
-            //gp.player.npcIndex = 999;
-        }*/
     
     }
 

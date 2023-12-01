@@ -47,8 +47,6 @@ public class Ability extends Entity{
             abilityCollisionIndex = monsterCollision();
             
         }
-           //System.out.println(worldX + " " + worldY);
-            //monsterCollision();
         }
              
     
@@ -68,8 +66,7 @@ public class Ability extends Entity{
                     for (int k = 0 ; k < 30; k++){
                         
                         if (gp.monster[i].worldX + j == worldX && gp.monster[i].worldY + k == worldY || gp.monster[i].worldX - j == worldX && gp.monster[i].worldY - k == worldY) {
-                            // Collision détectée, faites quelque chose (par exemple, détruire le monstre, retirer la boule de feu, etc.)
-                                //System.out.println("collision");
+                                //Collision detected
                                 abilityCollision = true;
                                 return i;
                         }

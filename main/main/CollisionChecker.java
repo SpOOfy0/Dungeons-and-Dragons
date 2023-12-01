@@ -1,9 +1,7 @@
 package main;
 
-import java.awt.Rectangle;
 
 import entity.Entity;
-import entity.Abilities.Ability;
 
 public class CollisionChecker {
 
@@ -242,38 +240,7 @@ public class CollisionChecker {
                 gp.player.solidArea.y = gp.player.solidAreaDefaultY;
     }
 
-    /*public int checkEntity2(Ability ability, Entity[] target){
-        int index = 999;
-        s++;
-        System.err.println(s);
-        
-        Rectangle fireballRect = new Rectangle(ability.worldX, ability.worldY, 48, 48);
-
-        // Vérifier la collision
-        
-        for(int i = 0; i < target.length; i++){
-            if(target[i] != null){
-                
-                for(int j = 0; j < 20; j++){
-                System.out.println(ability.worldX + " " + ability.worldY);
-                
-                if(target[j] != null){
-                    System.out.println(target[j].worldX + " " + target[j].worldY);
-                } 
-                if (target[i].solidArea.intersects(fireballRect)) {
-                // Collision détectée, faites quelque chose (par exemple, détruire le monstre, retirer la boule de feu, etc.)
-                    System.out.println("Collision détectée !");
-                }
-        }
-                
-                if (target[i].solidArea.intersects(fireballRect)) {
-                // Collision détectée, faites quelque chose (par exemple, détruire le monstre, retirer la boule de feu, etc.)
-                    
-                }
-            }
-        }
-        return index;
-    }*/
+    
                 
     
 }

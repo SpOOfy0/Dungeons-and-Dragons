@@ -1,7 +1,5 @@
 package entity.Abilities.FireBall;
 
-import java.awt.Rectangle;
-
 import entity.Abilities.Ability;
 import entity.Abilities.AbilityInterface;
 import main.GamePannel;
