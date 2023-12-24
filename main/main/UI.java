@@ -111,7 +111,7 @@ public class UI {
         
         String text = "PAUSED";
         int x = getXScreenCenterText(text);
-        int y = gp.screenHight/2;
+        int y = gp.worldHeight/2;
         
         g2.drawString(text, x, y);
     }

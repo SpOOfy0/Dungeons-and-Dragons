@@ -41,7 +41,7 @@ public class Player extends Entity {
 
         //PLAYER SCREEN POSITION
         screenX = gp.screenWidth/2 - gp.tileSize/2;
-        screenY = gp.screenHight/2 - gp.tileSize/2;
+        screenY = gp.worldHeight/2 - gp.tileSize/2;
 
         solidArea = new Rectangle(8, 24, 16, 12);
         solidAreaDefaultX = solidArea.x;
@@ -92,16 +92,15 @@ public class Player extends Entity {
         if(keyHandler.upPressed){
             direction = "up";
             worldY = worldY - speed;
-        }
-        else if(keyHandler.downPressed){
+        } else if(keyHandler.downPressed){
             direction = "down";
             worldY = worldY + speed;
         }
-        else if(keyHandler.leftPressed){
+
+        if(keyHandler.leftPressed){
             direction = "left";
             worldX = worldX - speed;
-        }
-        else if(keyHandler.rightPressed){
+        } else if(keyHandler.rightPressed){
             direction = "right";
             worldX = worldX + speed;
         }
@@ -115,11 +114,11 @@ public class Player extends Entity {
         pickUpObject(objIndex);
 
         //CHECK NPC COLLISION
-        npcIndex = gp.collisionChecker.checkEntity(this,gp.npc);
+        npcIndex = gp.collisionChecker.checkEntity(this, gp.npc);
         interactNPC(npcIndex);
 
         //CHECK MONSTER COLLISION
-        monsterIndex = gp.collisionChecker.checkEntity(this,gp.monster);
+        monsterIndex = gp.collisionChecker.checkEntity(this, gp.monster);
         interactMonster(monsterIndex);
 
 
