@@ -28,6 +28,15 @@ public class Entity {
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;
     public boolean collisionOn;
+
+
+    public Rectangle interactionArea = new Rectangle(0, 0, 48, 48);
+    public int interactionAreaDefaultX, interactionAreaDefaultY;
+    public boolean interactionAreaUp = false;
+    public boolean interactionAreaDown = false;
+    public boolean interactionAreaLeft = false;
+    public boolean interactionAreaRight = false;
+    public boolean interactionOn;
     
 
     public String dialogues[] = new String[15];
