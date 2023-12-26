@@ -105,7 +105,7 @@ public class CollisionChecker {
                 gp.obj[i].solidArea.x = gp.obj[i].worldX + gp.obj[i].solidArea.x;
                 gp.obj[i].solidArea.y = gp.obj[i].worldY + gp.obj[i].solidArea.y;
 
-                if(entity.direction[1] != null){
+                if(entity.direction[0] != null){
                     switch(entity.direction[0]) {
                         case "up":
                             entity.solidArea.y -= entity.speed;
@@ -201,7 +201,7 @@ public class CollisionChecker {
                 target[i].solidArea.x = target[i].worldX + target[i].solidArea.x;
                 target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
 
-                if(entity.direction[1] != null){
+                if(entity.direction[0] != null){
                     switch(entity.direction[0]) {
                         case "up":
                             entity.solidArea.y -= entity.speed;
@@ -278,7 +278,7 @@ public class CollisionChecker {
         gp.player.solidArea.x = gp.player.worldX + gp.player.solidArea.x;
         gp.player.solidArea.y = gp.player.worldY + gp.player.solidArea.y;
 
-        if(entity.direction[1] != null){
+        if(entity.direction[0] != null){
             switch(entity.direction[0]) {
                 case "up":
                     entity.solidArea.y -= entity.speed;
