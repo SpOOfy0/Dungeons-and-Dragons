@@ -13,6 +13,7 @@ public class NPC_1 extends Entity{
         super(gp);
 
         direction[0] = "down";
+        direction[1] = null;
         speed = 1;
 
         getTihsNPCImage();

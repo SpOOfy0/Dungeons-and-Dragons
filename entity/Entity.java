@@ -64,8 +64,6 @@ public class Entity {
 
     public void update(){
         
-        direction[1] = null;
-        
         setAction();
         monsterDead();
 
@@ -83,14 +81,16 @@ public class Entity {
                 worldX += speed;
                 break;
         }
-        switch(direction[1]){
-            case "left":
-                worldX -= speed;
-                break;
-            case "right":
-                worldX += speed;
-                break;
-        }
+        // if(direction[1] != null){
+        //     switch(direction[1]){
+        //         case "left":
+        //             worldX -= speed;
+        //             break;
+        //         case "right":
+        //             worldX += speed;
+        //             break;
+        //     }
+        // }
 
         facing = direction[0];
 

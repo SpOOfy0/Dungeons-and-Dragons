@@ -32,6 +32,7 @@ public class Orc extends Monster implements MonsterInterface {
     public void MonsterSetting() {
 
         direction[0] = "up";
+        direction[1] = null;
         speed = 1;
         maxLife = 4;
         life = maxLife;
