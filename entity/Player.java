@@ -138,18 +138,11 @@ public class Player extends Entity {
             }
         }
 
-        spriteCounter++;
-        if (keyHandler.upPressed == true || keyHandler.downPressed == true || keyHandler.leftPressed == true || keyHandler.rightPressed == true){
-            
-            if(spriteCounter > 12){
-                if(spriteNum == 1){
-                    spriteNum = 2;
-                }
-                else if(spriteNum == 2){
-                    spriteNum = 1;
-                }
-                spriteCounter = 0;
-            }   
+        if(spriteCounter <= 12) spriteCounter++;
+        else if (keyHandler.upPressed == true || keyHandler.downPressed == true || keyHandler.leftPressed == true || keyHandler.rightPressed == true){
+            if (spriteNum == 1) spriteNum = 2;
+            else spriteNum = 1;
+            spriteCounter = 0;
         }
     }
     
