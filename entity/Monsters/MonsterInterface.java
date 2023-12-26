@@ -2,7 +2,7 @@ package entity.Monsters;
 
 public interface MonsterInterface {
 
-    public void getTihsMonsterImage();
+    public void getThisMonsterImage();
 
     public void MonsterSetting();
         

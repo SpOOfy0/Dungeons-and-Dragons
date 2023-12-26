@@ -11,13 +11,13 @@ public class Orc extends Monster implements MonsterInterface {
     public Orc (GamePannel gp) {
         super(gp);
 
-        getTihsMonsterImage();
+        getThisMonsterImage();
         MonsterSetting();
    
     }
 
     @Override
-    public void getTihsMonsterImage() {
+    public void getThisMonsterImage() {
         up1 = getImage("/Player/Monster/Orc/up1.png");
         up2 = getImage("/Player/Monster/Orc/up2.png");
         down1 = getImage("/Player/Monster/Orc/down1.png");
