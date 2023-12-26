@@ -211,9 +211,7 @@ public class CollisionChecker {
                             if (entity.solidArea.intersects(target[i].solidArea)){
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
-                                if(intersection.height <= intersection.width){
-                                    entity.blockedUp = true;
-                                }
+                                if(intersection.height < intersection.width) entity.blockedUp = true;
                                 index = i;
                             }
                             break;
@@ -222,9 +220,7 @@ public class CollisionChecker {
                             if (entity.solidArea.intersects(target[i].solidArea)){
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
-                                if(intersection.height <= intersection.width){
-                                    entity.blockedDown = true;
-                                }
+                                if(intersection.height < intersection.width) entity.blockedDown = true;
                                 index = i;
                             }
                             break;
@@ -233,9 +229,7 @@ public class CollisionChecker {
                             if (entity.solidArea.intersects(target[i].solidArea)){
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
-                                if(intersection.height >= intersection.width){
-                                    entity.blockedLeft = true;
-                                }
+                                if(intersection.height > intersection.width) entity.blockedLeft = true;
                                 index = i;
                             }
                             break;
@@ -244,9 +238,7 @@ public class CollisionChecker {
                             if (entity.solidArea.intersects(target[i].solidArea)){
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
-                                if(intersection.height >= intersection.width){
-                                    entity.blockedRight = true;
-                                }
+                                if(intersection.height > intersection.width) entity.blockedRight = true;
                                 index = i;
                             }
                             break;
@@ -260,9 +252,7 @@ public class CollisionChecker {
                             if (entity.solidArea.intersects(target[i].solidArea)){
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
-                                if(intersection.height >= intersection.width){
-                                    entity.blockedLeft = true;
-                                }
+                                if(intersection.height > intersection.width) entity.blockedLeft = true;
                                 index = i;
                             }
                             break;
@@ -271,9 +261,7 @@ public class CollisionChecker {
                             if (entity.solidArea.intersects(target[i].solidArea)){
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
-                                if(intersection.height >= intersection.width){
-                                    entity.blockedRight = true;
-                                }
+                                if(intersection.height > intersection.width) entity.blockedRight = true;
                                 index = i;
                             }
                             break;
@@ -308,7 +296,7 @@ public class CollisionChecker {
                     if (entity.solidArea.intersects(gp.player.solidArea)){
                         entity.collisionOn = true;
                         intersection = entity.solidArea.intersection(gp.player.solidArea);
-                        if(intersection.height <= intersection.width) entity.blockedUp = true;
+                        if(intersection.height < intersection.width) entity.blockedUp = true;
                     }
                     break;
                 case "down":
@@ -316,7 +304,7 @@ public class CollisionChecker {
                     if (entity.solidArea.intersects(gp.player.solidArea)){
                         entity.collisionOn = true;
                         intersection = entity.solidArea.intersection(gp.player.solidArea);
-                        if(intersection.height <= intersection.width) entity.blockedDown = true;
+                        if(intersection.height < intersection.width) entity.blockedDown = true;
                     }
                     break;
                 case "left":
@@ -324,7 +312,7 @@ public class CollisionChecker {
                     if (entity.solidArea.intersects(gp.player.solidArea)){
                         entity.collisionOn = true;
                         intersection = entity.solidArea.intersection(gp.player.solidArea);
-                        if(intersection.height <= intersection.width) entity.blockedLeft = true;
+                        if(intersection.height < intersection.width) entity.blockedLeft = true;
                     }
                     break;
                 case "right":
@@ -332,7 +320,7 @@ public class CollisionChecker {
                     if (entity.solidArea.intersects(gp.player.solidArea)){
                         entity.collisionOn = true;
                         intersection = entity.solidArea.intersection(gp.player.solidArea);
-                        if(intersection.height <= intersection.width) entity.blockedRight = true;
+                        if(intersection.height < intersection.width) entity.blockedRight = true;
                     }
                     break;
             }
@@ -345,7 +333,7 @@ public class CollisionChecker {
                     if (entity.solidArea.intersects(gp.player.solidArea)){
                         entity.collisionOn = true;
                         intersection = entity.solidArea.intersection(gp.player.solidArea);
-                        if(intersection.height <= intersection.width) entity.blockedLeft = true;
+                        if(intersection.height < intersection.width) entity.blockedLeft = true;
                     }
                     break;
                 case "right":
@@ -353,7 +341,7 @@ public class CollisionChecker {
                     if (entity.solidArea.intersects(gp.player.solidArea)){
                         entity.collisionOn = true;
                         intersection = entity.solidArea.intersection(gp.player.solidArea);
-                        if(intersection.height <= intersection.width) entity.blockedRight = true;
+                        if(intersection.height < intersection.width) entity.blockedRight = true;
                     }
                     break;
             }
