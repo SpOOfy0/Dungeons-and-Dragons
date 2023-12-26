@@ -25,8 +25,8 @@ public class Ability extends Entity{
     public void update() {
         if (gp.player.ballOn == 1) {
             if (ballDirection == "none") {
-                ballDirection = gp.player.direction;
-                direction = gp.player.direction;
+                ballDirection = gp.player.facing;
+                facing = gp.player.facing;
                 worldX = gp.player.worldX;
                 worldY = gp.player.worldY;
             }

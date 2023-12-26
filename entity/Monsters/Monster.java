@@ -33,16 +33,16 @@ public class Monster extends Entity{
                 int i = random.nextInt(100)+1;
 
                 if(i <= 25){
-                    direction = "up";
+                    direction[0] = "up";
                 }
                 else if(i <= 50){
-                    direction = "down";
+                    direction[0] = "down";
                 }
                 else if(i <= 75){
-                    direction = "left";
+                    direction[0] = "left";
                 }
                 else if(i <= 100){
-                    direction = "right";
+                    direction[0] = "right";
                 }
                 actionCounter = 0;
         }
@@ -54,16 +54,16 @@ public class Monster extends Entity{
 
        
             if(player.worldX > worldX) {
-                direction = "right";
+                direction[0] = "right";
             }
             else if(player.worldX < worldX) {
-                direction = "left";
+                direction[0] = "left";
             }
             else if(player.worldY > worldY) {
-                direction = "down";
+                direction[0] = "down";
             }
             else if(player.worldY < worldY) {
-                direction = "up";
+                direction[0] = "up";
             }
         
     }

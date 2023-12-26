@@ -66,8 +66,7 @@ public class Player extends Entity {
         worldX = gp.tileSize * 23; 
         worldY = gp.tileSize * 21; 
         speed = 4;
-        direction = "down";
-        //facing = "down";
+        facing = "down";
 
         //PLAYER STATUS
         maxLife = 8;
@@ -88,25 +87,39 @@ public class Player extends Entity {
     }
 
     public void update(){
+        
+        direction[0] = null;
 
         if(keyHandler.upPressed){
-            direction = "up";
+            direction[0] = "up";
             worldY -= speed;
         } else if(keyHandler.downPressed){
-            direction = "down";
+            direction[0] = "down";
             worldY += speed;
-        } else if(keyHandler.leftPressed){
-            direction = "left";
+        }
+        
+        direction[1] = null;
+
+        if(keyHandler.leftPressed){
+            direction[1] = "left";
             worldX -= speed;
         } else if(keyHandler.rightPressed){
-            direction = "right";
+            direction[1] = "right";
             worldX += speed;
         }
 
-        //if(facing != direction && facing != direction2) facing = direction;
+        if(direction[0] != null || direction[1] != null){
+            if(direction[0] == null) facing = direction[1];
+            else if(direction[1] == null) facing = direction[0];
+            else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
+        }
 
         //CHECK TILE COLLISION
         collisionOn = false;
+        blockedUp = false;
+        blockedDown = false;
+        blockedLeft = false;
+        blockedRight = false;
 
         //CHECK OBJECT COLLISION
         gp.collisionChecker.checkTile(this); //Player is considered as an entity beacause it extends Entity
@@ -123,20 +136,10 @@ public class Player extends Entity {
 
 
         //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
-        if(collisionOn){
-            if(keyHandler.upPressed){
-                worldY += speed;
-            }
-            else if(keyHandler.downPressed){
-                worldY -= speed;
-            }
-            else if(keyHandler.leftPressed){
-                worldX += speed;
-            }
-            else if(keyHandler.rightPressed){
-                worldX -= speed;
-            }
-        }
+        if(blockedUp) worldY += speed;
+        if(blockedDown) worldY -= speed;
+        if(blockedLeft) worldX += speed;
+        if(blockedRight) worldX -= speed;
 
         if(spriteCounter <= 12) spriteCounter++;
         else if (keyHandler.upPressed == true || keyHandler.downPressed == true || keyHandler.leftPressed == true || keyHandler.rightPressed == true){
@@ -235,7 +238,7 @@ public class Player extends Entity {
 
         BufferedImage image = null;
 
-        switch(direction){
+        switch(facing){
             case "up":
                 if (spriteNum == 1) image = up1;
                 else image = up2;

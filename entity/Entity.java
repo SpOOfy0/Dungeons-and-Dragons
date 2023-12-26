@@ -15,9 +15,8 @@ public class Entity {
     public int worldX, worldY;
     public int speed;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
-    public String facing;
-    public String direction;
-    public String direction2;
+    public String facing;       // direction dans laquelle regarde
+    public String[] direction = new String[2]; // pour les entités qui peuvent se déplacer en diagonale [0: axe vertical; 1: axe horizontal]
 
     public int spriteCounter = 0;
     public int spriteNum = 1;
@@ -28,8 +27,12 @@ public class Entity {
 
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
-    public boolean collision = false;
-    public boolean collisionOn;
+    public boolean collision = false;   // L'entité est affecté par les collisions ou pas?
+    public boolean collisionOn;     // L'entité est en collision avec qlqchose/qlqu'un?
+    public boolean blockedUp;
+    public boolean blockedDown;
+    public boolean blockedLeft;
+    public boolean blockedRight;  // L'entité est bloquée dans la direction correspondante
 
 
     public Rectangle interactionArea = new Rectangle(0, 0, 48, 48);
@@ -61,10 +64,12 @@ public class Entity {
 
     public void update(){
         
+        direction[1] = null;
+        
         setAction();
         monsterDead();
 
-        switch(direction){
+        switch(direction[0]){
             case "up":
                 worldY -= speed;
                 break;
@@ -78,28 +83,33 @@ public class Entity {
                 worldX += speed;
                 break;
         }
+        switch(direction[1]){
+            case "left":
+                worldX -= speed;
+                break;
+            case "right":
+                worldX += speed;
+                break;
+        }
+
+        facing = direction[0];
 
         collisionOn = false;
+        blockedUp = false;
+        blockedDown = false;
+        blockedLeft = false;
+        blockedRight = false;
         gp.collisionChecker.checkTile(this);
         //gp.collisionChecker.checkObject(this,false);
         gp.collisionChecker.checkPlayer(this);
 
-        if(collisionOn){
-            switch(direction){
-                case "up":
-                    worldY += speed;
-                    break;
-                case "down":
-                    worldY -= speed;
-                    break;
-                case "left":
-                    worldX += speed;
-                    break;
-                case "right":
-                    worldX -= speed;
-                    break;
-            }
-        }
+        // if(collisionOn){ 
+        // }
+
+        if(blockedUp) worldY += speed;
+        if(blockedDown) worldY -= speed;
+        if(blockedLeft) worldX += speed;
+        if(blockedRight) worldX -= speed;
 
         spriteCounter++;
             if(spriteCounter > 12){
@@ -139,7 +149,7 @@ public class Entity {
             worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
             worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { 
             
-                switch(direction){
+                switch(facing){
                     case "up":
                         if (spriteNum == 1)
                             image = up1;

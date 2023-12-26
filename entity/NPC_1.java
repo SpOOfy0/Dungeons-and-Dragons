@@ -12,7 +12,7 @@ public class NPC_1 extends Entity{
 
         super(gp);
 
-        direction = "down";
+        direction[0] = "down";
         speed = 1;
 
         getTihsNPCImage();
@@ -41,16 +41,16 @@ public class NPC_1 extends Entity{
                 int i = random.nextInt(100)+1;
 
                 if(i <= 25){
-                    direction = "up";
+                    direction[0] = "up";
                 }
                 else if(i <= 50){
-                    direction = "down";
+                    direction[0] = "down";
                 }
                 else if(i <= 75){
-                    direction = "left";
+                    direction[0] = "left";
                 }
                 else if(i <= 100){
-                    direction = "right";
+                    direction[0] = "right";
                 }
                 actionCounter = 0;
         }
@@ -86,18 +86,18 @@ public class NPC_1 extends Entity{
 
     public void FacePlayer(){
 
-        switch(gp.player.direction){
+        switch(gp.player.facing){
             case "up":
-                direction = "down";
+                direction[0] = "down";
                 break;
             case "down":
-                direction = "up";
+                direction[0] = "up";
                 break;
             case "left":
-                direction = "right";
+                direction[0] = "right";
                 break;
             case "right":
-                direction = "left";
+                direction[0] = "left";
                 break;
         }
 
