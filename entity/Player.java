@@ -67,6 +67,7 @@ public class Player extends Entity {
         worldY = gp.tileSize * 21; 
         speed = 4;
         direction = "down";
+        facing = "down";
 
         //PLAYER STATUS
         maxLife = 8;
@@ -87,8 +88,7 @@ public class Player extends Entity {
     }
 
     public void update(){
-        //Todo: seperate methods
-        //Todo: switch case
+
         if(keyHandler.upPressed){
             direction = "up";
             worldY = worldY - speed;
@@ -98,12 +98,14 @@ public class Player extends Entity {
         }
 
         if(keyHandler.leftPressed){
-            direction = "left";
+            direction2 = "left";
             worldX = worldX - speed;
         } else if(keyHandler.rightPressed){
-            direction = "right";
+            direction2 = "right";
             worldX = worldX + speed;
         }
+
+        if(facing != direction && facing != direction2) facing = direction;
 
         //CHECK TILE COLLISION
         collisionOn = false;
@@ -219,8 +221,8 @@ public class Player extends Entity {
         if(gp.ability != null){
             abilityDommage(gp.ability.abilityCollisionIndex);
         }
-        monsterDommageCounter ++;
-        attackDelay ++;
+        monsterDommageCounter++;
+        attackDelay++;
         
             
         if(monsterIndex != 999 && monsterDommageCounter > 30){
@@ -235,30 +237,22 @@ public class Player extends Entity {
 
         BufferedImage image = null;
 
-        switch(direction){
+        switch(facing){
             case "up":
-                if (spriteNum == 1)
-                    image = up1;
-                if (spriteNum == 2)
-                    image = up2;
+                if (spriteNum == 1) image = up1;
+                else image = up2;
                 break;
             case "down":
-                if (spriteNum == 1)
-                    image = down1;
-                if (spriteNum == 2)
-                    image = down2;
+                if (spriteNum == 1) image = down1;
+                else image = down2;
                 break;
             case "left":
-                if (spriteNum == 1)
-                    image = left1;
-                if (spriteNum == 2)
-                    image = left2;
+                if (spriteNum == 1) image = left1;
+                else image = left2;
                 break;
             case "right":
-                if (spriteNum == 1)
-                    image = right1;
-                if (spriteNum == 2)
-                    image = right2;
+                if (spriteNum == 1) image = right1;
+                else image = right2;
                 break;                              
         }
         g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
