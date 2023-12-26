@@ -32,7 +32,6 @@ public class CollisionChecker {
                 tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
                 tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
                 entity.collisionOn = (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision);
-                if(entity.collisionOn) System.out.println("block1");
                 break;
             case "down":
                 entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
