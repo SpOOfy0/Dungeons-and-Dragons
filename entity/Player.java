@@ -3,6 +3,7 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Vector;
 
 import entity.Abilities.FireBall.FireBall;
 import main.GamePannel;
@@ -23,9 +24,9 @@ public class Player extends Entity {
     public int healPotion = 0;
 
     //INDEX OF THE OBJECT THAT THE PLAYER IS CURRENTLY COLLIDING WITH
-    public int objIndex = 999;
-    public int npcIndex = 999;
-    public int monsterIndex = 999;
+    public Vector<Integer> objIndexes;
+    public Vector<Integer> npcIndexes;
+    public Vector<Integer> monsterIndexes;
 
     public int ballOn = 0;
 
@@ -48,7 +49,6 @@ public class Player extends Entity {
         solidAreaDefaultY = solidArea.y;
         setDefaultValues();
         getPlayerImage();
-        swordAttaque(monsterIndex);
     }
 
     public static Player getInstance(GamePannel gp, KeyHandler keyH) {
@@ -123,16 +123,19 @@ public class Player extends Entity {
 
         //CHECK OBJECT COLLISION
         gp.collisionChecker.checkTile(this); //Player is considered as an entity beacause it extends Entity
-        objIndex = gp.collisionChecker.checkObject(this, true);
-        pickUpObject(objIndex);
+        objIndexes = gp.collisionChecker.checkObject(this, true);
+        for(int i = 0; i < objIndexes.size(); i++)
+            pickUpObject(objIndexes.get(i));
 
         //CHECK NPC COLLISION
-        npcIndex = gp.collisionChecker.checkEntity(this, gp.npc);
-        interactNPC(npcIndex);
+        npcIndexes = gp.collisionChecker.checkEntity(this, gp.npc);
+        for(int i = 0; i < npcIndexes.size(); i++)
+            interactNPC(npcIndexes.get(i));
 
         //CHECK MONSTER COLLISION
-        monsterIndex = gp.collisionChecker.checkEntity(this, gp.monster);
-        interactMonster(monsterIndex);
+        monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
+        for(int i = 0; i < monsterIndexes.size(); i++)
+            interactMonster(monsterIndexes.get(i));
 
 
         //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
@@ -151,9 +154,7 @@ public class Player extends Entity {
     
     public void pickUpObject(int objIndex){
         
-        if(objIndex != 999){
-
-            String objectName = gp.obj[objIndex].name;
+        String objectName = gp.obj[objIndex].name;
             
             switch(objectName){
                 case "healPotion":
@@ -163,24 +164,20 @@ public class Player extends Entity {
                     gp.ui.showMessage("You got a heal potion!");
                     break;
             }
-        }
     }
 
     public void interactNPC(int npcIndex){
         
-        if(npcIndex != 999){
-
-            if(gp.keyHandler.xPressed == true){
-                gp.gameState = gp.dialogueState;
-                gp.npc[npcIndex].speak();
-            }
+        if(gp.keyHandler.xPressed == true){
+            gp.gameState = gp.dialogueState;
+            gp.npc[npcIndex].speak();
         }
         gp.keyHandler.xPressed = false;
     }
 
     public void swordAttaque(int monsterIndex){
 
-        if(monsterIndex != 999 && gp.keyHandler.sPressed == true && attackDelay > attackSpeed){
+        if(gp.keyHandler.sPressed == true && attackDelay > attackSpeed){
             gp.monster[monsterIndex].life -= 1;
             gp.keyHandler.sPressed = false;
 
@@ -226,7 +223,7 @@ public class Player extends Entity {
         attackDelay++;
         
             
-        if(monsterIndex != 999 && monsterDommageCounter > 30){
+        if(monsterDommageCounter > 30){
             gp.monster[monsterIndex].attackPlayer();
             monsterDommageCounter = 0;
         }

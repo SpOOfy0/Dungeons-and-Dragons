@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Rectangle;
+import java.util.Vector;
 
 import entity.Entity;
 
@@ -92,9 +93,9 @@ public class CollisionChecker {
         }
     }
 
-    public int checkObject(Entity entity, boolean player){ //We add player to be able to seperate player from the other entities like NPC's and monsters
+    public Vector<Integer> checkObject(Entity entity, boolean player){ //We add player to be able to seperate player from the other entities like NPC's and monsters
 
-        int index = 999;
+        Vector<Integer> index = new Vector<Integer>();
         
         for(int i = 0; i < gp.obj.length; i++){
 
@@ -115,7 +116,7 @@ public class CollisionChecker {
                                     entity.collisionOn = true;
                                     entity.blockedUp = true;
                                 }
-                                if(player == true) index = i;
+                                if(player && !index.contains(i)) index.add(i);
                             }
                             break;
                         case "down":
@@ -125,7 +126,7 @@ public class CollisionChecker {
                                     entity.collisionOn = true;
                                     entity.blockedDown = true;
                                 }
-                                if(player == true) index = i;
+                                if(player && !index.contains(i)) index.add(i);
                             }
                             break;
                         case "left":
@@ -135,7 +136,7 @@ public class CollisionChecker {
                                     entity.collisionOn = true;
                                     entity.blockedLeft = true;
                                 }
-                                if(player == true) index = i;
+                                if(player && !index.contains(i)) index.add(i);
                             }
                             break;
                         case "right":
@@ -145,7 +146,7 @@ public class CollisionChecker {
                                     entity.collisionOn = true;
                                     entity.blockedRight = true;
                                 }
-                                if(player == true) index = i;
+                                if(player && !index.contains(i)) index.add(i);
                             }
                             break;
                     }
@@ -160,7 +161,7 @@ public class CollisionChecker {
                                     entity.collisionOn = true;
                                     entity.blockedLeft = true;
                                 }
-                                if(player == true) index = i;
+                                if(player && !index.contains(i)) index.add(i);
                             }
                             break;
                         case "right":
@@ -170,7 +171,7 @@ public class CollisionChecker {
                                     entity.collisionOn = true;
                                     entity.blockedRight = true;
                                 }
-                                if(player == true) index = i;
+                                if(player && !index.contains(i)) index.add(i);
                             }
                             break;
                     }
@@ -189,8 +190,8 @@ public class CollisionChecker {
         return index;
     }
 
-    public int checkEntity(Entity entity, Entity[] target){
-        int index = 999;
+    public Vector<Integer> checkEntity(Entity entity, Entity[] target){
+        Vector<Integer> index = new Vector<Integer>();
         
         for(int i = 0; i < target.length; i++){
 
@@ -212,7 +213,7 @@ public class CollisionChecker {
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
                                 if(intersection.height < intersection.width) entity.blockedUp = true;
-                                index = i;
+                                if(!index.contains(i)) index.add(i);
                             }
                             break;
                         case "down":
@@ -221,7 +222,7 @@ public class CollisionChecker {
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
                                 if(intersection.height < intersection.width) entity.blockedDown = true;
-                                index = i;
+                                if(!index.contains(i)) index.add(i);
                             }
                             break;
                         case "left":
@@ -230,7 +231,7 @@ public class CollisionChecker {
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
                                 if(intersection.height > intersection.width) entity.blockedLeft = true;
-                                index = i;
+                                if(!index.contains(i)) index.add(i);
                             }
                             break;
                         case "right":
@@ -239,7 +240,7 @@ public class CollisionChecker {
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
                                 if(intersection.height > intersection.width) entity.blockedRight = true;
-                                index = i;
+                                if(!index.contains(i)) index.add(i);
                             }
                             break;
                     }
@@ -253,7 +254,7 @@ public class CollisionChecker {
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
                                 if(intersection.height > intersection.width) entity.blockedLeft = true;
-                                index = i;
+                                if(!index.contains(i)) index.add(i);
                             }
                             break;
                         case "right":
@@ -262,7 +263,7 @@ public class CollisionChecker {
                                 entity.collisionOn = true;
                                 intersection = entity.solidArea.intersection(target[i].solidArea);
                                 if(intersection.height > intersection.width) entity.blockedRight = true;
-                                index = i;
+                                if(!index.contains(i)) index.add(i);
                             }
                             break;
                     }

@@ -28,7 +28,7 @@ public class Entity {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;   // L'entité est affecté par les collisions ou pas?
-    public boolean collisionOn;     // L'entité est en collision avec qlqchose/qlqu'un?
+    public boolean collisionOn;     // L'entité est en collision avec qlqchose/qlqu'un? (sert pour les interaction)
     public boolean blockedUp;
     public boolean blockedDown;
     public boolean blockedLeft;
@@ -41,7 +41,7 @@ public class Entity {
     public boolean interactionAreaDown = false;
     public boolean interactionAreaLeft = false;
     public boolean interactionAreaRight = false;
-    public boolean interactionOn;
+    public boolean interactionOn;                   // Non-utilisés pour l'instant
     
 
     public String dialogues[] = new String[15];
@@ -81,16 +81,6 @@ public class Entity {
                 worldX += speed;
                 break;
         }
-        // if(direction[1] != null){
-        //     switch(direction[1]){
-        //         case "left":
-        //             worldX -= speed;
-        //             break;
-        //         case "right":
-        //             worldX += speed;
-        //             break;
-        //     }
-        // }
 
         facing = direction[0];
 
@@ -102,9 +92,6 @@ public class Entity {
         gp.collisionChecker.checkTile(this);
         //gp.collisionChecker.checkObject(this,false);
         gp.collisionChecker.checkPlayer(this);
-
-        // if(collisionOn){ 
-        // }
 
         if(blockedUp) worldY += speed;
         if(blockedDown) worldY -= speed;
