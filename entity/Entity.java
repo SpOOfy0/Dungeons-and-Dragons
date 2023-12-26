@@ -81,6 +81,7 @@ public class Entity {
 
         collisionOn = false;
         gp.collisionChecker.checkTile(this);
+        if(this.collisionOn) System.out.println("block2");
         //gp.collisionChecker.checkObject(this,false);
         gp.collisionChecker.checkPlayer(this);
 
