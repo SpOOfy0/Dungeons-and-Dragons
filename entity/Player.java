@@ -41,7 +41,7 @@ public class Player extends Entity {
 
         //PLAYER SCREEN POSITION
         screenX = gp.screenWidth/2 - gp.tileSize/2;
-        screenY = gp.worldHeight/2 - gp.tileSize/2;
+        screenY = gp.screenHeight/2 - gp.tileSize/2;
 
         solidArea = new Rectangle(8, 24, 16, 12);
         solidAreaDefaultX = solidArea.x;
@@ -67,7 +67,7 @@ public class Player extends Entity {
         worldY = gp.tileSize * 21; 
         speed = 4;
         direction = "down";
-        facing = "down";
+        //facing = "down";
 
         //PLAYER STATUS
         maxLife = 8;
@@ -91,21 +91,19 @@ public class Player extends Entity {
 
         if(keyHandler.upPressed){
             direction = "up";
-            worldY = worldY - speed;
+            worldY -= speed;
         } else if(keyHandler.downPressed){
             direction = "down";
-            worldY = worldY + speed;
-        }
-
-        if(keyHandler.leftPressed){
-            direction2 = "left";
-            worldX = worldX - speed;
+            worldY += speed;
+        } else if(keyHandler.leftPressed){
+            direction = "left";
+            worldX -= speed;
         } else if(keyHandler.rightPressed){
-            direction2 = "right";
-            worldX = worldX + speed;
+            direction = "right";
+            worldX += speed;
         }
 
-        if(facing != direction && facing != direction2) facing = direction;
+        //if(facing != direction && facing != direction2) facing = direction;
 
         //CHECK TILE COLLISION
         collisionOn = false;
@@ -127,16 +125,16 @@ public class Player extends Entity {
         //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
         if(collisionOn == true){
             if(keyHandler.upPressed == true){
-                worldY = worldY + speed;
+                worldY += speed;
             }
             else if(keyHandler.downPressed == true){
-                worldY = worldY - speed;
+                worldY -= speed;
             }
             else if(keyHandler.leftPressed == true){
-                worldX = worldX + speed;
+                worldX += speed;
             }
             else if(keyHandler.rightPressed == true){
-                worldX = worldX - speed;
+                worldX -= speed;
             }
         }
 
@@ -237,7 +235,7 @@ public class Player extends Entity {
 
         BufferedImage image = null;
 
-        switch(facing){
+        switch(direction){
             case "up":
                 if (spriteNum == 1) image = up1;
                 else image = up2;

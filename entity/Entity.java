@@ -64,25 +64,39 @@ public class Entity {
         setAction();
         monsterDead();
 
+        switch(direction){
+            case "up":
+                worldY -= speed;
+                break;
+            case "down":
+                worldY += speed;
+                break;
+            case "left":
+                worldX -= speed;
+                break;
+            case "right":
+                worldX += speed;
+                break;
+        }
 
         collisionOn = false;
         gp.collisionChecker.checkTile(this);
         //gp.collisionChecker.checkObject(this,false);
         gp.collisionChecker.checkPlayer(this);
 
-        if(collisionOn == false){
+        if(collisionOn == true){
             switch(direction){
                 case "up":
-                    worldY -= speed;
-                    break;
-                case "down":
                     worldY += speed;
                     break;
+                case "down":
+                    worldY -= speed;
+                    break;
                 case "left":
-                    worldX -= speed;
+                    worldX += speed;
                     break;
                 case "right":
-                    worldX += speed;
+                    worldX -= speed;
                     break;
             }
         }
