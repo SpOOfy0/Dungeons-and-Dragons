@@ -79,12 +79,12 @@ public class Entity {
                 break;
         }
 
-        this.collisionOn = false;
+        collisionOn = false;
         gp.collisionChecker.checkTile(this);
         //gp.collisionChecker.checkObject(this,false);
         gp.collisionChecker.checkPlayer(this);
 
-        if(this.collisionOn){
+        if(collisionOn){
             switch(direction){
                 case "up":
                     worldY += speed;

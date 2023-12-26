@@ -123,17 +123,17 @@ public class Player extends Entity {
 
 
         //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
-        if(collisionOn == true){
-            if(keyHandler.upPressed == true){
+        if(collisionOn){
+            if(keyHandler.upPressed){
                 worldY += speed;
             }
-            else if(keyHandler.downPressed == true){
+            else if(keyHandler.downPressed){
                 worldY -= speed;
             }
-            else if(keyHandler.leftPressed == true){
+            else if(keyHandler.leftPressed){
                 worldX += speed;
             }
-            else if(keyHandler.rightPressed == true){
+            else if(keyHandler.rightPressed){
                 worldX -= speed;
             }
         }
