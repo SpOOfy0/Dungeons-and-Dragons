@@ -28,7 +28,7 @@ public class Entity {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;   // L'entité est affecté par les collisions ou pas?
-    public boolean collisionOn;     // L'entité est en collision avec qlqchose/qlqu'un? (sert pour les interaction pour l'instant)
+    public boolean collisionOn;     // L'entité est-elle bloquée dans son mouvement? (ne servira plus pour les interaction)
     public boolean blockedUp;
     public boolean blockedDown;
     public boolean blockedLeft;
