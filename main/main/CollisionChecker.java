@@ -330,7 +330,7 @@ public class CollisionChecker {
                         entity.collisionOn = true;
                         if(entity.solidArea.x > gp.player.solidArea.x){
                             intersection = entity.solidArea.intersection(gp.player.solidArea);
-                            if(intersection.height < intersection.width) entity.blockedLeft = true;
+                            if(intersection.height > intersection.width) entity.blockedLeft = true;
                         }
                     }
                     break;
@@ -340,7 +340,7 @@ public class CollisionChecker {
                         entity.collisionOn = true;
                         if(entity.solidArea.x < gp.player.solidArea.x){
                             intersection = entity.solidArea.intersection(gp.player.solidArea);
-                            if(intersection.height < intersection.width) entity.blockedRight = true;
+                            if(intersection.height > intersection.width) entity.blockedRight = true;
                         }
                     }
                     break;
@@ -355,7 +355,7 @@ public class CollisionChecker {
                         entity.collisionOn = true;
                         if(entity.solidArea.x > gp.player.solidArea.x){
                             intersection = entity.solidArea.intersection(gp.player.solidArea);
-                            if(intersection.height < intersection.width) entity.blockedLeft = true;
+                            if(intersection.height > intersection.width) entity.blockedLeft = true;
                         }
                     }
                     break;
@@ -365,7 +365,7 @@ public class CollisionChecker {
                         entity.collisionOn = true;
                         if(entity.solidArea.x < gp.player.solidArea.x){
                             intersection = entity.solidArea.intersection(gp.player.solidArea);
-                            if(intersection.height < intersection.width) entity.blockedRight = true;
+                            if(intersection.height > intersection.width) entity.blockedRight = true;
                         }
                     }
                     break;

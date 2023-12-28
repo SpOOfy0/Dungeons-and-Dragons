@@ -128,8 +128,8 @@ public class Player extends Entity {
             pickUpObject(objIndexes.get(i));
 
         //CHECK NPC COLLISION
-        npcIndexes = gp.collisionChecker.checkEntity(this, gp.npc);
-        for(int i = 0; i < npcIndexes.size(); i++)
+        npcIndexes = gp.collisionChecker.checkEntity(this, gp.npc); //Entities' index will be registered in the vector only if there is "collision"
+        for(int i = 0; i < npcIndexes.size(); i++)                  //"collision" in this case is to have the player's "solidArea" is intersecting with that of thde entity's
             interactNPC(npcIndexes.get(i));
 
         //CHECK MONSTER COLLISION
@@ -145,7 +145,7 @@ public class Player extends Entity {
         if(blockedRight) worldX -= speed;
 
         if(spriteCounter <= 12) spriteCounter++;
-        else if (keyHandler.upPressed == true || keyHandler.downPressed == true || keyHandler.leftPressed == true || keyHandler.rightPressed == true){
+        else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
             if (spriteNum == 1) spriteNum = 2;
             else spriteNum = 1;
             spriteCounter = 0;
@@ -168,7 +168,7 @@ public class Player extends Entity {
 
     public void interactNPC(int npcIndex){
         
-        if(gp.keyHandler.xPressed == true){
+        if(gp.keyHandler.xPressed){
             gp.gameState = gp.dialogueState;
             gp.npc[npcIndex].speak();
         }
@@ -177,7 +177,7 @@ public class Player extends Entity {
 
     public void swordAttaque(int monsterIndex){
 
-        if(gp.keyHandler.sPressed == true && attackDelay > attackSpeed){
+        if(gp.keyHandler.sPressed && attackDelay > attackSpeed){
             gp.monster[monsterIndex].life -= 1;
             gp.keyHandler.sPressed = false;
 
@@ -189,7 +189,7 @@ public class Player extends Entity {
 
     public int fireAttaque(int monsterIndex){
 
-        if(gp.keyHandler.dPressed == true && attackDelay > attackSpeed && ballOn == 0){
+        if(gp.keyHandler.dPressed && attackDelay > attackSpeed && ballOn == 0){
             gp.fireBall = new FireBall(gp);
             gp.ability = gp.fireBall;
             gp.keyHandler.dPressed = false;
@@ -197,7 +197,6 @@ public class Player extends Entity {
             positionXActivityOn = worldX;
             positionYActivityOn = worldY;
             ballOn = 1;
-            
         }
         return ballOn;
     }
@@ -216,18 +215,14 @@ public class Player extends Entity {
 
         swordAttaque(monsterIndex);
         fireAttaque(monsterIndex);
-        if(gp.ability != null){
-            abilityDommage(gp.ability.abilityCollisionIndex);
-        }
+        if(gp.ability != null) abilityDommage(gp.ability.abilityCollisionIndex);
         monsterDommageCounter++;
         attackDelay++;
         
-            
         if(monsterDommageCounter > 30){
             gp.monster[monsterIndex].attackPlayer();
             monsterDommageCounter = 0;
         }
-        
     }
     
 
@@ -254,7 +249,6 @@ public class Player extends Entity {
                 break;                              
         }
         g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-
     }
-
+    
 }
