@@ -114,6 +114,7 @@ public class Player extends Entity {
             else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
         }
 
+        
         //CHECK TILE COLLISION
         collisionOn = false;
         blockedUp = false;
