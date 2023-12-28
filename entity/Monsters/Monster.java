@@ -24,8 +24,8 @@ public class Monster extends Entity{
 
         if(Math.abs(gp.player.worldX - worldX) <= 3*gp.tileSize && Math.abs(gp.player.worldY - worldY) <= 3*gp.tileSize) {
             GoToPlayer(gp.player);
-        }
-        else{
+            actionCounter = 0;
+        } else {
             actionCounter++;
 
             if(actionCounter == 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
@@ -34,35 +34,28 @@ public class Monster extends Entity{
 
                 if(i <= 25){
                     direction[0] = "up";
-                }
-                else if(i <= 50){
+                } else if(i <= 50){
                     direction[0] = "down";
-                }
-                else if(i <= 75){
+                } else if(i <= 75){
                     direction[0] = "left";
-                }
-                else if(i <= 100){
+                } else if(i <= 100){
                     direction[0] = "right";
                 }
                 actionCounter = 0;
+            }
         }
-        }
-    
-     }
+    }
+
 
     public void GoToPlayer(Player player) {
 
-       
             if(player.worldX > worldX) {
                 direction[0] = "right";
-            }
-            else if(player.worldX < worldX) {
+            } else if(player.worldX < worldX) {
                 direction[0] = "left";
-            }
-            else if(player.worldY > worldY) {
+            } else if(player.worldY > worldY) {
                 direction[0] = "down";
-            }
-            else if(player.worldY < worldY) {
+            } else if(player.worldY < worldY) {
                 direction[0] = "up";
             }
         
