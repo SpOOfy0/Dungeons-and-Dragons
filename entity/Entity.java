@@ -93,10 +93,20 @@ public class Entity {
         //gp.collisionChecker.checkObject(this,false);
         gp.collisionChecker.checkPlayer(this);
 
-        if(blockedUp) worldY += speed;
-        if(blockedDown) worldY -= speed;
-        if(blockedLeft) worldX += speed;
-        if(blockedRight) worldX -= speed;
+        switch(direction[0]){
+            case "up":
+                if(blockedUp) worldY += speed;
+                break;
+            case "down":
+                if(blockedDown) worldY -= speed;
+                break;
+            case "left":
+                if(blockedLeft) worldX += speed;
+                break;
+            case "right":
+                if(blockedRight) worldX -= speed;
+                break;
+        }
 
         spriteCounter++;
             if(spriteCounter > 12){

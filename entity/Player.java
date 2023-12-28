@@ -139,11 +139,13 @@ public class Player extends Entity {
             interactMonster(monsterIndexes.get(i));
 
 
+        System.out.println(blockedUp + " " + blockedLeft + " " + blockedDown + " " + blockedRight);
+
         //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
-        if(blockedUp) worldY += speed;
-        if(blockedDown) worldY -= speed;
-        if(blockedLeft) worldX += speed;
-        if(blockedRight) worldX -= speed;
+        if(keyHandler.upPressed && blockedUp) worldY += speed;
+        else if(keyHandler.downPressed && blockedDown) worldY -= speed;
+        if(keyHandler.leftPressed && blockedLeft) worldX += speed;
+        else if(keyHandler.rightPressed && blockedRight) worldX -= speed;
 
         if(spriteCounter <= 12) spriteCounter++;
         else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
