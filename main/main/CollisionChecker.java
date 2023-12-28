@@ -24,35 +24,35 @@ public class CollisionChecker {
         int tileSize = gp.tileSize;
 
         int entityTopRow = entityTopWorldY / tileSize;
-        int entityRightCol = entityRightWorldX / tileSize;
-        int entityBottomRow = entityBottomWorldY / tileSize;
         int entityLeftCol = entityLeftWorldX / tileSize;
+        int entityBottomRow = entityBottomWorldY / tileSize;
+        int entityRightCol = entityRightWorldX / tileSize;
 
-        int[] tilesAround = {   gp.tileM.mapTileNum[entityLeftCol][entityTopRow],
-                                gp.tileM.mapTileNum[entityRightCol][entityTopRow],
-                                gp.tileM.mapTileNum[entityRightCol][entityBottomRow],
-                                gp.tileM.mapTileNum[entityLeftCol][entityBottomRow]};
+        int[] tilesAround = {   gp.tileM.mapTileNum[entityRightCol][entityTopRow],
+                                gp.tileM.mapTileNum[entityLeftCol][entityTopRow],
+                                gp.tileM.mapTileNum[entityLeftCol][entityBottomRow],
+                                gp.tileM.mapTileNum[entityRightCol][entityBottomRow]};
 
-        int tileNum1 = tilesAround[0], tileNum2 = tilesAround[1];
+        int tileNum1 = 0, tileNum2 = 1;
 
-        boolean[] directionBlock = {false, false, false, false};
+        boolean[] isGoingToDirection = {false, false, false, false};
 
-        // 0=Up, 1=Right, 2=Bottom, 3=Left
+        // 0=Up, 1=Left, 2=Bottom, 3=Right
 
         for(int i = 0; i < entity.direction.length; i++){
             if(entity.direction[i] != null){
                 switch(entity.direction[i]) {
                     case "up":
-                        directionBlock[0] = true;
-                        break;
-                    case "right":
-                        directionBlock[1] = true;
-                        break;
-                    case "down":
-                        directionBlock[2] = true;
+                        isGoingToDirection[0] = true;
                         break;
                     case "left":
-                        directionBlock[3] = true;
+                        isGoingToDirection[1] = true;
+                        break;
+                    case "down":
+                        isGoingToDirection[2] = true;
+                        break;
+                    case "right":
+                        isGoingToDirection[3] = true;
                         break;
                 }
             }
@@ -62,7 +62,7 @@ public class CollisionChecker {
 
         for(int i = 0; i < 4; i++){
             checkBlock = false;
-            if(directionBlock[i]){
+            if(isGoingToDirection[i]){
                 checkBlock = true;
                 switch(i){
                     case 0:
@@ -72,10 +72,10 @@ public class CollisionChecker {
                         entityTopRow = entityTopWorldY / tileSize;
                         break;
                     case 1:
-                        entityRightCol = (entityRightWorldX + entity.speed) / tileSize;
-                        tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
-                        tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
-                        entityRightCol = entityRightWorldX / tileSize;
+                        entityLeftCol = (entityLeftWorldX - entity.speed) / tileSize;
+                        tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
+                        tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
+                        entityLeftCol = entityLeftWorldX / tileSize;
                         break;
                     case 2:
                         entityBottomRow = (entityBottomWorldY + entity.speed) / tileSize;
@@ -84,9 +84,10 @@ public class CollisionChecker {
                         entityBottomRow = entityBottomWorldY / tileSize;
                         break;
                     case 3:
-                        entityLeftCol = (entityLeftWorldX - entity.speed) / tileSize;
-                        tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
-                        tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
+                        
+                        entityRightCol = (entityRightWorldX + entity.speed) / tileSize;
+                        tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
+                        tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
                         break;
                 }
             } else {
@@ -100,13 +101,13 @@ public class CollisionChecker {
                         entity.blockedUp = true;
                         break;
                     case 1:
-                        entity.blockedRight = true;
+                        entity.blockedLeft = true;
                         break;
                     case 2:
                         entity.blockedDown = true;
                         break;
                     case 3:
-                        entity.blockedLeft = true;
+                        entity.blockedRight = true;
                         break;
                 }
                 if(checkBlock) entity.collisionOn = true;
@@ -218,76 +219,72 @@ public class CollisionChecker {
                 target[i].solidArea.x = target[i].worldX + target[i].solidArea.x;
                 target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
 
-                Rectangle intersection;
+                int pos1 = 0, pos2 = 1;
 
-                if(entity.direction[0] != null){
-                    switch(entity.direction[0]) {
-                        case "up":
-                            if (entity.solidArea.intersects(target[i].solidArea)){
-                                entity.collisionOn = true;
-                                if(entity.solidArea.y > target[i].solidArea.y){
-                                    intersection = entity.solidArea.intersection(target[i].solidArea);
-                                    if(intersection.height < intersection.width) entity.blockedUp = true;
-                                }
-                                if(!index.contains(i)) index.add(i);
-                            }
-                            break;
-                        case "down":
-                            if (entity.solidArea.intersects(target[i].solidArea)){
-                                entity.collisionOn = true;
-                                if(entity.solidArea.y < target[i].solidArea.y){
-                                    intersection = entity.solidArea.intersection(target[i].solidArea);
-                                    if(intersection.height < intersection.width) entity.blockedDown = true;
-                                }
-                                if(!index.contains(i)) index.add(i);
-                            }
-                            break;
-                        case "left":
-                            if (entity.solidArea.intersects(target[i].solidArea)){
-                                entity.collisionOn = true;
-                                if(entity.solidArea.x > target[i].solidArea.x){
-                                    intersection = entity.solidArea.intersection(target[i].solidArea);
-                                    if(intersection.height > intersection.width) entity.blockedLeft = true;
-                                }
-                                if(!index.contains(i)) index.add(i);
-                            }
-                            break;
-                        case "right":
-                            if (entity.solidArea.intersects(target[i].solidArea)){
-                                entity.collisionOn = true;
-                                if(entity.solidArea.x < target[i].solidArea.x){
-                                    intersection = entity.solidArea.intersection(target[i].solidArea);
-                                    if(intersection.height > intersection.width) entity.blockedRight = true;
-                                }
-                                if(!index.contains(i)) index.add(i);
-                            }
-                            break;
+                boolean[] isGoingToDirection = {false, false, false, false};
+
+                // 0=Up, 1=Left, 2=Bottom, 3=Right
+
+                for(int j = 0; j < entity.direction.length; j++){
+                    if(entity.direction[j] != null){
+                        switch(entity.direction[j]) {
+                            case "up":
+                                isGoingToDirection[0] = true;
+                                break;
+                            case "left":
+                                isGoingToDirection[1] = true;
+                                break;
+                            case "down":
+                                isGoingToDirection[2] = true;
+                                break;
+                            case "right":
+                                isGoingToDirection[3] = true;
+                                break;
+                        }
                     }
                 }
-                
-                if(entity.direction[1] != null){
-                    switch(entity.direction[1]) {
-                        case "left":
-                            if (entity.solidArea.intersects(target[i].solidArea)){
-                                entity.collisionOn = true;
-                                if(entity.solidArea.x > target[i].solidArea.x){
-                                    intersection = entity.solidArea.intersection(target[i].solidArea);
-                                    if(intersection.height > intersection.width) entity.blockedLeft = true;
+
+                Rectangle intersection;
+
+                for(int j = 0; j < 4; j++){
+                    switch(j){
+                            case 0:
+                                pos1 = entity.solidArea.y;
+                                pos2 = target[i].solidArea.y;
+                                break;
+                            case 1:
+                                pos1 = entity.solidArea.x;
+                                pos2 = target[i].solidArea.x;
+                                break;
+                            case 2:
+                                pos1 = target[i].solidArea.y;
+                                pos2 = entity.solidArea.y;
+                                break;
+                            case 3:
+                                pos1 = target[i].solidArea.x;
+                                pos2 = entity.solidArea.x;
+                                break;
+                        }
+
+                    if (entity.solidArea.intersects(target[i].solidArea)){
+                        if(pos1 > pos2){
+                            intersection = entity.solidArea.intersection(target[i].solidArea);
+                            if (j%2 == 0){
+                                if(intersection.height < intersection.width){
+                                    if(j == 0) entity.blockedUp = true;
+                                    else entity.blockedDown = true;
                                 }
-                                if(!index.contains(i)) index.add(i);
-                            }
-                            break;
-                        case "right":
-                            if (entity.solidArea.intersects(target[i].solidArea)){
-                                entity.collisionOn = true;
-                                if(entity.solidArea.x < target[i].solidArea.x){
-                                    intersection = entity.solidArea.intersection(target[i].solidArea);
-                                    if(intersection.height > intersection.width) entity.blockedRight = true;
+                            } else {
+                                if(intersection.height > intersection.width){
+                                    if(j == 1) entity.blockedLeft = true;
+                                    else entity.blockedRight = true;
                                 }
-                                if(!index.contains(i)) index.add(i);
                             }
-                            break;
+                        }
+                        if(isGoingToDirection[j]) entity.collisionOn = true;
+                        if(!index.contains(i)) index.add(i);
                     }
+
                 }
 
                 //Reset entity's solid area position
