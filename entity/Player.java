@@ -169,7 +169,12 @@ public class Player extends Entity {
 
     public void interactNPC(int npcIndex){
         
-        if(gp.keyHandler.xPressed){
+        boolean enFace =   ((facing == "down") && blockedDown && gp.npc[npcIndex].blockedUp) ||
+                           ((facing == "right") && blockedRight && gp.npc[npcIndex].blockedLeft) ||
+                           ((facing == "up") && blockedUp && gp.npc[npcIndex].blockedDown) ||
+                           ((facing == "left") && blockedLeft && gp.npc[npcIndex].blockedRight);
+        
+        if(enFace && gp.keyHandler.xPressed){
             gp.gameState = gp.dialogueState;
             gp.npc[npcIndex].speak();
         }

@@ -114,6 +114,8 @@ public class CollisionChecker {
         }
     }
 
+
+
     public Vector<Integer> checkObject(Entity entity, boolean player){ //We add player to be able to seperate player from the other entities like NPC's and monsters
 
         Vector<Integer> index = new Vector<Integer>();
@@ -206,6 +208,8 @@ public class CollisionChecker {
         }
         return index;
     }
+
+
 
     public Vector<Integer> checkEntity(Entity entity, Entity[] target){
         Vector<Integer> index = new Vector<Integer>();
@@ -305,6 +309,8 @@ public class CollisionChecker {
         return index;
     }
 
+
+    
     public void checkPlayer(Entity entity){
 
         boolean[] isGoingToDirection = {false, false, false, false};

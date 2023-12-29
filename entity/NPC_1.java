@@ -65,8 +65,9 @@ public class NPC_1 extends Entity{
 
         if(dialogues[dialogueIndex] != null){
             gp.ui.currentDialogue = dialogues[dialogueIndex];
+            actionCounter = 60;
             dialogueIndex++;
-            if(dialogueIndex >= dialogues.length) dialogueIndex = 0;
+            if(dialogueIndex >= 5 /*dialogues.length*/) dialogueIndex = 0;
             FacePlayer();
             //gp.player.npcIndex = 0;
         }

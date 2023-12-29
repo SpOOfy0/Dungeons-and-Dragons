@@ -25,7 +25,7 @@ public class Entity {
     public int attackSpeed = 30;
     public int attackDelay = 0;
 
-    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);   // Est utilisé pour la position et pour toute interaction "subie"
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;   // L'entité est affecté par les collisions ou pas?
     public boolean blockedUp;
@@ -35,7 +35,7 @@ public class Entity {
     public boolean isBlocked;       // Permet de dire si l'Entité bouge dans un direction et se fait blocker dans cette même direction
 
 
-    public Rectangle interactionArea = new Rectangle(-1, -1, 50, 50);
+    public Rectangle interactionArea = new Rectangle(-1, -1, 50, 50);   // Est utilisé pour toute interaction "initiée"
     public int interactionAreaDefaultX, interactionAreaDefaultY;
     public boolean interactUp = false;
     public boolean interactDown = false;
