@@ -24,11 +24,11 @@ public class Monster extends Entity{
 
         if(Math.abs(gp.player.worldX - worldX) <= 3*gp.tileSize && Math.abs(gp.player.worldY - worldY) <= 3*gp.tileSize) {
             GoToPlayer(gp.player);
-            actionCounter = 0;
+            actionCounter = 120;
         } else {
             actionCounter++;
 
-            if(actionCounter == 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
+            if(actionCounter >= 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
                 Random random = new Random();
                 int i = random.nextInt(100)+1;
 

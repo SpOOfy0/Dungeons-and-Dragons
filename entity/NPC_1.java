@@ -5,8 +5,6 @@ import java.util.Random;
 import main.GamePannel;
 
 public class NPC_1 extends Entity{
-
-    // int stop = 0;
     
     public NPC_1(GamePannel gp){
 
@@ -68,15 +66,10 @@ public class NPC_1 extends Entity{
         if(dialogues[dialogueIndex] != null){
             gp.ui.currentDialogue = dialogues[dialogueIndex];
             dialogueIndex++;
+            if(dialogueIndex >= dialogues.length) dialogueIndex = 0;
             FacePlayer();
-            //stop = 1;
             //gp.player.npcIndex = 0;
         }
-
-        // else{
-        //     stop = 0;
-        //     dialogueIndex = 0;
-        // }
     
     }
 

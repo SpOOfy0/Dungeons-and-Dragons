@@ -145,7 +145,7 @@ public class Player extends Entity {
         if(keyHandler.leftPressed && blockedLeft) worldX += speed;
         else if(keyHandler.rightPressed && blockedRight) worldX -= speed;
 
-        if(spriteCounter <= 12) spriteCounter++;
+        if(spriteCounter < 12) spriteCounter++;
         else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
             if (spriteNum == 1) spriteNum = 2;
             else spriteNum = 1;
