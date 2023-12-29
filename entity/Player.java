@@ -44,7 +44,7 @@ public class Player extends Entity {
         screenX = gp.screenWidth/2 - gp.tileSize/2;
         screenY = gp.screenHeight/2 - gp.tileSize/2;
 
-        solidArea = new Rectangle(8, 24, 16, 12);
+        solidArea = new Rectangle(15, 24, 16, 12);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         setDefaultValues();
@@ -116,7 +116,7 @@ public class Player extends Entity {
 
         
         //CHECK TILE COLLISION
-        collisionOn = false;
+        isBlocked = false;
         blockedUp = false;
         blockedDown = false;
         blockedLeft = false;
@@ -138,8 +138,6 @@ public class Player extends Entity {
         for(int i = 0; i < monsterIndexes.size(); i++)
             interactMonster(monsterIndexes.get(i));
 
-
-        System.out.println(blockedUp + " " + blockedLeft + " " + blockedDown + " " + blockedRight);
 
         //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
         if(keyHandler.upPressed && blockedUp) worldY += speed;

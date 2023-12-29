@@ -28,11 +28,11 @@ public class Entity {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;   // L'entité est affecté par les collisions ou pas?
-    public boolean collisionOn;     // L'entité est-elle bloquée dans son mouvement? (ne servira plus pour les interaction)
     public boolean blockedUp;
-    public boolean blockedDown;
-    public boolean blockedLeft;
-    public boolean blockedRight;  // L'entité est bloquée dans la direction correspondante
+    public boolean blockedDown;     // Si l'entité bouge, elle est bloquée dans la direction correspondante,
+    public boolean blockedLeft;     // sinon, ça permet de détecter si l'Entité est proche de qlqchose qui peut la bloquer dans la direction correspondante
+    public boolean blockedRight;    
+    public boolean isBlocked;     // Permet de dire si l'Entité bouge et se fait blocker par l'une des variables "blocked"
 
 
     public Rectangle interactionArea = new Rectangle(0, 0, 48, 48);
@@ -84,7 +84,7 @@ public class Entity {
 
         facing = direction[0];
 
-        collisionOn = false;
+        isBlocked = false;
         blockedUp = false;
         blockedDown = false;
         blockedLeft = false;
