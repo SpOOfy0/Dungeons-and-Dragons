@@ -224,7 +224,6 @@ public class Player extends Entity {
                         //New object
                         inventory.put(objName, 1);
                     }
-                    System.out.println(inventory.get(objName));
                     gp.obj[objIndex] = null;
                     gp.ui.showMessage("You got a heal potion!");
                     break;
