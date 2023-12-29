@@ -3,6 +3,9 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import entity.Abilities.FireBall.FireBall;
 import main.GamePannel;
@@ -31,6 +34,13 @@ public class Player extends Entity {
 
     public int positionXActivityOn;
     public int positionYActivityOn;
+
+    //PLAYER INVENTORY
+    public ArrayList<BufferedImage> inventoryImage = new ArrayList<BufferedImage>();
+    public ArrayList<Integer> inventoryQuantity = new ArrayList<Integer>();
+    public Map<String, Integer> inventory = new HashMap<String, Integer>();
+
+    public int index = 0;
 
 
   
@@ -154,22 +164,139 @@ public class Player extends Entity {
         }
     }
     
-    public void pickUpObject(int objIndex){
+    //ArrayList version
+    /*public void pickUpObject(int objIndex){
         
         if(objIndex != 999){
-
+            
             String objectName = gp.obj[objIndex].name;
+            BufferedImage objectImage = gp.obj[objIndex].image;
+            int index = indexOfImage(objectImage);
             
             switch(objectName){
                 case "healPotion":
-                    healPotion++;
-                    life += 1; //Create a method for that 
+                    if(index == -1){
+                        System.out.println("New item");
+                        inventoryImage.add(objectImage);
+                        inventoryQuantity.add(1);
+                    }
+                    else{
+                        System.out.println("Item already in inventory");
+                        inventoryQuantity.set(index, inventoryQuantity.get(index) + 1);
+                    }
+                    gp.obj[objIndex] = null;
+                    gp.ui.showMessage("You got a heal potion!");
+                    break;
+                    // healPotion++;
+                    // life += 1; //Create a method for that 
+                    // gp.obj[objIndex] = null;
+                    // gp.ui.showMessage("You got a heal potion!");
+                    // break;
+            }
+        }
+    }*/
+
+    /*private int indexOfImage(BufferedImage image) {
+        for (int i = 0; i < inventoryImage.size(); i++) {
+            System.out.println("loop");
+            //the conditon in the if statement is always false
+            if (inventoryImage.get(i).equals(image)) {
+                System.out.println("found");
+                return i;
+            }
+        }
+        return -1;  // Retourne -1 si l'image n'est pas trouvée
+    }*/
+
+    public void pickUpObject(int objIndex){
+        
+        if(objIndex != 999){
+            
+            String objName = gp.obj[objIndex].name;
+
+            
+            switch(objName){
+                case "healPotion":
+                    if (inventory.containsKey(objName)) {
+                        //Existing object
+                        inventory.put(objName, inventory.get(objName) + 1);
+                    } else {
+                        //New object
+                        inventory.put(objName, 1);
+                    }
+                    System.out.println(inventory.get(objName));
                     gp.obj[objIndex] = null;
                     gp.ui.showMessage("You got a heal potion!");
                     break;
             }
+                    
+            }
+    }
+
+    public void selectOPbject(int x ,int y, int width, int height){
+        
+        if (gp.keyHandler.leftPressed){
+            if (index == 0){
+                index = 29;
+            }
+            else{
+                index --;
+            }
+            gp.keyHandler.leftPressed = false; 
+        }
+        else if (gp.keyHandler.rightPressed){
+            if (index == 29){
+                index = 0;
+            }
+            else{
+                index ++;
+            }
+            gp.keyHandler.rightPressed = false;
+        }
+        else if (gp.keyHandler.upPressed){
+            if (index < 5){
+                index += 25;
+            }
+            else{
+                index -= 5;
+            }
+            gp.keyHandler.upPressed = false;
+        }
+        else if (gp.keyHandler.downPressed){
+            if (index > 24){
+                index -= 25;
+            }
+            else{
+                index += 5;
+            }
+            gp.keyHandler.downPressed = false;
         }
     }
+
+    public void useObject(int index){
+        if (gp.keyHandler.enterPressed == true){
+            gp.keyHandler.enterPressed = false;
+            // Get the name of the object at the index position
+            if (index < inventory.size()){
+                String objName = inventory.keySet().toArray(new String[0])[index];
+                switch(objName){
+                    case "healPotion":
+                        if(life < maxLife){
+                            life += 1;
+                            inventory.put(objName, inventory.get(objName) - 1);
+                            if(inventory.get(objName) == 0){
+                                inventory.remove(objName);
+                            }
+                        }
+                        break;
+                }
+            }
+        
+        }
+    }
+
+
+    
 
     public void interactNPC(int npcIndex){
         

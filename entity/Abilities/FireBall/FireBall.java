@@ -21,6 +21,7 @@ public class FireBall extends Ability implements AbilityInterface {
         down1 = getImage("/Player/Ability/FireBall/Down.png");
         left1 = getImage("/Player/Ability/FireBall/Left.png");
         right1 = getImage("/Player/Ability/FireBall/Right.png");
+        
     }
 
     @Override

@@ -22,6 +22,15 @@ public class ClassSetter {
         gp.obj[1] = new OBJ_healPotion(gp);
         gp.obj[1].worldX = 14 * gp.tileSize;
         gp.obj[1].worldY = 35 * gp.tileSize;
+
+        gp.obj[2] = new OBJ_healPotion(gp);
+        gp.obj[2].worldX = 14 * gp.tileSize;
+        gp.obj[2].worldY = 36 * gp.tileSize;
+
+        gp.obj[3] = new OBJ_healPotion(gp);
+        gp.obj[3].worldX = 14 * gp.tileSize;
+        gp.obj[3].worldY = 37 * gp.tileSize;
+        
     }
 
     public void setNPC() {
@@ -36,14 +45,24 @@ public class ClassSetter {
         gp.monster[0].worldY = 20 * gp.tileSize;
 
         //More monsters
-        
-        /*gp.monster[1] = new Orc(gp);
-        gp.monster[1].worldX = 14 * gp.tileSize;
-        gp.monster[1].worldY = 23 * gp.tileSize;*/
 
-        /*gp.monster[2] = new Orc(gp);
+        gp.monster[1] = new Orc(gp);
+        gp.monster[1].worldX = 14 * gp.tileSize;
+        gp.monster[1].worldY = 23 * gp.tileSize;
+
+        gp.monster[2] = new Orc(gp);
         gp.monster[2].worldX = 10 * gp.tileSize;
-        gp.monster[2].worldY = 20 * gp.tileSize;*/
+        gp.monster[2].worldY = 20 * gp.tileSize;
 
     }
+    
+    /*public void spwanMonster(int worldX, int worldY){
+        for(int i = 0; i < gp.monster.length; i++){
+            if(gp.monster[i] != null){
+                gp.monster[i] = new Orc(gp);
+                gp.monster[i].worldX = worldX * gp.tileSize;
+                gp.monster[i].worldY = worldY * gp.tileSize;
+            }
+        }
+    }*/
 }

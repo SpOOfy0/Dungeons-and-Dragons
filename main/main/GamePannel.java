@@ -11,6 +11,7 @@ import entity.Player;
 import entity.Monsters.Monster;
 import entity.Abilities.Ability;
 import entity.Abilities.FireBall.FireBall;
+import object.OBJ_healPotion;
 import object.SuperObject;
 import tile.TileManager;
 
@@ -34,6 +35,7 @@ public class GamePannel extends JPanel implements Runnable {
     public final int worldHight = tileSize * maxWorldRow; //800 pixels
 
     public int FPS = 60;
+    public int index = 0;
 
     Thread  gameThread;
 
@@ -43,6 +45,7 @@ public class GamePannel extends JPanel implements Runnable {
     public CollisionChecker collisionChecker = new CollisionChecker(this);
     public ClassSetter objSetter = new ClassSetter(this);
     public Player player = Player.getInstance(this, keyHandler);
+    public SuperObject healPotion = new OBJ_healPotion(this);
     public SuperObject obj[] = new SuperObject[10];
     public Entity npc[] = new Entity[10];
     public Monster monster[] = new Monster[20];
@@ -56,6 +59,7 @@ public class GamePannel extends JPanel implements Runnable {
     public int playState = 1;
     public int pauseState = 2;
     public int dialogueState = 3;
+    public int inventoryState = 4;
     
 
 
@@ -73,7 +77,6 @@ public class GamePannel extends JPanel implements Runnable {
         objSetter.setObject();
         objSetter.setNPC();
         objSetter.setMonster();
-        //objSetter.setAbility();
         gameState = playState;
     }
 
@@ -134,11 +137,6 @@ public class GamePannel extends JPanel implements Runnable {
                     monster[i].update();
                 }
             }
-            /*for(int i = 0; i < ability.length; i++){
-                if(ability[i] != null){
-                    ability[i].update();
-                }
-            }*/
             if(ability != null){
                 ability.update();
             }

@@ -26,7 +26,6 @@ public class UI {
 
     public String currentDialogue = "";
 
-
     double timer = 0;
     DecimalFormat df = new DecimalFormat("#0.00");
 
@@ -70,6 +69,20 @@ public class UI {
         messageOn = true;
     
     }
+
+        public void drawMessage(){
+            if(messageOn == true ){
+                g2.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2.setColor(Color.white);
+                g2.drawString(message, gp.screenWidth / 2 - gp.tileSize * 2 , gp.screenHight / 4 - gp.tileSize);
+                messageCounter++;
+            
+                if(messageCounter > 100){
+                    messageOn = false;
+                    messageCounter = 0;
+                }   
+            }
+        }
 
     /*public void draw(Graphics2D g2) {
 
@@ -176,36 +189,107 @@ public class UI {
         
     }
 
-    public void draw(Graphics2D g2){
+    public void drawInventory() {
+        int startX = gp.screenWidth / 2 + gp.tileSize;
+        int startY = gp.screenHight / 2 - gp.tileSize * 4;
+        int itemsPerRow = 5;
+        int spacing = 10;
+    
+        // Taille d'une case
+        int cellSize = gp.tileSize + spacing;
+    
+        // Parcourir les emplacements de l'inventaire
+        int itemIndex = 0;
+        for (int i = 0; i < 30; i++) {
+            int row = itemIndex / itemsPerRow;
+            int col = itemIndex % itemsPerRow;
+    
+            // Calculez la position de l'objet dans la grille
+            int x = startX + col * cellSize;
+            int y = startY + row * cellSize;
+    
+            // Dessinez la case colorée
+            g2.setColor(new Color(100, 100, 100));
+            g2.fillRect(x, y, gp.tileSize, gp.tileSize);
+            
+            if (gp.player.index == i){
+                gp.player.selectOPbject(x, y,gp.tileSize, gp.tileSize);
+                gp.player.useObject(i);
+                colorBorder(x, y, gp.tileSize, gp.tileSize);
+            }
+            // Si l'inventaire contient un objet à cet emplacement, dessinez-le
+            if (itemIndex < gp.player.inventory.size()) {
+                String objName = gp.player.inventory.keySet().toArray(new String[0])[itemIndex];
+    
+                switch (objName) {
+                    case "healPotion":
+                        BufferedImage image = gp.healPotion.image;
+                        int count = gp.player.inventory.get(objName);
+                        String Count = String.valueOf(count);
+                        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+                        //Add count
+                        g2.setFont(new Font("Arial", Font.PLAIN, gp.tileSize / 4));
+                        g2.setColor(Color.white);
+                        g2.drawString(Count, x + 5, y + 15);
+                        break;
+    
+                    // Add other cases for objName
+    
+                    default:
+                        break;
+                }
+            }
+    
+            // Incrémentez l'index d'emplacement
+            itemIndex++;
+        }
+    }
 
+    public void colorBorder(int x ,int y, int width, int height){
+        g2.setColor(Color.BLACK);
+        g2.drawRect(x, y, width, height);
+    }
+
+
+    public void pressObject(){}
+    
+    // Modifier la méthode draw pour appeler drawInventory
+    public void draw(Graphics2D g2) {
         this.g2 = g2;
 
         g2.setFont(arial_40);
         g2.setColor(Color.white);
 
-        //PLAY STATE
-        if(gp.gameState == gp.playState){
+        // PLAY STATE
+        if (gp.gameState == gp.playState) {
             drawPlayerLife();
+            drawMessage();
         }
 
-        //PAUSE STATE
-        if(gp.gameState == gp.pauseState){
+        // PAUSE STATE
+        if (gp.gameState == gp.pauseState) {
             drawPlayerLife();
             drawPauseScreen();
         }
 
-        //DIALOGUE STATE
-        if(gp.gameState == gp.dialogueState){
+        // DIALOGUE STATE
+        if (gp.gameState == gp.dialogueState) {
             drawPlayerLife();
             drawDialogueScreen();
         }
 
-        
-
-
+        // INVENTORY STATE
+        if (gp.gameState == gp.inventoryState) {
+            drawPlayerLife();
+            drawInventory(); // Appeler la nouvelle méthode drawInventory
+            
+        }
     }
+
 
    
 
     
 }
+
+
