@@ -74,7 +74,7 @@ public class UI {
             if(messageOn == true ){
                 g2.setFont(new Font("Arial", Font.PLAIN, 20));
                 g2.setColor(Color.white);
-                g2.drawString(message, gp.screenWidth / 2 - gp.tileSize * 2 , gp.screenHight / 4 - gp.tileSize);
+                g2.drawString(message, gp.screenWidth / 2 - gp.tileSize * 2 , gp.screenHeight / 4 - gp.tileSize);
                 messageCounter++;
             
                 if(messageCounter > 100){
@@ -191,7 +191,7 @@ public class UI {
 
     public void drawInventory() {
         int startX = gp.screenWidth / 2 + gp.tileSize;
-        int startY = gp.screenHight / 2 - gp.tileSize * 4;
+        int startY = gp.screenHeight / 2 - gp.tileSize * 4;
         int itemsPerRow = 5;
         int spacing = 10;
     
