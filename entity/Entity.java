@@ -17,6 +17,7 @@ public class Entity {
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String facing;       // direction dans laquelle l'entité regarde
     public String[] direction = new String[2]; // pour les entités qui peuvent se déplacer en diagonale [0: axe vertical; 1: axe horizontal]
+    public String bufferDirection;
 
     public int spriteCounter = 0;
     public int spriteNum = 1;
@@ -149,28 +150,20 @@ public class Entity {
             
                 switch(facing){
                     case "up":
-                        if (spriteNum == 1)
-                            image = up1;
-                        if (spriteNum == 2)
-                            image = up2;
+                        if (spriteNum == 1) image = up1;
+                        else if (spriteNum == 2) image = up2;
                         break;
                     case "down":
-                        if (spriteNum == 1)
-                            image = down1;
-                        if (spriteNum == 2)
-                            image = down2;
+                        if (spriteNum == 1) image = down1;
+                        else if (spriteNum == 2) image = down2;
                         break;
                     case "left":
-                        if (spriteNum == 1)
-                            image = left1;
-                        if (spriteNum == 2)
-                            image = left2;
+                        if (spriteNum == 1) image = left1;
+                        else if (spriteNum == 2) image = left2;
                         break;
                     case "right":
-                        if (spriteNum == 1)
-                            image = right1;
-                        if (spriteNum == 2)
-                            image = right2;
+                        if (spriteNum == 1) image = right1;
+                        else if (spriteNum == 2) image = right2;
                         break;                              
                 }
                 

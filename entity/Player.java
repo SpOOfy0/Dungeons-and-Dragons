@@ -29,6 +29,7 @@ public class Player extends Entity {
     //INDEX OF THE OBJECT THAT THE PLAYER IS CURRENTLY COLLIDING WITH
     public Vector<Integer> objIndexes;
     public Vector<Integer> npcIndexes;
+    public int npcIndex;
     public Vector<Integer> monsterIndexes;
 
     public int ballOn = 0;
@@ -143,8 +144,12 @@ public class Player extends Entity {
 
         //CHECK NPC COLLISION
         npcIndexes = gp.collisionChecker.checkEntity(this, gp.npc); //Entities' index will be registered in the vector only if there is "collision"
-        for(int i = 0; i < npcIndexes.size(); i++)                  //"collision" in this case is to have the player's "solidArea" is intersecting with that of thde entity's
-            interactNPC(npcIndexes.get(i));
+                                                                    //"collision" in this case is to have the player's "solidArea" is intersecting with that of thde entity's
+        // for(int i = 0; i < npcIndexes.size(); i++)
+        //     interactNPC(npcIndexes.get(i));
+
+        npcIndex = gp.interactionChecker.interactPossible(this, gp.npc);
+        interactNPC(npcIndex);
 
         //CHECK MONSTER COLLISION
         monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
@@ -282,13 +287,7 @@ public class Player extends Entity {
 
     public void interactNPC(int npcIndex){
         
-        boolean enFace =   ((facing == "down") && blockedDown && gp.npc[npcIndex].blockedUp) ||
-                           ((facing == "right") && blockedRight && gp.npc[npcIndex].blockedLeft) ||
-                           ((facing == "up") && blockedUp && gp.npc[npcIndex].blockedDown) ||
-                           ((facing == "left") && blockedLeft && gp.npc[npcIndex].blockedRight);
-        
-        if(enFace && gp.keyHandler.xPressed){
-            gp.gameState = gp.dialogueState;
+        if(npcIndex != 999 && gp.keyHandler.xPressed){
             gp.npc[npcIndex].speak();
         }
         gp.keyHandler.xPressed = false;

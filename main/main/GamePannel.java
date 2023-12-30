@@ -43,6 +43,7 @@ public class GamePannel extends JPanel implements Runnable {
     public TileManager tileM = new TileManager(this);
     public KeyHandler keyHandler = new KeyHandler(this);
     public CollisionChecker collisionChecker = new CollisionChecker(this);
+    public InteractionChecker interactionChecker = new InteractionChecker(this);
     public ClassSetter objSetter = new ClassSetter(this);
     public Player player = Player.getInstance(this, keyHandler);
     public SuperObject healPotion = new OBJ_healPotion(this);

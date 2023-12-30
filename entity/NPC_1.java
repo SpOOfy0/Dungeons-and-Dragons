@@ -12,6 +12,7 @@ public class NPC_1 extends Entity{
 
         direction[0] = "down";
         direction[1] = null;
+        bufferDirection = null;
         speed = 1;
 
         getThisNPCImage();
@@ -33,7 +34,12 @@ public class NPC_1 extends Entity{
     public void setAction(){
 
         actionCounter++;
-        if(actionCounter >= 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
+        
+        if(gp.gameState == gp.playState && bufferDirection != null){
+            direction[0] = bufferDirection;
+            bufferDirection = null;
+
+        } else if(actionCounter >= 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
             Random random = new Random();
             int i = random.nextInt(100);
 
@@ -64,11 +70,12 @@ public class NPC_1 extends Entity{
     public void speak(){
 
         if(dialogues[dialogueIndex] != null){
+            bufferDirection = direction[0];
             gp.ui.currentDialogue = dialogues[dialogueIndex];
-            actionCounter = 60;
             dialogueIndex++;
             if(dialogueIndex >= 5 /*dialogues.length*/) dialogueIndex = 0;
             FacePlayer();
+            gp.gameState = gp.dialogueState;
             //gp.player.npcIndex = 0;
         }
     
