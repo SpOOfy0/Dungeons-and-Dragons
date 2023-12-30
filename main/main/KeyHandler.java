@@ -68,7 +68,17 @@ public class KeyHandler implements ActionListener, KeyListener{
 
         else if(gp.gameState == gp.pauseState){
             switch (keyCode) {
+                case KeyEvent.VK_SPACE:
                 case KeyEvent.VK_P:
+                    gp.gameState = gp.playState;
+                    break;
+            }
+        }
+
+        else if(gp.gameState == gp.dialogueState){
+            switch (keyCode) {
+                case KeyEvent.VK_SPACE:
+                case KeyEvent.VK_X:
                     gp.gameState = gp.playState;
                     break;
             }
@@ -76,6 +86,7 @@ public class KeyHandler implements ActionListener, KeyListener{
 
         else if(gp.gameState == gp.inventoryState){
             switch (keyCode) {
+                case KeyEvent.VK_SPACE:
                 case KeyEvent.VK_B:
                     gp.gameState = gp.playState;
                     break;
