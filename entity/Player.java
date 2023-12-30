@@ -28,7 +28,7 @@ public class Player extends Entity {
 
     //INDEX OF THE OBJECT THAT THE PLAYER IS CURRENTLY COLLIDING WITH
     public Vector<Integer> objIndexes;
-    public Vector<Integer> npcIndexes;
+    //public Vector<Integer> npcIndexes;
     public int npcIndex;
     public Vector<Integer> monsterIndexes;
 
@@ -143,7 +143,7 @@ public class Player extends Entity {
             pickUpObject(objIndexes.get(i));
 
         //CHECK NPC COLLISION
-        npcIndexes = gp.collisionChecker.checkEntity(this, gp.npc); //Entities' index will be registered in the vector only if there is "collision"
+        gp.collisionChecker.checkEntity(this, gp.npc); //Entities' index will be registered in the vector only if there is "collision"
                                                                     //"collision" in this case is to have the player's "solidArea" is intersecting with that of thde entity's
         // for(int i = 0; i < npcIndexes.size(); i++)
         //     interactNPC(npcIndexes.get(i));
