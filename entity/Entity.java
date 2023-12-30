@@ -21,7 +21,6 @@ public class Entity {
     public int spriteCounter = 0;
     public int spriteNum = 1;
     public int actionCounter = 0;
-    public int monsterDommageCounter = 0;
     public int attackSpeed = 30;
     public int attackDelay = 0;
 

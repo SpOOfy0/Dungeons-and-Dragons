@@ -97,6 +97,9 @@ public class Player extends Entity {
     }
 
     public void update(){
+
+        if(attackDelay < attackSpeed) attackDelay++;
+        fireAttaque();
         
         direction[0] = null;
 
@@ -212,7 +215,6 @@ public class Player extends Entity {
         if(objIndex != 999){
             
             String objName = gp.obj[objIndex].name;
-
             
             switch(objName){
                 case "healPotion":
@@ -234,62 +236,45 @@ public class Player extends Entity {
     public void selectOPbject(int x ,int y, int width, int height){
         
         if (gp.keyHandler.leftPressed){
-            if (index == 0){
-                index = 29;
-            }
-            else{
-                index --;
-            }
+            if (index == 0) index = 29;
+            else index --;
             gp.keyHandler.leftPressed = false; 
         }
         else if (gp.keyHandler.rightPressed){
-            if (index == 29){
-                index = 0;
-            }
-            else{
-                index ++;
-            }
+            if (index == 29) index = 0;
+            else index ++;
             gp.keyHandler.rightPressed = false;
         }
         else if (gp.keyHandler.upPressed){
-            if (index < 5){
-                index += 25;
-            }
-            else{
-                index -= 5;
-            }
+            if (index < 5) index += 25;
+            else index -= 5;
             gp.keyHandler.upPressed = false;
         }
         else if (gp.keyHandler.downPressed){
-            if (index > 24){
-                index -= 25;
-            }
-            else{
-                index += 5;
-            }
+            if (index > 24) index -= 25;
+            else index += 5;
             gp.keyHandler.downPressed = false;
         }
     }
 
     public void useObject(int index){
-        if (gp.keyHandler.enterPressed == true){
+        if (gp.keyHandler.enterPressed){
             gp.keyHandler.enterPressed = false;
+
             // Get the name of the object at the index position
             if (index < inventory.size()){
+
                 String objName = inventory.keySet().toArray(new String[0])[index];
                 switch(objName){
                     case "healPotion":
                         if(life < maxLife){
                             life += 1;
                             inventory.put(objName, inventory.get(objName) - 1);
-                            if(inventory.get(objName) == 0){
-                                inventory.remove(objName);
-                            }
+                            if(inventory.get(objName) == 0) inventory.remove(objName);
                         }
                         break;
                 }
             }
-        
         }
     }
 
@@ -309,10 +294,10 @@ public class Player extends Entity {
         gp.keyHandler.xPressed = false;
     }
 
-    public void swordAttaque(int monsterIndex){
+    public void baseAttack(int monsterIndex){
 
-        if(gp.keyHandler.sPressed && attackDelay > attackSpeed){
-            gp.monster[monsterIndex].life -= 1;
+        if(gp.keyHandler.sPressed && attackDelay >= attackSpeed){
+            gp.monster[monsterIndex].receiveDmg(1);
             gp.keyHandler.sPressed = false;
 
             attackDelay = 0;
@@ -321,9 +306,9 @@ public class Player extends Entity {
         }
     }
 
-    public int fireAttaque(int monsterIndex){
+    public int fireAttaque(){
 
-        if(gp.keyHandler.dPressed && attackDelay > attackSpeed && ballOn == 0){
+        if(gp.keyHandler.dPressed && attackDelay >= attackSpeed && ballOn == 0){
             gp.fireBall = new FireBall(gp);
             gp.ability = gp.fireBall;
             gp.keyHandler.dPressed = false;
@@ -335,27 +320,23 @@ public class Player extends Entity {
         return ballOn;
     }
 
-    public int abilityDommage(int Index){
+    // public int abilityDommage(int Index){
 
-        if(Index != 999 && ballOn == 1){
-            gp.monster[Index].life -= 1;
-            gp.ability = null;
-            ballOn = 0;
-        }
-        return ballOn;
-    }
+    //     if(Index != 999 && ballOn == 1){
+    //         gp.monster[Index].life -= 1;
+    //         gp.ability = null;
+    //         ballOn = 0;
+    //     }
+    //     return ballOn;
+    // }
     
     public void interactMonster(int monsterIndex){
 
-        swordAttaque(monsterIndex);
-        fireAttaque(monsterIndex);
-        if(gp.ability != null) abilityDommage(gp.ability.abilityCollisionIndex);
-        monsterDommageCounter++;
-        attackDelay++;
-        
-        if(monsterDommageCounter > 30){
+        baseAttack(monsterIndex);
+        // if(gp.ability != null) abilityDommage(gp.ability.abilityCollisionIndex);
+
+        if(gp.monster[monsterIndex].attackDelay >= gp.monster[monsterIndex].attackSpeed){
             gp.monster[monsterIndex].attackPlayer();
-            monsterDommageCounter = 0;
         }
     }
     

@@ -35,15 +35,15 @@ public class NPC_1 extends Entity{
         actionCounter++;
         if(actionCounter >= 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
             Random random = new Random();
-            int i = random.nextInt(100)+1;
+            int i = random.nextInt(100);
 
-            if(i <= 25){
+            if(i < 25){
                 direction[0] = "up";
-            } else if(i <= 50){
+            } else if(i < 50){
                 direction[0] = "down";
-            } else if(i <= 75){
+            } else if(i < 75){
                 direction[0] = "left";
-            } else if(i <= 100){
+            } else if(i < 100){
                 direction[0] = "right";
             }
             actionCounter = 0;

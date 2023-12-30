@@ -8,13 +8,15 @@ import java.awt.image.BufferedImage;
 
 public class Ability extends Entity{
 
-    protected static String ballDirection = "none";
+    //protected static String direction[0] = null;
 
     public boolean abilityCollision = false;
     public int abilityCollisionIndex = 999;
 
+    public int dmg;
+
     protected int range;
-    protected int remaningDistance;
+    protected int distanceTraveled;
     int rangeChecked = 0;
     
     public Ability(GamePannel gp) {
@@ -24,54 +26,77 @@ public class Ability extends Entity{
 
     public void update() {
         if (gp.player.ballOn == 1) {
-            if (ballDirection == "none") {
-                ballDirection = gp.player.facing;
+            if (direction[0] == null) {
+                direction[0] = gp.player.facing;
                 facing = gp.player.facing;
                 worldX = gp.player.worldX;
                 worldY = gp.player.worldY;
             }
-            else if(ballDirection == "up"){
-                worldY = worldY - speed;
-                ballDirection = "up";
-            }
-            else if(ballDirection == "down"){
-                worldY = worldY + speed;
-                ballDirection = "down";           
-            }
-            else if(ballDirection == "left"){
-                worldX = worldX - speed;
-                ballDirection = "left";
-            }
-            else if(ballDirection == "right"){
-                worldX = worldX + speed;
-                ballDirection = "right";
- 
-            }
-            solidArea.x = worldX;
-            solidArea.y = worldY; 
+            else if(direction[0] == "up") worldY = worldY - speed;
+            else if(direction[0] == "down") worldY = worldY + speed;
+            else if(direction[0] == "left") worldX = worldX - speed;
+            else if(direction[0] == "right") worldX = worldX + speed;
+            
             abilityCollisionIndex = monsterCollision();
+            if(abilityCollision){
+                gp.monster[abilityCollisionIndex].receiveDmg(dmg);
+            }
             rangeAbility();
             
         }
-        }
+    }
              
     public int monsterCollision() {
         for(int i = 0; i < gp.monster.length; i++){
+            abilityCollision = false;
             if (gp.monster[i] != null){
 
-                for (int j = 0 ; j < 30; j++){
+                //Qu'est ce que c'est que ça?
+                // for (int j = 0 ; j < 30; j++){
+                //     for (int k = 0 ; k < 30; k++){
+                //         if ((gp.monster[i].worldX + j == worldX && gp.monster[i].worldY + k == worldY) ||
+                //             (gp.monster[i].worldX - j == worldX && gp.monster[i].worldY - k == worldY)) {
+                //             //Collision detected
+                //             abilityCollision = true;
+                //             direction[0] = null;
+                //             return i;
+                //         }
+                //     }
+                // }
 
-                    for (int k = 0 ; k < 30; k++){
-                        
-                        if (gp.monster[i].worldX + j == worldX && gp.monster[i].worldY + k == worldY || gp.monster[i].worldX - j == worldX && gp.monster[i].worldY - k == worldY) {
-                                //Collision detected
-                                abilityCollision = true;
-                                ballDirection = "none";
-                                return i;
-                        }
-                        
-                    }
+                //C'est mieux, mais peut mieux faire
+                // if (gp.monster[i].worldX - 30 <= worldX && worldX <= gp.monster[i].worldX + 30 &&
+                //     gp.monster[i].worldY - 30 <= worldY && worldY <= gp.monster[i].worldY + 30) {
+                //     //Collision detected
+                //     abilityCollision = true;
+                //     direction[0] = null;
+                //     return i;
+                // }
+
+                //C'est bon
+                solidArea.x += worldX;
+                solidArea.y += worldY;
+                gp.monster[i].solidArea.x += gp.monster[i].worldX;
+                gp.monster[i].solidArea.y += gp.monster[i].worldY;
+
+                if (solidArea.intersects(gp.monster[i].solidArea)){
+                    abilityCollision = true;
+                    direction[0] = null;
+                    gp.player.ballOn = 0;
+                    gp.ability = null;
+
+                    solidArea.x = solidAreaDefaultX;
+                    solidArea.y = solidAreaDefaultY;
+                    gp.monster[i].solidArea.x = gp.monster[i].solidAreaDefaultX;
+                    gp.monster[i].solidArea.y = gp.monster[i].solidAreaDefaultY;
+
+                    return i;
                 }
+
+                solidArea.x = solidAreaDefaultX;
+                solidArea.y = solidAreaDefaultY;
+                gp.monster[i].solidArea.x = gp.monster[i].solidAreaDefaultX;
+                gp.monster[i].solidArea.y = gp.monster[i].solidAreaDefaultY;
             }
         }
         return 999;        
@@ -80,18 +105,18 @@ public class Ability extends Entity{
     public void rangeAbility(){
         if(gp.ability != null){
             
-            if((ballDirection == "up" || ballDirection == "down")){
-                remaningDistance = Math.abs(worldY - gp.player.positionYActivityOn);
+            if(direction[0] == "up" || direction[0] == "down"){
+                distanceTraveled = Math.abs(worldY - gp.player.positionYActivityOn);
                 rangeChecked = 1;
             }
-            else if((ballDirection == "left" || ballDirection == "right")){
-                remaningDistance = Math.abs(worldX - gp.player.positionXActivityOn);
+            else if(direction[0] == "left" || direction[0] == "right"){
+                distanceTraveled = Math.abs(worldX - gp.player.positionXActivityOn);
                 rangeChecked = 1;
             }
-            if(remaningDistance >= range*gp.tileSize){
+            if(distanceTraveled >= range*gp.tileSize){
                 gp.player.ballOn = 0;
-                ballDirection = "none";
-                gp.ability = null;       
+                direction[0] = null;
+                gp.ability = null;
             }
         }
 
@@ -108,7 +133,7 @@ public class Ability extends Entity{
         worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
         worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { 
         
-                switch(ballDirection){
+                switch(direction[0]){
                     case "up":
                         image = up1;
                         break;

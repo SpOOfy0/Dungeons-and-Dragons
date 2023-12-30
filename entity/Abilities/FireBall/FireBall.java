@@ -8,7 +8,7 @@ public class FireBall extends Ability implements AbilityInterface {
 
     public FireBall(GamePannel gp) {
         super(gp);
-        getTihsAbilityImage();
+        getThisAbilityImage();
         AbilitySetting();
         
     }
@@ -16,7 +16,7 @@ public class FireBall extends Ability implements AbilityInterface {
    
 
     @Override
-    public void getTihsAbilityImage() {
+    public void getThisAbilityImage() {
         up1 = getImage("/Player/Ability/FireBall/Up.png");
         down1 = getImage("/Player/Ability/FireBall/Down.png");
         left1 = getImage("/Player/Ability/FireBall/Left.png");
@@ -26,11 +26,12 @@ public class FireBall extends Ability implements AbilityInterface {
 
     @Override
     public void AbilitySetting() {
+        dmg = 1;
         speed = 4;
         range = 8;  
         worldX = gp.player.worldX ;
         worldY = gp.player.worldY ;
-        direction = gp.player.direction;
+        direction[0] = gp.player.facing;
         
         
     }
