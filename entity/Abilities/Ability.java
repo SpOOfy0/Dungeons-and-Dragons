@@ -51,28 +51,6 @@ public class Ability extends Entity{
             abilityCollision = false;
             if (gp.monster[i] != null){
 
-                //Qu'est ce que c'est que ça?
-                // for (int j = 0 ; j < 30; j++){
-                //     for (int k = 0 ; k < 30; k++){
-                //         if ((gp.monster[i].worldX + j == worldX && gp.monster[i].worldY + k == worldY) ||
-                //             (gp.monster[i].worldX - j == worldX && gp.monster[i].worldY - k == worldY)) {
-                //             //Collision detected
-                //             abilityCollision = true;
-                //             direction[0] = null;
-                //             return i;
-                //         }
-                //     }
-                // }
-
-                //C'est mieux, mais peut mieux faire
-                // if (gp.monster[i].worldX - 30 <= worldX && worldX <= gp.monster[i].worldX + 30 &&
-                //     gp.monster[i].worldY - 30 <= worldY && worldY <= gp.monster[i].worldY + 30) {
-                //     //Collision detected
-                //     abilityCollision = true;
-                //     direction[0] = null;
-                //     return i;
-                // }
-
                 //C'est bon
                 solidArea.x += worldX;
                 solidArea.y += worldY;
