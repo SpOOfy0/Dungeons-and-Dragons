@@ -24,46 +24,39 @@ public class Monster extends Entity{
 
         if(Math.abs(gp.player.worldX - worldX) <= 3*gp.tileSize && Math.abs(gp.player.worldY - worldY) <= 3*gp.tileSize) {
             GoToPlayer(gp.player);
-        }
-        else{
+            actionCounter = 120;
+        } else {
             actionCounter++;
 
-            if(actionCounter == 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
+            if(actionCounter >= 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
                 Random random = new Random();
                 int i = random.nextInt(100)+1;
 
                 if(i <= 25){
-                    direction = "up";
-                }
-                else if(i <= 50){
-                    direction = "down";
-                }
-                else if(i <= 75){
-                    direction = "left";
-                }
-                else if(i <= 100){
-                    direction = "right";
+                    direction[0] = "up";
+                } else if(i <= 50){
+                    direction[0] = "down";
+                } else if(i <= 75){
+                    direction[0] = "left";
+                } else if(i <= 100){
+                    direction[0] = "right";
                 }
                 actionCounter = 0;
+            }
         }
-        }
-    
-     }
+    }
+
 
     public void GoToPlayer(Player player) {
 
-       
             if(player.worldX > worldX) {
-                direction = "right";
-            }
-            else if(player.worldX < worldX) {
-                direction = "left";
-            }
-            else if(player.worldY > worldY) {
-                direction = "down";
-            }
-            else if(player.worldY < worldY) {
-                direction = "up";
+                direction[0] = "right";
+            } else if(player.worldX < worldX) {
+                direction[0] = "left";
+            } else if(player.worldY > worldY) {
+                direction[0] = "down";
+            } else if(player.worldY < worldY) {
+                direction[0] = "up";
             }
         
     }

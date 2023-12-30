@@ -14,8 +14,9 @@ public class Entity {
 
     public int worldX, worldY;
     public int speed;
-    public BufferedImage up1 , up2, down1, down2, left1, left2, right1, right2;
-    public String direction;
+    public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+    public String facing;       // direction dans laquelle l'entité regarde
+    public String[] direction = new String[2]; // pour les entités qui peuvent se déplacer en diagonale [0: axe vertical; 1: axe horizontal]
 
     public int spriteCounter = 0;
     public int spriteNum = 1;
@@ -24,10 +25,23 @@ public class Entity {
     public int attackSpeed = 30;
     public int attackDelay = 0;
 
-    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);   // Est utilisé pour la position et pour toute interaction "subie"
     public int solidAreaDefaultX, solidAreaDefaultY;
-    public boolean collision = false;
-    public boolean collisionOn;
+    public boolean collision = false;   // L'entité est affecté par les collisions ou pas?
+    public boolean blockedUp;
+    public boolean blockedDown;     // Si l'entité bouge, elle est bloquée dans la direction correspondante,
+    public boolean blockedLeft;     // sinon, ça permet de détecter si l'Entité est proche de qlqchose qui peut la bloquer dans la direction correspondante
+    public boolean blockedRight;    
+    public boolean isBlocked;       // Permet de dire si l'Entité bouge dans un direction et se fait blocker dans cette même direction
+
+
+    public Rectangle interactionArea = new Rectangle(-1, -1, 50, 50);   // Est utilisé pour toute interaction "initiée"
+    public int interactionAreaDefaultX, interactionAreaDefaultY;
+    public boolean interactUp = false;
+    public boolean interactDown = false;
+    public boolean interactLeft = false;
+    public boolean interactRight = false;
+    public boolean isInteracting;                   // Non-utilisés pour l'instant
     
 
     public String dialogues[] = new String[15];
@@ -39,6 +53,8 @@ public class Entity {
 
     public Entity(GamePannel gp) {
         this.gp = gp;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
     }
 
     public void setAction(){} 
@@ -53,31 +69,49 @@ public class Entity {
         setAction();
         monsterDead();
 
+        switch(direction[0]){
+            case "up":
+                worldY -= speed;
+                break;
+            case "down":
+                worldY += speed;
+                break;
+            case "left":
+                worldX -= speed;
+                break;
+            case "right":
+                worldX += speed;
+                break;
+        }
 
-        collisionOn = false;
+        facing = direction[0];
+
+        isBlocked = false;
+        blockedUp = false;
+        blockedDown = false;
+        blockedLeft = false;
+        blockedRight = false;
         gp.collisionChecker.checkTile(this);
         //gp.collisionChecker.checkObject(this,false);
         gp.collisionChecker.checkPlayer(this);
 
-        if(collisionOn == false){
-            switch(direction){
-                case "up":
-                    worldY -= speed;
-                    break;
-                case "down":
-                    worldY += speed;
-                    break;
-                case "left":
-                    worldX -= speed;
-                    break;
-                case "right":
-                    worldX += speed;
-                    break;
-            }
+        switch(direction[0]){
+            case "up":
+                if(blockedUp) worldY += speed;
+                break;
+            case "down":
+                if(blockedDown) worldY -= speed;
+                break;
+            case "left":
+                if(blockedLeft) worldX += speed;
+                break;
+            case "right":
+                if(blockedRight) worldX -= speed;
+                break;
         }
 
         spriteCounter++;
-            if(spriteCounter > 12){
+            if(spriteCounter >= 12){
                 if(spriteNum == 1){
                     spriteNum = 2;
                 }
@@ -109,12 +143,12 @@ public class Entity {
         int screenX = worldX - gp.player.worldX + gp.player.screenX ;
         int screenY = worldY - gp.player.worldY + gp.player.screenY ;
 
-        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+        if( worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
             worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
             worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
             worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { 
             
-                switch(direction){
+                switch(facing){
                     case "up":
                         if (spriteNum == 1)
                             image = up1;

@@ -101,26 +101,31 @@ public class KeyHandler implements ActionListener, KeyListener{
     @Override
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        switch (keyCode){
-            case(KeyEvent.VK_LEFT):
+
+        switch(keyCode){
+            case KeyEvent.VK_LEFT:
                 leftPressed = false;
                 break;
-            case(KeyEvent.VK_RIGHT):
+            case KeyEvent.VK_RIGHT:
                 rightPressed = false;
                 break;
-            case(KeyEvent.VK_UP):
+            case KeyEvent.VK_UP:
                 upPressed = false;
                 break;
-            case(KeyEvent.VK_DOWN):
+            case KeyEvent.VK_DOWN:
                 downPressed = false;
                 break;
-            case(KeyEvent.VK_X):
+            case KeyEvent.VK_X:
                 xPressed = false;
                 break;
-            case(KeyEvent.VK_S):
+            case KeyEvent.VK_S:
                 sPressed = false;
                 break;
-        }    
+            case KeyEvent.VK_D:
+                dPressed = false;
+                break;
+        }
+        
     }
 
     /*public static void main(String agrs[]){

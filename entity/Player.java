@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import entity.Abilities.FireBall.FireBall;
 import main.GamePannel;
@@ -26,9 +27,9 @@ public class Player extends Entity {
     public int healPotion = 0;
 
     //INDEX OF THE OBJECT THAT THE PLAYER IS CURRENTLY COLLIDING WITH
-    public int objIndex = 999;
-    public int npcIndex = 999;
-    public int monsterIndex = 999;
+    public Vector<Integer> objIndexes;
+    public Vector<Integer> npcIndexes;
+    public Vector<Integer> monsterIndexes;
 
     public int ballOn = 0;
 
@@ -51,14 +52,13 @@ public class Player extends Entity {
 
         //PLAYER SCREEN POSITION
         screenX = gp.screenWidth/2 - gp.tileSize/2;
-        screenY = gp.screenHight/2 - gp.tileSize/2;
+        screenY = gp.screenHeight/2 - gp.tileSize/2;
 
-        solidArea = new Rectangle(8, 24, 16, 12);
+        solidArea = new Rectangle(15, 24, 16, 12);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         setDefaultValues();
         getPlayerImage();
-        swordAttaque(monsterIndex);
     }
 
     public static Player getInstance(GamePannel gp, KeyHandler keyH) {
@@ -76,7 +76,7 @@ public class Player extends Entity {
         worldX = gp.tileSize * 23; 
         worldY = gp.tileSize * 21; 
         speed = 4;
-        direction = "down";
+        facing = "down";
 
         //PLAYER STATUS
         maxLife = 8;
@@ -97,70 +97,69 @@ public class Player extends Entity {
     }
 
     public void update(){
-        //Todo: seperate methods
-        //Todo: switch case
+        
+        direction[0] = null;
+
         if(keyHandler.upPressed){
-            direction = "up";
-            worldY = worldY - speed;
+            direction[0] = "up";
+            worldY -= speed;
+        } else if(keyHandler.downPressed){
+            direction[0] = "down";
+            worldY += speed;
         }
-        else if(keyHandler.downPressed){
-            direction = "down";
-            worldY = worldY + speed;
-        }
-        else if(keyHandler.leftPressed){
-            direction = "left";
-            worldX = worldX - speed;
-        }
-        else if(keyHandler.rightPressed){
-            direction = "right";
-            worldX = worldX + speed;
+        
+        direction[1] = null;
+
+        if(keyHandler.leftPressed){
+            direction[1] = "left";
+            worldX -= speed;
+        } else if(keyHandler.rightPressed){
+            direction[1] = "right";
+            worldX += speed;
         }
 
+        if(direction[0] != null || direction[1] != null){
+            if(direction[0] == null) facing = direction[1];
+            else if(direction[1] == null) facing = direction[0];
+            else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
+        }
+
+        
         //CHECK TILE COLLISION
-        collisionOn = false;
+        isBlocked = false;
+        blockedUp = false;
+        blockedDown = false;
+        blockedLeft = false;
+        blockedRight = false;
 
         //CHECK OBJECT COLLISION
         gp.collisionChecker.checkTile(this); //Player is considered as an entity beacause it extends Entity
-        objIndex = gp.collisionChecker.checkObject(this, true);
-        pickUpObject(objIndex);
+        objIndexes = gp.collisionChecker.checkObject(this, true);
+        for(int i = 0; i < objIndexes.size(); i++)
+            pickUpObject(objIndexes.get(i));
 
         //CHECK NPC COLLISION
-        npcIndex = gp.collisionChecker.checkEntity(this,gp.npc);
-        interactNPC(npcIndex);
+        npcIndexes = gp.collisionChecker.checkEntity(this, gp.npc); //Entities' index will be registered in the vector only if there is "collision"
+        for(int i = 0; i < npcIndexes.size(); i++)                  //"collision" in this case is to have the player's "solidArea" is intersecting with that of thde entity's
+            interactNPC(npcIndexes.get(i));
 
         //CHECK MONSTER COLLISION
-        monsterIndex = gp.collisionChecker.checkEntity(this,gp.monster);
-        interactMonster(monsterIndex);
+        monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
+        for(int i = 0; i < monsterIndexes.size(); i++)
+            interactMonster(monsterIndexes.get(i));
 
 
         //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
-        if(collisionOn == true){
-            if(keyHandler.upPressed == true){
-                worldY = worldY + speed;
-            }
-            else if(keyHandler.downPressed == true){
-                worldY = worldY - speed;
-            }
-            else if(keyHandler.leftPressed == true){
-                worldX = worldX + speed;
-            }
-            else if(keyHandler.rightPressed == true){
-                worldX = worldX - speed;
-            }
-        }
+        if(keyHandler.upPressed && blockedUp) worldY += speed;
+        else if(keyHandler.downPressed && blockedDown) worldY -= speed;
+        if(keyHandler.leftPressed && blockedLeft) worldX += speed;
+        else if(keyHandler.rightPressed && blockedRight) worldX -= speed;
 
-        spriteCounter++;
-        if (keyHandler.upPressed == true || keyHandler.downPressed == true || keyHandler.leftPressed == true || keyHandler.rightPressed == true){
-            
-            if(spriteCounter > 12){
-                if(spriteNum == 1){
-                    spriteNum = 2;
-                }
-                else if(spriteNum == 2){
-                    spriteNum = 1;
-                }
-                spriteCounter = 0;
-            }   
+        if(spriteCounter < 12) spriteCounter++;
+        else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
+            if (spriteNum == 1) spriteNum = 2;
+            else spriteNum = 1;
+            spriteCounter = 0;
         }
     }
     
@@ -297,21 +296,88 @@ public class Player extends Entity {
 
     
 
+    public void selectOPbject(int x ,int y, int width, int height){
+        
+        if (gp.keyHandler.leftPressed){
+            if (index == 0){
+                index = 29;
+            }
+            else{
+                index --;
+            }
+            gp.keyHandler.leftPressed = false; 
+        }
+        else if (gp.keyHandler.rightPressed){
+            if (index == 29){
+                index = 0;
+            }
+            else{
+                index ++;
+            }
+            gp.keyHandler.rightPressed = false;
+        }
+        else if (gp.keyHandler.upPressed){
+            if (index < 5){
+                index += 25;
+            }
+            else{
+                index -= 5;
+            }
+            gp.keyHandler.upPressed = false;
+        }
+        else if (gp.keyHandler.downPressed){
+            if (index > 24){
+                index -= 25;
+            }
+            else{
+                index += 5;
+            }
+            gp.keyHandler.downPressed = false;
+        }
+    }
+
+    public void useObject(int index){
+        if (gp.keyHandler.enterPressed == true){
+            gp.keyHandler.enterPressed = false;
+            // Get the name of the object at the index position
+            if (index < inventory.size()){
+                String objName = inventory.keySet().toArray(new String[0])[index];
+                switch(objName){
+                    case "healPotion":
+                        if(life < maxLife){
+                            life += 1;
+                            inventory.put(objName, inventory.get(objName) - 1);
+                            if(inventory.get(objName) == 0){
+                                inventory.remove(objName);
+                            }
+                        }
+                        break;
+                }
+            }
+        
+        }
+    }
+
+
+    
+
     public void interactNPC(int npcIndex){
         
-        if(npcIndex != 999){
-
-            if(gp.keyHandler.xPressed == true){
-                gp.gameState = gp.dialogueState;
-                gp.npc[npcIndex].speak();
-            }
+        boolean enFace =   ((facing == "down") && blockedDown && gp.npc[npcIndex].blockedUp) ||
+                           ((facing == "right") && blockedRight && gp.npc[npcIndex].blockedLeft) ||
+                           ((facing == "up") && blockedUp && gp.npc[npcIndex].blockedDown) ||
+                           ((facing == "left") && blockedLeft && gp.npc[npcIndex].blockedRight);
+        
+        if(enFace && gp.keyHandler.xPressed){
+            gp.gameState = gp.dialogueState;
+            gp.npc[npcIndex].speak();
         }
         gp.keyHandler.xPressed = false;
     }
 
     public void swordAttaque(int monsterIndex){
 
-        if(monsterIndex != 999 && gp.keyHandler.sPressed == true && attackDelay > attackSpeed){
+        if(gp.keyHandler.sPressed && attackDelay > attackSpeed){
             gp.monster[monsterIndex].life -= 1;
             gp.keyHandler.sPressed = false;
 
@@ -323,7 +389,7 @@ public class Player extends Entity {
 
     public int fireAttaque(int monsterIndex){
 
-        if(gp.keyHandler.dPressed == true && attackDelay > attackSpeed && ballOn == 0){
+        if(gp.keyHandler.dPressed && attackDelay > attackSpeed && ballOn == 0){
             gp.fireBall = new FireBall(gp);
             gp.ability = gp.fireBall;
             gp.keyHandler.dPressed = false;
@@ -331,7 +397,6 @@ public class Player extends Entity {
             positionXActivityOn = worldX;
             positionYActivityOn = worldY;
             ballOn = 1;
-            
         }
         return ballOn;
     }
@@ -350,18 +415,14 @@ public class Player extends Entity {
 
         swordAttaque(monsterIndex);
         fireAttaque(monsterIndex);
-        if(gp.ability != null){
-            abilityDommage(gp.ability.abilityCollisionIndex);
-        }
-        monsterDommageCounter ++;
-        attackDelay ++;
+        if(gp.ability != null) abilityDommage(gp.ability.abilityCollisionIndex);
+        monsterDommageCounter++;
+        attackDelay++;
         
-            
-        if(monsterIndex != 999 && monsterDommageCounter > 30){
+        if(monsterDommageCounter > 30){
             gp.monster[monsterIndex].attackPlayer();
             monsterDommageCounter = 0;
         }
-        
     }
     
 
@@ -369,34 +430,25 @@ public class Player extends Entity {
 
         BufferedImage image = null;
 
-        switch(direction){
+        switch(facing){
             case "up":
-                if (spriteNum == 1)
-                    image = up1;
-                if (spriteNum == 2)
-                    image = up2;
+                if (spriteNum == 1) image = up1;
+                else image = up2;
                 break;
             case "down":
-                if (spriteNum == 1)
-                    image = down1;
-                if (spriteNum == 2)
-                    image = down2;
+                if (spriteNum == 1) image = down1;
+                else image = down2;
                 break;
             case "left":
-                if (spriteNum == 1)
-                    image = left1;
-                if (spriteNum == 2)
-                    image = left2;
+                if (spriteNum == 1) image = left1;
+                else image = left2;
                 break;
             case "right":
-                if (spriteNum == 1)
-                    image = right1;
-                if (spriteNum == 2)
-                    image = right2;
+                if (spriteNum == 1) image = right1;
+                else image = right2;
                 break;                              
         }
         g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-
     }
-
+    
 }
