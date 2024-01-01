@@ -42,6 +42,9 @@ public class Player extends Entity {
 
     public int index = 0;
 
+    
+
+
 
   
     private Player(GamePannel gp, KeyHandler keyH){
@@ -79,9 +82,14 @@ public class Player extends Entity {
         direction = "down";
 
         //PLAYER STATUS
+        level = 1;
         maxLife = 8;
         life = maxLife;
+        maxXp  = 1000;
         attackSpeed = 30;
+        damage = 1;
+        maxMana = 100;
+        mana = maxMana;
     }
 
     public void getPlayerImage(){
@@ -115,6 +123,8 @@ public class Player extends Entity {
             direction = "right";
             worldX = worldX + speed;
         }
+
+        levelUp();
 
         //CHECK TILE COLLISION
         collisionOn = false;
@@ -161,6 +171,16 @@ public class Player extends Entity {
                 }
                 spriteCounter = 0;
             }   
+        }
+    }
+
+    public void levelUp(){
+        if( xp >= maxXp){
+            level ++;
+            gp.ui.showMessage("     You leveled up!");
+            xp = xp - maxXp;
+            maxXp += 250;
+            
         }
     }
     
@@ -227,6 +247,18 @@ public class Player extends Entity {
                     gp.obj[objIndex] = null;
                     gp.ui.showMessage("You got a heal potion!");
                     break;
+                case "manaPotion":
+                    if (inventory.containsKey(objName)) {
+                        //Existing object
+                        inventory.put(objName, inventory.get(objName) + 1);
+                    } else {
+                        //New object
+                        inventory.put(objName, 1);
+                    }
+                    gp.obj[objIndex] = null;
+                    gp.ui.showMessage("You got a mana potion!");
+                    break;
+                //Add other object
             }
                     
             }
@@ -288,7 +320,17 @@ public class Player extends Entity {
                             }
                         }
                         break;
+                    case "manaPotion":
+                        if(mana < maxMana){
+                            mana = Math.min(mana + 30, maxMana);
+                            inventory.put(objName, inventory.get(objName) - 1);
+                            if(inventory.get(objName) == 0){
+                                inventory.remove(objName);
+                            }
+                        }
+                        break;
                 }
+
             }
         
         }
@@ -312,7 +354,7 @@ public class Player extends Entity {
     public void swordAttaque(int monsterIndex){
 
         if(monsterIndex != 999 && gp.keyHandler.sPressed == true && attackDelay > attackSpeed){
-            gp.monster[monsterIndex].life -= 1;
+            gp.monster[monsterIndex].life -= damage;
             gp.keyHandler.sPressed = false;
 
             attackDelay = 0;
@@ -321,26 +363,37 @@ public class Player extends Entity {
         }
     }
 
-    public int fireAttaque(int monsterIndex){
-
-        if(gp.keyHandler.dPressed == true && attackDelay > attackSpeed && ballOn == 0){
-            gp.fireBall = new FireBall(gp);
-            gp.ability = gp.fireBall;
-            gp.keyHandler.dPressed = false;
-            attackDelay = 0;
-            positionXActivityOn = worldX;
-            positionYActivityOn = worldY;
-            ballOn = 1;
-            
+    public String getTheTypeOfMgicAttack(){
+        String typeOfAttack = "none";
+        if(gp.keyHandler.dPressed == true){typeOfAttack = "fire";}
+        return typeOfAttack;
+    }
+    //method to load the magic attack
+    public void magicAttaque(int monsterIndex ,String typeOfAttack){
+        
+        if (ballOn == 0 && attackDelay > attackSpeed){
+            switch(typeOfAttack){
+                case "fire":
+                    if(gp.ability.mana <= mana){
+                        gp.fireBall = new FireBall(gp);
+                        gp.ability = gp.fireBall;
+                        gp.keyHandler.dPressed = false;
+                        attackDelay = 0;
+                        positionXActivityOn = worldX;
+                        positionYActivityOn = worldY;
+                        gp.ability.manaCost();
+                        ballOn = 1;
+                    }   
+                    break;
+                //Add other type of magic attack
+            }
         }
-        return ballOn;
     }
 
     public int abilityDommage(int Index){
 
         if(Index != 999 && ballOn == 1){
             gp.monster[Index].life -= 1;
-            gp.ability = null;
             ballOn = 0;
         }
         return ballOn;
@@ -349,8 +402,8 @@ public class Player extends Entity {
     public void interactMonster(int monsterIndex){
 
         swordAttaque(monsterIndex);
-        fireAttaque(monsterIndex);
         if(gp.ability != null){
+            magicAttaque(monsterIndex, getTheTypeOfMgicAttack());
             abilityDommage(gp.ability.abilityCollisionIndex);
         }
         monsterDommageCounter ++;

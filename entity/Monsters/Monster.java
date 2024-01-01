@@ -10,7 +10,6 @@ import main.GamePannel;
 
 public class Monster extends Entity{
     
-    public int dommage;
     
     public Monster(GamePannel gp) {
         super(gp);
@@ -69,7 +68,7 @@ public class Monster extends Entity{
     }
 
     public void attackPlayer() {
-        gp.player.life = gp.player.life - dommage;
+        gp.player.life = gp.player.life - damage;
     }
 
     public void monsterDead() {
@@ -77,11 +76,15 @@ public class Monster extends Entity{
         for(int i = 0; i < gp.monster.length; i++) {
             if(gp.monster[i] != null) {
                 if(gp.monster[i].life <= 0) {
+                    gp.monster[i].xpGained();
                     gp.monster[i] = null;
                 }
             }
         }
         
+    }
+    public void xpGained() {
+        gp.player.xp = gp.player.xp + xp;
     }
 
     public void paintComponent(Graphics2D g2) {

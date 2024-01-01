@@ -12,6 +12,10 @@ public class Ability extends Entity{
 
     public boolean abilityCollision = false;
     public int abilityCollisionIndex = 999;
+    
+    //Mana cost for each ability
+    public int fireManaCost = 20;   
+    
 
     protected int range;
     protected int remaningDistance;
@@ -54,6 +58,10 @@ public class Ability extends Entity{
             
         }
         }
+    
+    public void AbilityManaCosr() {
+        
+    }
              
     public int monsterCollision() {
         for(int i = 0; i < gp.monster.length; i++){
@@ -90,11 +98,14 @@ public class Ability extends Entity{
             }
             if(remaningDistance >= range*gp.tileSize){
                 gp.player.ballOn = 0;
-                ballDirection = "none";
-                gp.ability = null;       
+                ballDirection = "none";   
             }
         }
 
+    }
+    
+    public void manaCost(){
+        gp.player.mana -= mana;
     }
 
     public void draw(Graphics2D g2) {

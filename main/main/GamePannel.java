@@ -12,6 +12,7 @@ import entity.Monsters.Monster;
 import entity.Abilities.Ability;
 import entity.Abilities.FireBall.FireBall;
 import object.OBJ_healPotion;
+import object.OBJ_manaPotion;
 import object.SuperObject;
 import tile.TileManager;
 
@@ -46,6 +47,7 @@ public class GamePannel extends JPanel implements Runnable {
     public ClassSetter objSetter = new ClassSetter(this);
     public Player player = Player.getInstance(this, keyHandler);
     public SuperObject healPotion = new OBJ_healPotion(this);
+    public SuperObject manaPotion = new OBJ_manaPotion(this);
     public SuperObject obj[] = new SuperObject[10];
     public Entity npc[] = new Entity[10];
     public Monster monster[] = new Monster[20];

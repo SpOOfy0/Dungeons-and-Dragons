@@ -189,11 +189,44 @@ public class UI {
         
     }
 
+    public void drawPlayerXp() {
+        if (gp.player.maxXp > gp.player.xp){
+            int maxBarWidth = 200;
+            double percentage = (double) gp.player.xp / gp.player.maxXp;
+            double xpBarWidth = maxBarWidth * percentage;
+            int screenX = gp.tileSize / 2;
+            int screenY = gp.tileSize * 3 - 35;
+        
+            g2.setColor(Color.WHITE);
+            g2.fillRect(screenX, screenY - 10, (int) xpBarWidth, 8);
+            colorBorder(screenX, screenY - 10, maxBarWidth, 8);
+        }
+    }
+
+    public void drawPlayerMana() {
+        if (gp.player.maxMana >= gp.player.mana){
+            int maxBarWidth = 200;
+            double percentage = (double) gp.player.mana / gp.player.maxMana;
+            double manaBarWidth = maxBarWidth * percentage;
+            int screenX = gp.tileSize / 2;
+            int screenY = gp.tileSize * 2 - 10;
+            
+            g2.setColor(Color.BLUE);
+            g2.fillRect(screenX, screenY - 10, (int) manaBarWidth, 8);
+            colorBorder(screenX, screenY - 10, maxBarWidth, 8);
+        }
+    }
+    
+
     public void drawInventory() {
         int startX = gp.screenWidth / 2 + gp.tileSize;
         int startY = gp.screenHight / 2 - gp.tileSize * 4;
         int itemsPerRow = 5;
         int spacing = 10;
+
+        BufferedImage image;
+        int count;
+        String Count;
     
         // Taille d'une case
         int cellSize = gp.tileSize + spacing;
@@ -204,11 +237,10 @@ public class UI {
             int row = itemIndex / itemsPerRow;
             int col = itemIndex % itemsPerRow;
     
-            // Calculez la position de l'objet dans la grille
             int x = startX + col * cellSize;
             int y = startY + row * cellSize;
     
-            // Dessinez la case colorée
+            // Draw the background of the inventory slot
             g2.setColor(new Color(100, 100, 100));
             g2.fillRect(x, y, gp.tileSize, gp.tileSize);
             
@@ -217,21 +249,32 @@ public class UI {
                 gp.player.useObject(i);
                 colorBorder(x, y, gp.tileSize, gp.tileSize);
             }
-            // Si l'inventaire contient un objet à cet emplacement, dessinez-le
+            // If there is an item in this slot, draw it
             if (itemIndex < gp.player.inventory.size()) {
                 String objName = gp.player.inventory.keySet().toArray(new String[0])[itemIndex];
     
                 switch (objName) {
                     case "healPotion":
-                        BufferedImage image = gp.healPotion.image;
-                        int count = gp.player.inventory.get(objName);
-                        String Count = String.valueOf(count);
+                        image = gp.healPotion.image;
+                        count = gp.player.inventory.get(objName);
+                        Count = String.valueOf(count);
                         g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
                         //Add count
                         g2.setFont(new Font("Arial", Font.PLAIN, gp.tileSize / 4));
                         g2.setColor(Color.white);
                         g2.drawString(Count, x + 5, y + 15);
                         break;
+                    case "manaPotion":
+                        image = gp.manaPotion.image;
+                        count = gp.player.inventory.get(objName);
+                        Count = String.valueOf(count);
+                        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+                        //Add count
+                        g2.setFont(new Font("Arial", Font.PLAIN, gp.tileSize / 4));
+                        g2.setColor(Color.white);
+                        g2.drawString(Count, x + 5, y + 15);
+                        break;
+                    
     
                     // Add other cases for objName
     
@@ -240,18 +283,61 @@ public class UI {
                 }
             }
     
-            // Incrémentez l'index d'emplacement
             itemIndex++;
         }
+    }
+
+    public void drawPlayerStatus(){
+        if (gp.keyHandler.nPressed == true){
+            int x = gp.screenWidth / 8 - gp.tileSize;
+            int y = gp.screenHight / 2 - gp.tileSize * 4;
+            int width = gp.screenWidth / 2 - gp.tileSize * 2;
+            int height = gp.screenHight - gp.tileSize * 4;
+            int arcWidth = 20;
+            int arcHeight = 20; 
+
+            g2.setColor(new Color(100, 100, 100, 200));
+            g2.fillRoundRect(x, y, width, height, arcWidth, arcHeight);
+            g2.setColor(Color.white);
+            g2.drawRoundRect(x, y, width, height, arcWidth, arcHeight);
+
+            int lineHeight = g2.getFontMetrics().getHeight();
+            int textX = x + 20; 
+            int valueX;    // The x-coordinate of the value text
+            int textY = y + 40; 
+
+            // Add lines of text
+            String[] lines = {
+                "Level: " , "" + gp.player.level,
+                "XP: " , "" + gp.player.xp + "/" + gp.player.maxXp,
+                "Strengh: " , "" + gp.player.damage,
+                "Mana" , "" + gp.player.mana,
+                "Speed Attack: " , "" + gp.player.attackSpeed,
+                // Add other lines of text
+            };
+
+            // Draw each line of text
+            for (int i = 0; i < lines.length; i += 2) {
+                g2.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2.setColor(Color.white);
+                g2.drawString(lines[i], textX, textY);
+                valueX = getXForAlightToRightOfText(lines[i + 1], textX + width, g2);
+                g2.drawString(lines[i + 1], valueX, textY);
+                textY += lineHeight; 
+            }
+        }
+
+    }
+
+    public int getXForAlightToRightOfText(String text, int tailX, Graphics2D graphics2D) {
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        return tailX - length - gp.tileSize / 2;
     }
 
     public void colorBorder(int x ,int y, int width, int height){
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, width, height);
     }
-
-
-    public void pressObject(){}
     
     // Modifier la méthode draw pour appeler drawInventory
     public void draw(Graphics2D g2) {
@@ -260,10 +346,14 @@ public class UI {
         g2.setFont(arial_40);
         g2.setColor(Color.white);
 
+        drawPlayerXp();
+        drawPlayerMana();
+
         // PLAY STATE
         if (gp.gameState == gp.playState) {
             drawPlayerLife();
             drawMessage();
+            drawPlayerStatus();
         }
 
         // PAUSE STATE
@@ -284,6 +374,7 @@ public class UI {
             drawInventory(); // Appeler la nouvelle méthode drawInventory
             
         }
+       
     }
 
 

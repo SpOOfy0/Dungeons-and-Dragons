@@ -36,6 +36,12 @@ public class Entity {
     // CHARACTER STATUS
     public int maxLife;
     public int life;
+    public int xp;
+    public int maxXp; //xp needed to level up
+    public int level;
+    public int damage;
+    public int mana;
+    public int maxMana;
 
     public Entity(GamePannel gp) {
         this.gp = gp;

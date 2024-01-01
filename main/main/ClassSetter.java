@@ -3,6 +3,7 @@ package main;
 import entity.NPC_1;
 import entity.Monsters.NormalMonsters.Orc;
 import object.OBJ_healPotion;
+import object.OBJ_manaPotion;
 
 
 public class ClassSetter {
@@ -30,8 +31,22 @@ public class ClassSetter {
         gp.obj[3] = new OBJ_healPotion(gp);
         gp.obj[3].worldX = 14 * gp.tileSize;
         gp.obj[3].worldY = 37 * gp.tileSize;
+
+        gp.obj[4] = new OBJ_manaPotion(gp);
+        gp.obj[4].worldX = 14 * gp.tileSize;
+        gp.obj[4].worldY = 22 * gp.tileSize;
+
+        gp.obj[5] = new OBJ_manaPotion(gp);
+        gp.obj[5].worldX = 14 * gp.tileSize;
+        gp.obj[5].worldY = 38 * gp.tileSize;
+
+        gp.obj[6] = new OBJ_manaPotion(gp);
+        gp.obj[6].worldX = 14 * gp.tileSize;
+        gp.obj[6].worldY = 39 * gp.tileSize;
         
     }
+
+
 
     public void setNPC() {
         gp.npc[0] = new NPC_1(gp);
