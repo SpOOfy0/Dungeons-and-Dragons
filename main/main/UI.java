@@ -310,6 +310,7 @@ public class UI {
             String[] lines = {
                 "Level: " , "" + gp.player.level,
                 "XP: " , "" + gp.player.xp + "/" + gp.player.maxXp,
+                "Life: " , "" + gp.player.life + "/" + gp.player.maxLife,
                 "Strengh: " , "" + gp.player.damage,
                 "Mana" , "" + gp.player.mana,
                 "Speed Attack: " , "" + gp.player.attackSpeed,
@@ -329,9 +330,66 @@ public class UI {
 
     }
 
+    private void drawGameOverScreen() {
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHight);
+
+        int textX;
+        int textY;
+        String text;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 110f));
+
+        // TITLE TEXT
+        text = "Game Over";
+
+        // Shadow
+        g2.setColor(Color.black);
+        textX = getXForCenterOfText(text, gp, g2);
+        textY = gp.tileSize * 4;
+        g2.drawString(text, textX, textY);
+
+        // Text
+        g2.setColor(Color.WHITE);
+        g2.drawString(text, textX - 4, textY - 4);
+
+        // RETRY
+        g2.setFont(g2.getFont().deriveFont(50f));
+        text = "Retry";
+        textX = getXForCenterOfText(text, gp, g2);
+        textY += gp.tileSize * 4;
+        g2.drawString(text, textX, textY);
+        // if (commandNumber == 0) {
+        //     g2.drawString(">", textX - 40, textY);
+        //     if (gp.getKeyHandler().isEnterPressed()) {
+        //         commandNumber = 0;
+        //         gp.retry();
+        //     }
+        // }
+
+        // BACK TO TITLE
+        text = "Quit";
+        textX = getXForCenterOfText(text, gp, g2);
+        textY += 55;
+        g2.drawString(text, textX, textY);
+        // if (commandNumber == 1) {
+        //     g2.drawString(">", textX - 40, textY);
+        //     if (gp.getKeyHandler().isEnterPressed()) {
+        //         commandNumber = 0;
+        //         gp.restart();
+        //     }
+        // }
+
+        // gp.setEnterPressed(false);
+    }
+
     public int getXForAlightToRightOfText(String text, int tailX, Graphics2D graphics2D) {
         int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
         return tailX - length - gp.tileSize / 2;
+    }
+
+    public static int getXForCenterOfText(String text, GamePannel gamePanel, Graphics2D graphics2D) {
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        return gamePanel.screenWidth / 2 - length / 2;
     }
 
     public void colorBorder(int x ,int y, int width, int height){
@@ -354,6 +412,10 @@ public class UI {
             drawPlayerLife();
             drawMessage();
             drawPlayerStatus();
+        }
+
+        if (gp.gameState == gp.gameOverState) {
+            drawGameOverScreen();
         }
 
         // PAUSE STATE

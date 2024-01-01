@@ -125,6 +125,7 @@ public class Player extends Entity {
         }
 
         levelUp();
+        playerDeath();
 
         //CHECK TILE COLLISION
         collisionOn = false;
@@ -415,6 +416,12 @@ public class Player extends Entity {
             monsterDommageCounter = 0;
         }
         
+    }
+
+    public void playerDeath(){
+        if(life <= 0){
+            gp.gameState = gp.gameOverState;
+        }
     }
     
 
