@@ -10,8 +10,11 @@ public class NPC_1 extends Entity{
 
         super(gp);
 
+        noticeRange = 0;
+        
         direction[0] = "down";
         direction[1] = null;
+        facing = direction[0];
         bufferDirection = null;
         speed = 1;
 

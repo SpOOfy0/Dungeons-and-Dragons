@@ -73,6 +73,8 @@ public class Player extends Entity {
 
     public void setDefaultValues(){
 
+        noticeRange = 0;
+
         //PLAYER WORLD POSITION
         worldX = gp.tileSize * 23; 
         worldY = gp.tileSize * 21; 
@@ -163,6 +165,8 @@ public class Player extends Entity {
         if(keyHandler.leftPressed && blockedLeft) worldX += speed;
         else if(keyHandler.rightPressed && blockedRight) worldX -= speed;
 
+        applyForcedMovement();
+
         if(spriteCounter < 12) spriteCounter++;
         else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
             if (spriteNum == 1) spriteNum = 2;
@@ -233,9 +237,8 @@ public class Player extends Entity {
                     gp.obj[objIndex] = null;
                     gp.ui.showMessage("You got a heal potion!");
                     break;
-            }
-                    
-            }
+            }            
+        }
     }
 
     public void selectOPbject(int x ,int y, int width, int height){
@@ -293,18 +296,6 @@ public class Player extends Entity {
         gp.keyHandler.xPressed = false;
     }
 
-    public void baseAttack(int monsterIndex){
-
-        if(gp.keyHandler.sPressed && attackDelay >= attackSpeed){
-            gp.monster[monsterIndex].receiveDmg(1);
-            gp.keyHandler.sPressed = false;
-
-            attackDelay = 0;
-            //add the image of the player attacking with the sword
-
-        }
-    }
-
     public int fireAttaque(){
 
         if(gp.keyHandler.dPressed && attackDelay >= attackSpeed && ballOn == 0){
@@ -319,6 +310,28 @@ public class Player extends Entity {
         return ballOn;
     }
 
+    public void baseAttack(int monsterIndex){
+
+        if(gp.keyHandler.sPressed && attackDelay >= attackSpeed){
+            gp.monster[monsterIndex].receiveDmg(1);
+            gp.monster[monsterIndex].giveForcedMovement(gp.interactionChecker.awayFromPlayer(gp.monster[monsterIndex]), 2, 30);
+            gp.keyHandler.sPressed = false;
+
+            attackDelay = 0;
+            //add the image of the player attacking with the sword
+
+        }
+    }
+    
+    public void interactMonster(int monsterIndex){
+
+        baseAttack(monsterIndex);
+
+        if(gp.monster[monsterIndex].attackDelay >= gp.monster[monsterIndex].attackSpeed){
+            gp.monster[monsterIndex].attackPlayer();
+        }
+    }
+
     // public int abilityDommage(int Index){
 
     //     if(Index != 999 && ballOn == 1){
@@ -328,16 +341,6 @@ public class Player extends Entity {
     //     }
     //     return ballOn;
     // }
-    
-    public void interactMonster(int monsterIndex){
-
-        baseAttack(monsterIndex);
-        // if(gp.ability != null) abilityDommage(gp.ability.abilityCollisionIndex);
-
-        if(gp.monster[monsterIndex].attackDelay >= gp.monster[monsterIndex].attackSpeed){
-            gp.monster[monsterIndex].attackPlayer();
-        }
-    }
     
 
     public void draw(Graphics2D g2){

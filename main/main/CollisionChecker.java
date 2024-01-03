@@ -62,8 +62,11 @@ public class CollisionChecker {
                         checkMove = true;
                         entityTopRow = (entityTopWorldY - entity.speed) / tileSize;
                     } else entityTopRow = (entityTopWorldY - entity.speed*2) / tileSize;
-                    tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
-                    tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
+
+                    tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
+                    if (entityLeftCol*tileSize == entityLeftWorldX && entityRightCol*tileSize == entityRightWorldX) tileNum2 = tileNum1;
+                    else tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
+                    
                     entityTopRow = entityTopWorldY / tileSize;
                     break;
                 case 1: //left
@@ -71,8 +74,11 @@ public class CollisionChecker {
                         checkMove = true;
                         entityLeftCol = (entityLeftWorldX - entity.speed) / tileSize;
                     } else entityLeftCol = (entityLeftWorldX - entity.speed*2) / tileSize;
+
                     tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
-                    tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
+                    if (entityTopRow*tileSize == entityTopWorldY && entityBottomRow*tileSize == entityBottomWorldY) tileNum2 = tileNum1;
+                    else tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
+
                     entityLeftCol = entityLeftWorldX / tileSize;
                     break;
                 case 2: //down
@@ -80,8 +86,11 @@ public class CollisionChecker {
                         checkMove = true;
                         entityBottomRow = (entityBottomWorldY + entity.speed) / tileSize;
                     } else entityBottomRow = (entityBottomWorldY + entity.speed*2) / tileSize;
+
                     tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
-                    tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
+                    if (entityLeftCol*tileSize == entityLeftWorldX && entityRightCol*tileSize == entityRightWorldX) tileNum2 = tileNum1;
+                    else tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
+
                     entityBottomRow = entityBottomWorldY / tileSize;
                     break;
                 case 3: //right
@@ -89,8 +98,10 @@ public class CollisionChecker {
                         checkMove = true;
                         entityRightCol = (entityRightWorldX + entity.speed) / tileSize;
                     } else entityRightCol = (entityRightWorldX + entity.speed*2) / tileSize;
-                    tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
-                    tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
+
+                    tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
+                    if (entityTopRow*tileSize == entityTopWorldY && entityBottomRow*tileSize == entityBottomWorldY) tileNum2 = tileNum1;
+                    else tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
                     break; 
             }
 
@@ -312,6 +323,8 @@ public class CollisionChecker {
 
     
     public void checkPlayer(Entity entity){
+        
+        entity.isWithPlayer = false;
 
         boolean[] isGoingToDirection = {false, false, false, false};
 
@@ -388,7 +401,10 @@ public class CollisionChecker {
                         }
                     }
                 }
-                if(isGoingToDirection[j]) entity.isBlocked = true;
+                if(isGoingToDirection[j]){
+                    entity.isBlocked = true;
+                    if(entity != gp.player) entity.isWithPlayer = true;
+                }
             }
         }
                 

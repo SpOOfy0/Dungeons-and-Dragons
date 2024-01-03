@@ -3,6 +3,7 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -25,7 +26,9 @@ public class Entity {
     public int attackSpeed = 30;
     public int attackDelay = 0;
 
-    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);   // Est utilisé pour la position et pour toute interaction "subie"
+    public int[] storeMovement = {0, 0};  // "valeurs de déplacement {horizontal, vertical}"
+
+    public Rectangle solidArea = new Rectangle(1, 1, 46, 46);   // Est utilisé pour la position et pour toute interaction "subie"
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;   // L'entité est affecté par les collisions ou pas?
     public boolean blockedUp;
@@ -34,14 +37,18 @@ public class Entity {
     public boolean blockedRight;    
     public boolean isBlocked;       // Permet de dire si l'Entité bouge dans un direction et se fait blocker dans cette même direction
 
+    public boolean aggravated;
+    public int aggroRange;
+    public int noticeRange;
+    public boolean isWithPlayer;    // Variables pour les non-joueurs, pour interagir avec le joueur
 
-    public Rectangle interactionArea = new Rectangle(-1, -1, 50, 50);   // Est utilisé pour toute interaction "initiée"
-    public int interactionAreaDefaultX, interactionAreaDefaultY;
-    public boolean interactUp = false;
-    public boolean interactDown = false;
-    public boolean interactLeft = false;
-    public boolean interactRight = false;
-    public boolean isInteracting;                   // Non-utilisés pour l'instant
+    // public Rectangle interactionArea = new Rectangle(-1, -1, 50, 50);   // Est utilisé pour toute interaction "initiée"
+    // public int interactionAreaDefaultX, interactionAreaDefaultY;
+    // public boolean interactUp = false;
+    // public boolean interactDown = false;
+    // public boolean interactLeft = false;
+    // public boolean interactRight = false;
+    // public boolean isInteracting;                   // Non-utilisés pour l'instant
     
 
     public String dialogues[] = new String[15];
@@ -51,10 +58,111 @@ public class Entity {
     public int maxLife;
     public int life;
 
+
+    private class ForcedMovement {
+
+        private String direction;       // only "up", "down", "left" or "right"
+        private int distance;           // distance the Entity will be moved per frame, will not be multiplied by tile size
+
+        private boolean timebased;      // if true, the instance will exist until remainingDuration hits 0 
+                                        // if false, will exist indefinitely until it gets destroyer through another mean
+        private int remainingDuration;  // remaining number of frames before the instance gets destroyed
+
+        public ForcedMovement(String inputedDirection, int amountPushed) {
+            if(inputedDirection != null && amountPushed != 0){
+                direction = inputedDirection;
+                distance = amountPushed;
+                timebased = false;
+            } else {
+                direction = "up";
+                distance = 0;
+                timebased = true;
+            }
+            remainingDuration = 1;
+        }
+
+        public ForcedMovement(String inputedDirection, int amountPushed, int duration) {
+            if(inputedDirection != null && amountPushed != 0 && duration > 0){
+                direction = inputedDirection;
+                distance = amountPushed;
+                remainingDuration = duration;
+            } else {
+                direction = "up";
+                distance = 0;
+                remainingDuration = 1;
+            }
+            timebased = true;
+        }
+
+        public void applyForcedMovement(){
+            switch(direction){
+                case "up":
+                    worldY -= distance;
+                    break;
+                case "down":
+                    worldY += distance;
+                    break;
+                case "left":
+                    worldX -= distance;
+                    break;
+                case "right":
+                    worldX += distance;
+                    break;
+            }            
+            if(timebased){
+                remainingDuration--;
+            }
+        }
+
+        public void applyForcedMovement(boolean consume){
+            switch(direction){
+                case "up":
+                    worldY -= distance;
+                    break;
+                case "down":
+                    worldY += distance;
+                    break;
+                case "left":
+                    worldX -= distance;
+                    break;
+                case "right":
+                    worldX += distance;
+                    break;
+            }
+            if(consume){
+                remainingDuration--;
+            }
+        }
+
+        public boolean hasExpired(){
+            return remainingDuration == 0;
+        }
+    }
+
+    public Vector<ForcedMovement> listForcedMovement = new Vector<ForcedMovement>();
+
+    public void giveForcedMovement(String inputDirection, int inputDistance, int inputDuration){
+        listForcedMovement.add(new ForcedMovement(inputDirection, inputDistance, inputDuration));
+    }
+
+    public void applyForcedMovement(){
+        for(int i = 0; i < listForcedMovement.size(); i++){
+            ForcedMovement currentFMovement = listForcedMovement.get(i);
+            currentFMovement.applyForcedMovement();
+            if(currentFMovement.hasExpired()){
+                listForcedMovement.remove(i);
+                i--;
+            }
+        }
+    }
+
+
+
     public Entity(GamePannel gp) {
         this.gp = gp;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+        isWithPlayer = false;
     }
 
     public void setAction(){} 
@@ -68,6 +176,8 @@ public class Entity {
         
         setAction();
         monsterDead();
+
+        if(direction[0] == null) direction[0] = bufferDirection;
 
         switch(direction[0]){
             case "up":
@@ -110,17 +220,19 @@ public class Entity {
                 break;
         }
 
+        applyForcedMovement();
+
         spriteCounter++;
-            if(spriteCounter >= 12){
-                if(spriteNum == 1){
-                    spriteNum = 2;
-                }
-                else if(spriteNum == 2){
-                    spriteNum = 1;
-                }
-                spriteCounter = 0;
-            }   
-        }
+        if(spriteCounter >= 12){
+            if(spriteNum == 1){
+                spriteNum = 2;
+            }
+            else if(spriteNum == 2){
+                spriteNum = 1;
+            }
+            spriteCounter = 0;
+        }   
+    }
 
 
     public BufferedImage getImage(String ImagePath){

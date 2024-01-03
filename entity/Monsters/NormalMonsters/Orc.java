@@ -31,8 +31,12 @@ public class Orc extends Monster implements MonsterInterface {
     @Override
     public void MonsterSetting() {
 
+        noticeRange = 3;
+        aggroRange = 4;
+
         direction[0] = "up";
         direction[1] = null;
+        facing = direction[0];
         speed = 1;
         maxLife = 4;
         life = maxLife;

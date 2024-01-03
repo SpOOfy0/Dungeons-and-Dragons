@@ -30,7 +30,6 @@ public class TileManager {
         try {
             tile[0] = new Tile();
             tile[0].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Grass.png"));
-            
 
             tile[1] = new Tile();
             tile[1].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Water.png"));
@@ -39,6 +38,7 @@ public class TileManager {
             tile[2] = new Tile();
             tile[2].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Ground.jpg"));
             tile[2].collision = true;
+            tile[2].opaque = true;
 
         }catch(Exception e){
             System.out.println("Error loading image");
@@ -55,7 +55,7 @@ public class TileManager {
             while(col < gp.maxWorldCol && row < gp.maxWorldRow){
                 String line = br.readLine(); //Lire la ligne
                 while(col < gp.maxWorldCol){
-                    String numbers[] = line.split(" "); //nubers[] = {0,0,0,0,0,0,0,0,0,0}
+                    String numbers[] = line.split(" "); //numbers[] = {0,0,0,0,0,0,0,0,0,0}
                     int num = Integer.parseInt(numbers[col]); 
                     mapTileNum[col][row] = num;
                     col++;
@@ -90,9 +90,9 @@ public class TileManager {
             int screenX = worldX - gp.player.worldX + gp.player.screenX ;
             int screenY = worldY - gp.player.worldY + gp.player.screenY ;
             if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-                    worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-                    worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-                    worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { 
+               worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+               worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+               worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { 
                 
                 g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
             }
