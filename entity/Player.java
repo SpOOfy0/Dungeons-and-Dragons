@@ -106,22 +106,22 @@ public class Player extends Entity {
         
         direction[0] = null;
 
-        if(keyHandler.upPressed){
-            direction[0] = "up";
-            worldY -= speed;
-        } else if(keyHandler.downPressed){
-            direction[0] = "down";
-            worldY += speed;
+        if(keyHandler.leftPressed){
+            direction[0] = "left";
+            storeMovement[0] -= speed;
+        } else if(keyHandler.rightPressed){
+            direction[0] = "right";
+            storeMovement[0] += speed;
         }
         
         direction[1] = null;
 
-        if(keyHandler.leftPressed){
-            direction[1] = "left";
-            worldX -= speed;
-        } else if(keyHandler.rightPressed){
-            direction[1] = "right";
-            worldX += speed;
+        if(keyHandler.upPressed){
+            direction[1] = "up";
+            storeMovement[1] -= speed;
+        } else if(keyHandler.downPressed){
+            direction[1] = "down";
+            storeMovement[1] += speed;
         }
 
         if(direction[0] != null || direction[1] != null){
@@ -130,8 +130,28 @@ public class Player extends Entity {
             else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
         }
 
-        
-        //CHECK TILE COLLISION
+        verifyMovement(direction);
+
+        applyForcedMovement();
+
+        for(int i = 0; i < objIndexes.size(); i++)
+            pickUpObject(objIndexes.get(i));
+
+        npcIndex = gp.interactionChecker.interactPossible(this, gp.npc);
+        interactNPC(npcIndex);
+
+        for(int i = 0; i < monsterIndexes.size(); i++)
+            interactMonster(monsterIndexes.get(i));
+
+        if(spriteCounter < 12) spriteCounter++;
+        else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
+            if (spriteNum == 1) spriteNum = 2;
+            else spriteNum = 1;
+            spriteCounter = 0;
+        }
+    }
+
+    public void verifyMovement(String[] direction){
         isBlocked = false;
         blockedUp = false;
         blockedDown = false;
@@ -141,39 +161,37 @@ public class Player extends Entity {
         //CHECK OBJECT COLLISION
         gp.collisionChecker.checkTile(this); //Player is considered as an entity beacause it extends Entity
         objIndexes = gp.collisionChecker.checkObject(this, true);
-        for(int i = 0; i < objIndexes.size(); i++)
-            pickUpObject(objIndexes.get(i));
 
         //CHECK NPC COLLISION
-        gp.collisionChecker.checkEntity(this, gp.npc); //Entities' index will be registered in the vector only if there is "collision"
-                                                                    //"collision" in this case is to have the player's "solidArea" is intersecting with that of thde entity's
-        // for(int i = 0; i < npcIndexes.size(); i++)
-        //     interactNPC(npcIndexes.get(i));
-
-        npcIndex = gp.interactionChecker.interactPossible(this, gp.npc);
-        interactNPC(npcIndex);
+        gp.collisionChecker.checkEntity(this, gp.npc);
 
         //CHECK MONSTER COLLISION
         monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
-        for(int i = 0; i < monsterIndexes.size(); i++)
-            interactMonster(monsterIndexes.get(i));
 
 
-        //IF COLLISION IS DETECTED, STOP MOVING THE PLAYER
-        if(keyHandler.upPressed && blockedUp) worldY += speed;
-        else if(keyHandler.downPressed && blockedDown) worldY -= speed;
-        if(keyHandler.leftPressed && blockedLeft) worldX += speed;
-        else if(keyHandler.rightPressed && blockedRight) worldX -= speed;
-
-        applyForcedMovement();
-
-        if(spriteCounter < 12) spriteCounter++;
-        else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
-            if (spriteNum == 1) spriteNum = 2;
-            else spriteNum = 1;
-            spriteCounter = 0;
+        //IF COLLISION IS DETECTED, DON'T MOVE THE PLAYER
+        for(int i = 0; i < direction.length; i++){
+            if(direction[i] != null){
+                switch(direction[i]){
+                    case "up":
+                        if(!blockedUp) worldY += storeMovement[1];
+                        break;
+                    case "down":
+                        if(!blockedDown) worldY += storeMovement[1];
+                        break;
+                    case "left":
+                        if(!blockedLeft) worldX += storeMovement[0];
+                        break;
+                    case "right":
+                        if(!blockedRight) worldX += storeMovement[0];
+                        break;
+                }
+            }
         }
+        storeMovement[0] = 0;
+        storeMovement[1] = 0;
     }
+    
     
     //ArrayList version
     /*public void pickUpObject(int objIndex){

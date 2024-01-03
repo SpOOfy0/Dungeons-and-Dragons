@@ -17,7 +17,7 @@ public class Entity {
     public int speed;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String facing;       // direction dans laquelle l'entité regarde
-    public String[] direction = new String[2]; // pour les entités qui peuvent se déplacer en diagonale [0: axe vertical; 1: axe horizontal]
+    public String[] direction = new String[2]; // pour les entités qui peuvent se déplacer en diagonale [0: axe horizontal; 1: axe vertical]
     public String bufferDirection;
 
     public int spriteCounter = 0;
@@ -97,18 +97,21 @@ public class Entity {
         public void applyForcedMovement(){
             switch(direction){
                 case "up":
-                    worldY -= distance;
+                    storeMovement[1] -= distance;
                     break;
                 case "down":
-                    worldY += distance;
+                    storeMovement[1] += distance;
                     break;
                 case "left":
-                    worldX -= distance;
+                    storeMovement[0] -= distance;
                     break;
                 case "right":
-                    worldX += distance;
+                    storeMovement[0] += distance;
                     break;
-            }            
+            }
+            
+            verifyMovement(direction);
+
             if(timebased){
                 remainingDuration--;
             }
@@ -117,18 +120,21 @@ public class Entity {
         public void applyForcedMovement(boolean consume){
             switch(direction){
                 case "up":
-                    worldY -= distance;
+                    storeMovement[1] -= distance;
                     break;
                 case "down":
-                    worldY += distance;
+                    storeMovement[1] += distance;
                     break;
                 case "left":
-                    worldX -= distance;
+                    storeMovement[0] -= distance;
                     break;
                 case "right":
-                    worldX += distance;
+                    storeMovement[0] += distance;
                     break;
             }
+            
+            verifyMovement(direction);
+            
             if(consume){
                 remainingDuration--;
             }
@@ -181,44 +187,22 @@ public class Entity {
 
         switch(direction[0]){
             case "up":
-                worldY -= speed;
+                storeMovement[1] -= speed;
                 break;
             case "down":
-                worldY += speed;
+                storeMovement[1] += speed;
                 break;
             case "left":
-                worldX -= speed;
+                storeMovement[0] -= speed;
                 break;
             case "right":
-                worldX += speed;
+                storeMovement[0] += speed;
                 break;
         }
 
         facing = direction[0];
-
-        isBlocked = false;
-        blockedUp = false;
-        blockedDown = false;
-        blockedLeft = false;
-        blockedRight = false;
-        gp.collisionChecker.checkTile(this);
-        //gp.collisionChecker.checkObject(this,false);
-        gp.collisionChecker.checkPlayer(this);
-
-        switch(direction[0]){
-            case "up":
-                if(blockedUp) worldY += speed;
-                break;
-            case "down":
-                if(blockedDown) worldY -= speed;
-                break;
-            case "left":
-                if(blockedLeft) worldX += speed;
-                break;
-            case "right":
-                if(blockedRight) worldX -= speed;
-                break;
-        }
+            
+        verifyMovement(direction);
 
         applyForcedMovement();
 
@@ -232,6 +216,66 @@ public class Entity {
             }
             spriteCounter = 0;
         }   
+    }
+
+    public void verifyMovement(String direction){
+        isBlocked = false;
+        blockedUp = false;
+        blockedDown = false;
+        blockedLeft = false;
+        blockedRight = false;
+        gp.collisionChecker.checkTile(this);
+        gp.collisionChecker.checkPlayer(this);
+
+        if(direction != null){
+            switch(direction){
+                case "up":
+                    if(!blockedUp) worldY += storeMovement[1];
+                    break;
+                case "down":
+                    if(!blockedDown) worldY += storeMovement[1];
+                    break;
+                case "left":
+                    if(!blockedLeft) worldX += storeMovement[0];
+                    break;
+                case "right":
+                    if(!blockedRight) worldX += storeMovement[0];
+                    break;
+            }
+        }
+        storeMovement[0] = 0;
+        storeMovement[1] = 0;
+    }
+
+    public void verifyMovement(String[] direction){
+        isBlocked = false;
+        blockedUp = false;
+        blockedDown = false;
+        blockedLeft = false;
+        blockedRight = false;
+        gp.collisionChecker.checkTile(this);
+        gp.collisionChecker.checkPlayer(this);
+
+        for(int i = 0; i < direction.length; i++){
+            if(direction[i] != null){
+                switch(direction[i]){
+                    case "up":
+                        if(!blockedUp) worldY += storeMovement[1];
+                        break;
+                    case "down":
+                        if(!blockedDown) worldY += storeMovement[1];
+                        break;
+                    case "left":
+                        if(!blockedLeft) worldX += storeMovement[0];
+                        break;
+                    case "right":
+                        if(!blockedRight) worldX += storeMovement[0];
+                        break;
+                }
+            }
+        }
+        storeMovement[0] = 0;
+        storeMovement[1] = 0;
     }
 
 

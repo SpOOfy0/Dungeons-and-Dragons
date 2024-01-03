@@ -32,10 +32,10 @@ public class Ability extends Entity{
                 worldX = gp.player.worldX;
                 worldY = gp.player.worldY;
             }
-            else if(direction[0] == "up") worldY = worldY - speed;
-            else if(direction[0] == "down") worldY = worldY + speed;
-            else if(direction[0] == "left") worldX = worldX - speed;
-            else if(direction[0] == "right") worldX = worldX + speed;
+            else if(direction[0] == "up") worldY -= speed;
+            else if(direction[0] == "down") worldY += speed;
+            else if(direction[0] == "left") worldX -= speed;
+            else if(direction[0] == "right") worldX += speed;
             
             abilityCollisionIndex = monsterCollision();
             if(abilityCollision){

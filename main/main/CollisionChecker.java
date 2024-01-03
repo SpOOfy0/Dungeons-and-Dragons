@@ -52,16 +52,11 @@ public class CollisionChecker {
         }
 
         int tileNum1 = 0, tileNum2 = 1;
-        boolean checkMove;
 
         for(int i = 0; i < 4; i++){
-            checkMove = false;
             switch(i){
                 case 0: //up
-                    if(isGoingToDirection[i]){
-                        checkMove = true;
-                        entityTopRow = (entityTopWorldY - entity.speed) / tileSize;
-                    } else entityTopRow = (entityTopWorldY - entity.speed*2) / tileSize;
+                    entityTopRow = (entityTopWorldY - entity.speed*2) / tileSize;
 
                     tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
                     if (entityLeftCol*tileSize == entityLeftWorldX && entityRightCol*tileSize == entityRightWorldX) tileNum2 = tileNum1;
@@ -70,10 +65,7 @@ public class CollisionChecker {
                     entityTopRow = entityTopWorldY / tileSize;
                     break;
                 case 1: //left
-                    if(isGoingToDirection[i]){
-                        checkMove = true;
-                        entityLeftCol = (entityLeftWorldX - entity.speed) / tileSize;
-                    } else entityLeftCol = (entityLeftWorldX - entity.speed*2) / tileSize;
+                    entityLeftCol = (entityLeftWorldX - entity.speed*2) / tileSize;
 
                     tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
                     if (entityTopRow*tileSize == entityTopWorldY && entityBottomRow*tileSize == entityBottomWorldY) tileNum2 = tileNum1;
@@ -82,10 +74,7 @@ public class CollisionChecker {
                     entityLeftCol = entityLeftWorldX / tileSize;
                     break;
                 case 2: //down
-                    if(isGoingToDirection[i]){
-                        checkMove = true;
-                        entityBottomRow = (entityBottomWorldY + entity.speed) / tileSize;
-                    } else entityBottomRow = (entityBottomWorldY + entity.speed*2) / tileSize;
+                    entityBottomRow = (entityBottomWorldY + entity.speed*2) / tileSize;
 
                     tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
                     if (entityLeftCol*tileSize == entityLeftWorldX && entityRightCol*tileSize == entityRightWorldX) tileNum2 = tileNum1;
@@ -94,10 +83,7 @@ public class CollisionChecker {
                     entityBottomRow = entityBottomWorldY / tileSize;
                     break;
                 case 3: //right
-                    if(isGoingToDirection[i]){
-                        checkMove = true;
-                        entityRightCol = (entityRightWorldX + entity.speed) / tileSize;
-                    } else entityRightCol = (entityRightWorldX + entity.speed*2) / tileSize;
+                    entityRightCol = (entityRightWorldX + entity.speed*2) / tileSize;
 
                     tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
                     if (entityTopRow*tileSize == entityTopWorldY && entityBottomRow*tileSize == entityBottomWorldY) tileNum2 = tileNum1;
@@ -120,7 +106,7 @@ public class CollisionChecker {
                         entity.blockedRight = true;
                         break;
                 }
-                if(checkMove) entity.isBlocked = true;
+                if(isGoingToDirection[i]) entity.isBlocked = true;
             }
         }
     }
@@ -168,21 +154,19 @@ public class CollisionChecker {
                     entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
                     entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
 
-                    if(!isGoingToDirection[j]){
-                        switch(j){
-                            case 0: //up
-                                entity.solidArea.y -= entity.speed;
-                                break;
-                            case 1: //left
-                                entity.solidArea.x -= entity.speed;
-                                break;
-                            case 2: //down
-                                entity.solidArea.y += entity.speed;
-                                break;
-                            case 3: //right
-                                entity.solidArea.x += entity.speed;
-                                break;
-                        }
+                    switch(j){
+                        case 0: //up
+                            entity.solidArea.y -= entity.speed;
+                            break;
+                        case 1: //left
+                            entity.solidArea.x -= entity.speed;
+                            break;
+                        case 2: //down
+                            entity.solidArea.y += entity.speed;
+                            break;
+                        case 3: //right
+                            entity.solidArea.x += entity.speed;
+                            break;
                     }
 
                     if (entity.solidArea.intersects(gp.obj[i].solidArea)){
@@ -268,22 +252,22 @@ public class CollisionChecker {
 
                     switch(j){
                         case 0: //up
-                            if(!isGoingToDirection[j]) entity.solidArea.y -= entity.speed;
+                            entity.solidArea.y -= entity.speed;
                             pos1 = entity.solidArea.y + entity.solidArea.height/2;
                             pos2 = target[i].solidArea.y + target[i].solidArea.height/2;
                             break;
                         case 1: //left
-                            if(!isGoingToDirection[j]) entity.solidArea.x -= entity.speed;
+                            entity.solidArea.x -= entity.speed;
                             pos1 = entity.solidArea.x + entity.solidArea.width/2;
                             pos2 = target[i].solidArea.x + target[i].solidArea.width/2;
                             break;
                         case 2: //down
-                            if(!isGoingToDirection[j]) entity.solidArea.y += entity.speed;
+                            entity.solidArea.y += entity.speed;
                             pos1 = target[i].solidArea.y + target[i].solidArea.height/2;
                             pos2 = entity.solidArea.y + entity.solidArea.height/2;
                             break;
                         case 3: //right
-                            if(!isGoingToDirection[j]) entity.solidArea.x += entity.speed;
+                            entity.solidArea.x += entity.speed;
                             pos1 = target[i].solidArea.x + target[i].solidArea.width/2;
                             pos2 = entity.solidArea.x + entity.solidArea.width/2;
                             break;
@@ -365,22 +349,22 @@ public class CollisionChecker {
 
             switch(j){
                 case 0: //up
-                    if(!isGoingToDirection[j]) entity.solidArea.y -= entity.speed;
+                    entity.solidArea.y -= entity.speed;
                     pos1 = entity.solidArea.y + entity.solidArea.height/2;
                     pos2 = gp.player.solidArea.y + gp.player.solidArea.height/2;
                     break;
                 case 1: //left
-                    if(!isGoingToDirection[j]) entity.solidArea.x -= entity.speed;
+                    entity.solidArea.x -= entity.speed;
                     pos1 = entity.solidArea.x + entity.solidArea.width/2;
                     pos2 = gp.player.solidArea.x + gp.player.solidArea.width/2;
                     break;
                 case 2: //down
-                    if(!isGoingToDirection[j]) entity.solidArea.y += entity.speed;
+                    entity.solidArea.y += entity.speed;
                     pos1 = gp.player.solidArea.y + gp.player.solidArea.height/2;
                     pos2 = entity.solidArea.y + entity.solidArea.height/2;
                     break;
                 case 3: //right
-                    if(!isGoingToDirection[j]) entity.solidArea.x += entity.speed;
+                    entity.solidArea.x += entity.speed;
                     pos1 = gp.player.solidArea.x + gp.player.solidArea.width/2;
                     pos2 = entity.solidArea.x + entity.solidArea.width/2;
                     break;

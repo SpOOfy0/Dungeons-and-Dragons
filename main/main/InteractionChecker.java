@@ -35,7 +35,7 @@ public class InteractionChecker {
             else if (playerMiddleY < entityMiddleY) valueToReturn = "down";
         }
 
-         //Reset entity's solid area position
+        //Reset entity's solid area position
         entity.solidArea.x = entity.solidAreaDefaultX;
         entity.solidArea.y = entity.solidAreaDefaultY;
         //Reset object's solid area position
