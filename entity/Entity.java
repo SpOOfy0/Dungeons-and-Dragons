@@ -147,6 +147,10 @@ public class Entity {
 
     public Vector<ForcedMovement> listForcedMovement = new Vector<ForcedMovement>();
 
+    public void giveForcedMovement(String inputDirection, int inputDistance){
+        listForcedMovement.add(new ForcedMovement(inputDirection, inputDistance));
+    }
+
     public void giveForcedMovement(String inputDirection, int inputDistance, int inputDuration){
         listForcedMovement.add(new ForcedMovement(inputDirection, inputDistance, inputDuration));
     }

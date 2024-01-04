@@ -151,6 +151,46 @@ public class Player extends Entity {
         }
     }
 
+
+    public void verifyMovement(String direction){
+        isBlocked = false;
+        blockedUp = false;
+        blockedDown = false;
+        blockedLeft = false;
+        blockedRight = false;
+
+        //CHECK OBJECT COLLISION
+        gp.collisionChecker.checkTile(this); //Player is considered as an entity beacause it extends Entity
+        objIndexes = gp.collisionChecker.checkObject(this, true);
+
+        //CHECK NPC COLLISION
+        gp.collisionChecker.checkEntity(this, gp.npc);
+
+        //CHECK MONSTER COLLISION
+        monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
+
+
+        //IF COLLISION IS DETECTED, DON'T MOVE THE PLAYER
+        if(direction != null){
+            switch(direction){
+                case "up":
+                    if(!blockedUp) worldY += storeMovement[1];
+                    break;
+                case "down":
+                    if(!blockedDown) worldY += storeMovement[1];
+                    break;
+                case "left":
+                    if(!blockedLeft) worldX += storeMovement[0];
+                    break;
+                case "right":
+                    if(!blockedRight) worldX += storeMovement[0];
+                    break;
+            }
+        }
+        storeMovement[0] = 0;
+        storeMovement[1] = 0;
+    }
+
     public void verifyMovement(String[] direction){
         isBlocked = false;
         blockedUp = false;
@@ -193,6 +233,7 @@ public class Player extends Entity {
     }
     
     
+
     //ArrayList version
     /*public void pickUpObject(int objIndex){
         
