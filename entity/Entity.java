@@ -51,7 +51,7 @@ public class Entity {
     // public boolean isInteracting;                   // Non-utilisés pour l'instant
     
 
-    public String dialogues[] = new String[15];
+    public Vector<String> dialogues = new Vector<String>();
     int dialogueIndex = 0;
 
     // CHARACTER STATUS
@@ -141,7 +141,7 @@ public class Entity {
         }
 
         public boolean hasExpired(){
-            return remainingDuration == 0;
+            return remainingDuration <= 0;
         }
     }
 
