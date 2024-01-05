@@ -24,32 +24,37 @@ public class NPC extends Entity{
 
     public void setDialogues() {}
 
-    // ici, bufferDirection enregistre la direction auquel le NPC fait face avant de "discuter" avec le joueur en sorte de lui redonner cette direction après discussion
+    // ici, "bufferDirection" enregistre la direction auquel le NPC fait face avant de "discuter" avec le joueur en sorte de lui redonner cette direction après discussion
     public void setAction(){
 
         actionCounter++;
 
+        // si l'entité est bloquée dans son mouvement, on récupère les dernières directions prises,
+        // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
+        // de plus, on incrémente la variable d'impatience
         if(isBlocked){
             for(int i = 0; i < direction.length; i++){
-                if(direction[i] != null){
-                    decideRestrain(direction[i]);
-                }
+                if(direction[i] != null) decideRestrain(direction[i]);
             }
             impatience++;
+
+        // si l'entité est bloquée dans son mouvement, on récupère les dernières directions prises,
+        // et on redonne indivduellement le choix de prendre ces directions si l'entité n'est pas bloquée dans les directions correspondantes
+        // de plus, on réinitialise la variable d'impatience
         } else {
             for(int i = 0; i < direction.length; i++){
-                if(direction[i] != null){
-                    decideLetGo(direction[i]);
-                }
+                if(direction[i] != null) decideLetGo(direction[i]);
             }
             impatience = 0;
         }
         
+        // "bufferDirection" est non-null seulement si l'entité "discute" avec le joueur, et redonne la direction qu'avait l'entité avant de discuter avec le joueur
         if(gp.gameState == gp.playState && bufferDirection != null){
             direction[0] = bufferDirection;
             bufferDirection = null;
 
-        } else if(actionCounter >= actionTimer || impatience >= impatienceTolerance){ //WAIT 2 SECONDS (120 frames = 2 seconds)
+        // l'entité change de direction quand son compteur associée est a atteint la limite ou si elle est restée sans bouger trop longtemps
+        } else if(actionCounter >= actionTimer || impatience >= impatienceTolerance){
             
             wander();
             actionCounter = 0;

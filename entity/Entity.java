@@ -64,14 +64,15 @@ public class Entity {
     public int life;
 
 
+    // pour appliquer des mouvements qui ne proviennent pas d'un comportement de base aux entités
     private class ForcedMovement {
 
-        private String direction;       // only "up", "down", "left" or "right"
+        private String direction;       // only "up", "down", "left" or "right", never 'null'
         private int distance;           // distance the Entity will be moved per frame, will not be multiplied by tile size
 
         private boolean timebased;      // if true, the instance will exist until remainingDuration hits 0 
                                         // if false, will exist indefinitely until it gets destroyer through another mean
-        private int remainingDuration;  // remaining number of frames before the instance gets destroyed
+        private int remainingDuration;  // remaining number of frames the movement will be applied on the entity before the instance gets destroyed
 
         public ForcedMovement(String inputedDirection, int amountPushed) {
             if(inputedDirection != null && amountPushed != 0){
@@ -122,7 +123,7 @@ public class Entity {
             }
         }
 
-        public void applyForcedMovement(boolean consume){
+        public void applyForcedMovement(boolean consumeDuration){
             switch(direction){
                 case "up":
                     storeMovement[1] -= distance;
@@ -140,7 +141,7 @@ public class Entity {
             
             verifyMovement(direction);
             
-            if(consume){
+            if(consumeDuration){
                 remainingDuration--;
             }
         }
@@ -184,14 +185,12 @@ public class Entity {
 
     public void speak(){}
 
-    public void monsterDead(){}
-
 
     public void update(){
         
         setAction();
-        monsterDead();
 
+        // pour les non-joueurs, "direction[0]" ne doit pas avoir de valeur "null" vu qu'ils se déplacent constamment
         if(direction[0] == null) direction[0] = bufferDirection;
 
         switch(direction[0]){
@@ -209,11 +208,13 @@ public class Entity {
                 break;
         }
 
+        // les non-joueurs feront toujours face à la direction où ils veulent aller (sauf exception comme lors d'une "discussion" avec le joueur)
         facing = direction[0];
             
         verifyMovement(direction);
 
         applyForcedMovement();
+
 
         spriteCounter++;
         if(spriteCounter >= 12){
@@ -227,15 +228,22 @@ public class Entity {
         }   
     }
 
+    // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
+    // aussi étudie les collisions entre l'entité et son environnement
     public void verifyMovement(String direction){
+
+        // Initialization des variables
         isBlocked = false;
         blockedUp = false;
         blockedDown = false;
         blockedLeft = false;
         blockedRight = false;
+
+        // Vérifiaction des collisions
         gp.collisionChecker.checkTile(this);
         gp.collisionChecker.checkPlayer(this);
 
+        // Mouvement effectué si la direction est non bloqué
         if(direction != null){
             switch(direction){
                 case "up":
@@ -252,19 +260,28 @@ public class Entity {
                     break;
             }
         }
+
+        // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
     }
 
+    // vérifie et applique les mouvements dans "storeMovement" dans les directions entrées comme variable
+    // aussi étudie les collisions entre l'entité et son environnement
     public void verifyMovement(String[] direction){
+
+        // Initialization des variables
         isBlocked = false;
         blockedUp = false;
         blockedDown = false;
         blockedLeft = false;
         blockedRight = false;
+
+        // Vérifiaction des collisions
         gp.collisionChecker.checkTile(this);
         gp.collisionChecker.checkPlayer(this);
 
+        // Mouvements effectués individuellement si les directions sont non bloqués
         for(int i = 0; i < direction.length; i++){
             if(direction[i] != null){
                 switch(direction[i]){
@@ -283,6 +300,8 @@ public class Entity {
                 }
             }
         }
+
+        // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
     }
@@ -340,12 +359,18 @@ public class Entity {
 
     public void wander(){
 
+        // on récupère combien il y a de directions libres
         int numberFree = 0;
         for(int i = 0; i < stopDirections.length; i++){
             if(!stopDirections[i]) numberFree++;
         }
+
+        // s'il n'y a pas de directions libres, on garde la direction précédente
         if(numberFree > 0){
+
+            // s'il n'y a qu'une direction libre, on cherche la direction correspondante pour l'attribuer comme la prochaine direction à prendre
             if(numberFree == 1){
+
                 boolean notFound = true;
                 numberFree = 0;
                 while(notFound){
@@ -366,52 +391,62 @@ public class Entity {
                         direction[0] = "right";
                         break;
                 }
+
             } else {
+
                 String[] slotDirections = new String[numberFree];
-                numberFree = 0;
-                int i = 0;
-                while(numberFree < slotDirections.length){
-                    if(stopDirections[i] == false){
-                        switch(i) {
-                            case 0:
-                                slotDirections[numberFree] = "up";
-                                break;
-                            case 1:
-                                slotDirections[numberFree] = "down";
-                                break;
-                            case 2:
-                                slotDirections[numberFree] = "left";
-                                break;
-                            case 3:
-                                slotDirections[numberFree] = "right";
-                                break;
+
+                // sinon, on récupère les directions encore libres...
+                // (si numberFree == 4, on récupère toutes les directions, pas besoin d'utiliser "slotDirections")
+                if(numberFree < 4){
+                    numberFree = 0;
+                    int i = 0;
+                    while(numberFree < slotDirections.length){
+                        if(!stopDirections[i]){
+                            switch(i) {
+                                case 0:
+                                    slotDirections[numberFree] = "up";
+                                    break;
+                                case 1:
+                                    slotDirections[numberFree] = "down";
+                                    break;
+                                case 2:
+                                    slotDirections[numberFree] = "left";
+                                    break;
+                                case 3:
+                                    slotDirections[numberFree] = "right";
+                                    break;
+                            }
+                            numberFree++;
                         }
-                        numberFree++;
+                        i++;
                     }
-                    i++;
                 }
 
+                // ...et on donne une direction selon la rng de manière équitable entre les directions disponibles
+                // ("numberFree" sera aussi grand que le nombre de choix disponibles dans tous les cas)
                 Random random = new Random();
-                int randomMove = random.nextInt(120);
+                int randomMove = random.nextInt(12);
 
-                switch(slotDirections.length) {
+                switch(numberFree) {
                     case 2:
-                        if(randomMove < 60) direction[0] = slotDirections[0];
+                        if(randomMove < 6) direction[0] = slotDirections[0];
                         else direction[0] = slotDirections[1];
                         break;
                     case 3:
-                        if(randomMove < 40) direction[0] = slotDirections[0];
-                        else if(randomMove < 80) direction[0] = slotDirections[1];
+                        if(randomMove < 4) direction[0] = slotDirections[0];
+                        else if(randomMove < 8) direction[0] = slotDirections[1];
                         else direction[0] = slotDirections[2];
                         break;
                     case 4:
-                        if(randomMove < 30) direction[0] = slotDirections[0];
-                        else if(randomMove < 60) direction[0] = slotDirections[1];
-                        else if(randomMove < 90) direction[0] = slotDirections[2];
-                        else direction[0] = slotDirections[3];
+                        if(randomMove < 3) direction[0] = "up";
+                        else if(randomMove < 6) direction[0] = "down";
+                        else if(randomMove < 9) direction[0] = "left";
+                        else direction[0] = "right";
                         break;
                 }
             }
+
         }
     }
 

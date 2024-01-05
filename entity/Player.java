@@ -104,6 +104,7 @@ public class Player extends Entity {
         if(attackDelay < attackSpeed) attackDelay++;
         fireAttaque();
         
+
         direction[0] = null;
 
         if(keyHandler.leftPressed){
@@ -124,16 +125,19 @@ public class Player extends Entity {
             storeMovement[1] += speed;
         }
 
+        // fonction pour décider la direction dans laquelle le joueur regardera
         if(direction[0] != null || direction[1] != null){
             if(direction[0] == null) facing = direction[1];
             else if(direction[1] == null) facing = direction[0];
             else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
         }
 
+
         verifyMovement(direction);
 
         applyForcedMovement();
 
+        // s'occuper des intéractions entre le joueur et son environnement
         for(int i = 0; i < objIndexes.size(); i++)
             pickUpObject(objIndexes.get(i));
 
@@ -142,6 +146,7 @@ public class Player extends Entity {
 
         for(int i = 0; i < monsterIndexes.size(); i++)
             interactMonster(monsterIndexes.get(i));
+
 
         if(spriteCounter < 12) spriteCounter++;
         else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
@@ -152,25 +157,24 @@ public class Player extends Entity {
     }
 
 
+    // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
+    // aussi étudie les collisions entre le joueur et son environnement
     public void verifyMovement(String direction){
+
+        // Initialization des variables
         isBlocked = false;
         blockedUp = false;
         blockedDown = false;
         blockedLeft = false;
         blockedRight = false;
 
-        //CHECK OBJECT COLLISION
-        gp.collisionChecker.checkTile(this); //Player is considered as an entity beacause it extends Entity
+        // Vérifiaction des collisions
+        gp.collisionChecker.checkTile(this);
         objIndexes = gp.collisionChecker.checkObject(this, true);
-
-        //CHECK NPC COLLISION
         gp.collisionChecker.checkEntity(this, gp.npc);
-
-        //CHECK MONSTER COLLISION
         monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
 
-
-        //IF COLLISION IS DETECTED, DON'T MOVE THE PLAYER
+        // Mouvement effectué si la direction est non bloqué
         if(direction != null){
             switch(direction){
                 case "up":
@@ -187,29 +191,30 @@ public class Player extends Entity {
                     break;
             }
         }
+
+        // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
     }
 
+    // vérifie et applique les mouvements dans "storeMovement" dans les directions entrées comme variable
+    // aussi étudie les collisions entre le joueur et son environnement
     public void verifyMovement(String[] direction){
+
+        // Initialization des variables
         isBlocked = false;
         blockedUp = false;
         blockedDown = false;
         blockedLeft = false;
         blockedRight = false;
 
-        //CHECK OBJECT COLLISION
-        gp.collisionChecker.checkTile(this); //Player is considered as an entity beacause it extends Entity
+        // Vérifiaction des collisions
+        gp.collisionChecker.checkTile(this);
         objIndexes = gp.collisionChecker.checkObject(this, true);
-
-        //CHECK NPC COLLISION
         gp.collisionChecker.checkEntity(this, gp.npc);
-
-        //CHECK MONSTER COLLISION
         monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
 
-
-        //IF COLLISION IS DETECTED, DON'T MOVE THE PLAYER
+        // Mouvements effectués individuellement si les directions sont non bloqués
         for(int i = 0; i < direction.length; i++){
             if(direction[i] != null){
                 switch(direction[i]){
@@ -228,6 +233,8 @@ public class Player extends Entity {
                 }
             }
         }
+
+        // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
     }
@@ -355,6 +362,7 @@ public class Player extends Entity {
         gp.keyHandler.xPressed = false;
     }
 
+
     public int fireAttaque(){
 
         if(gp.keyHandler.dPressed && attackDelay >= attackSpeed && ballOn == 0){
@@ -367,6 +375,16 @@ public class Player extends Entity {
             ballOn = 1;
         }
         return ballOn;
+    }
+    
+
+    public void interactMonster(int monsterIndex){
+
+        baseAttack(monsterIndex);
+
+        if(gp.monster[monsterIndex].attackDelay >= gp.monster[monsterIndex].attackSpeed){
+            gp.monster[monsterIndex].attackPlayer();
+        }
     }
 
     public void baseAttack(int monsterIndex){
@@ -381,25 +399,6 @@ public class Player extends Entity {
 
         }
     }
-    
-    public void interactMonster(int monsterIndex){
-
-        baseAttack(monsterIndex);
-
-        if(gp.monster[monsterIndex].attackDelay >= gp.monster[monsterIndex].attackSpeed){
-            gp.monster[monsterIndex].attackPlayer();
-        }
-    }
-
-    // public int abilityDommage(int Index){
-
-    //     if(Index != 999 && ballOn == 1){
-    //         gp.monster[Index].life -= 1;
-    //         gp.ability = null;
-    //         ballOn = 0;
-    //     }
-    //     return ballOn;
-    // }
     
 
     public void draw(Graphics2D g2){

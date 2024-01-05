@@ -16,24 +16,30 @@ public class Monster extends Entity{
         
         aggravated = false;
         noticeRange = 2;
-        monsterDead();
-  
     }
 
+
     
-    // ici, bufferDirection enregistre la direction auquel le monstre veut aller pour aller vers le joueur
-    // seulement quand il est bloqué dans cette direction, en sorte de lui redonner cette direction après débloquage de cette direction
+    // ici, seulement quand le monstre poursuit le joueur, "bufferDirection" enregistre la direction auquel le monstre veut se déplaceer pour aller
+    // vers le joueur seulement quand il est bloqué dans cette direction, en sorte de lui redonner cette direction après débloquage de cette direction
+    // exemple: Le monstre veut aller à droite pour aller vers le joueur et se trouve face à un mur.
+    //          "bufferDirection" enregistre "Right", et après fait en sorte que le monstre ne peut plus se déplacer vers la droite, pour qu'il prenne une autre direction.
+    //          Seulement quand le monstre pourra se déplacer vers la droite que "bufferDirection" redonnera la direction
      public void setAction() {
 
         if(attackDelay < attackSpeed) attackDelay++;
 
         if(!aggravated){
             gp.interactionChecker.noticePlayer(this);
+            // si l'entité vient de changer de la non-traque à la traque, tous les blocages de choix de direction sont retirés
             if(aggravated) decideLetGoAll();
         }
 
         if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*gp.tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*gp.tileSize)) {
 
+            // si l'entité est bloquée dans son mouvement mais qu'elle n'est pas bloquée contre le joueur,
+            // on récupère les dernières directions prises, enregistre ces directions dans "bufferFirection",
+            // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
             if(!isWithPlayer && isBlocked){
                 bufferDirection = null;
                 for(int i = 0; i < direction.length; i++){
@@ -43,12 +49,14 @@ public class Monster extends Entity{
                         decideRestrain(bufferDirection);
                     }
                 }
+
+            // si l'entité n'est bloquée dans son mouvement ou qu'elle l'est mais est bloquée contre le joueur,
+            // on redonne le choix de prendre la direction que "bufferDirection" a enregistré,
+            // et on effectue de même pour les dernières directions prises par l'entité sur l'image précédente
             } else {
                 if (bufferDirection != null) decideLetGo(bufferDirection);
                 for(int i = 0; i < direction.length; i++){
-                    if(direction[i] != null){
-                        decideLetGo(direction[i]);
-                    }
+                    if(direction[i] != null) decideLetGo(direction[i]);
                 }
             }
 
@@ -56,6 +64,7 @@ public class Monster extends Entity{
 
         } else {
 
+            // si l'entité vient de changer de la traque à la non-traque, tous les blocages de choix de direction sont retirés
             if(aggravated){
                 decideLetGoAll();
                 aggravated = false;
@@ -63,23 +72,27 @@ public class Monster extends Entity{
 
             actionCounter++;
 
+            // si l'entité est bloquée dans son mouvement, on récupère les dernières directions prises,
+            // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
+            // de plus, on incrémente la variable d'impatience
             if(isBlocked){
                 for(int i = 0; i < direction.length; i++){
-                    if(direction[i] != null){
-                        decideRestrain(direction[i]);
-                    }
+                    if(direction[i] != null) decideRestrain(direction[i]);
                 }
                 impatience++;
+
+            // si l'entité est bloquée dans son mouvement, on récupère les dernières directions prises,
+            // et on redonne indivduellement le choix de prendre ces directions si l'entité n'est pas bloquée dans les directions correspondantes
+            // de plus, on réinitialise la variable d'impatience
             } else {
                 for(int i = 0; i < direction.length; i++){
-                    if(direction[i] != null){
-                        decideLetGo(direction[i]);
-                    }
+                    if(direction[i] != null) decideLetGo(direction[i]);
                 }
                 impatience = 0;
             }
 
-            if(actionCounter >= actionTimer || impatience >= impatienceTolerance){ //WAIT 2 SECONDS (120 frames = 2 seconds)
+            // l'entité change de direction quand son compteur associée est a atteint la limite ou si elle est restée sans bouger trop longtemps
+            if(actionCounter >= actionTimer || impatience >= impatienceTolerance){
                 
                 wander();
                 actionCounter = 0;
@@ -90,8 +103,10 @@ public class Monster extends Entity{
     }
 
 
+
     public void GoToPlayer(Player player) {
 
+        // to follow the player
         if(worldY + solidAreaDefaultY + solidArea.height <= player.worldY + player.solidAreaDefaultY + 1){
             if(!stopDirections[1]) direction[0] = "down";
         } else if(player.worldY + player.solidAreaDefaultY + player.solidArea.height <= worldY + solidAreaDefaultY + 1){
@@ -108,7 +123,7 @@ public class Monster extends Entity{
 
             int tileSize = gp.tileSize;
 
-            // to follow the player when the player is in a 1-tile gap
+            // to follow the player when can't be followed with the previous functions
             switch(bufferDirection) {
                 case "down":
                 case "up":
@@ -139,18 +154,6 @@ public class Monster extends Entity{
     public void receiveDmg(int dmg) {
         life -= dmg;
         aggravated = true;
-    }
-
-    public void monsterDead() {
-        
-        for(int i = 0; i < gp.monster.length; i++) {
-            if(gp.monster[i] != null) {
-                if(gp.monster[i].life <= 0) {
-                    gp.monster[i] = null;
-                }
-            }
-        }
-        
     }
 
     public void paintComponent(Graphics2D g2) {
