@@ -3,6 +3,7 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -22,7 +23,6 @@ public class Entity {
 
     public int spriteCounter = 0;
     public int spriteNum = 1;
-    public int actionCounter = 0;
     public int attackSpeed = 30;
     public int attackDelay = 0;
 
@@ -41,6 +41,11 @@ public class Entity {
     public int aggroRange;
     public int noticeRange;
     public boolean isWithPlayer;    // Variables pour les non-joueurs, pour interagir avec le joueur
+    public boolean[] stopDirections = {false, false, false, false}; // pour arrêter les non-joueurs à aller dans la direction: 0:up  1:down  2:left  3:right
+    public int actionCounter = 0;
+    public int actionTimer = 120;
+    public int impatience = 0;
+    public int impatienceTolerance = 30;
 
     // public Rectangle interactionArea = new Rectangle(-1, -1, 50, 50);   // Est utilisé pour toute interaction "initiée"
     // public int interactionAreaDefaultX, interactionAreaDefaultY;
@@ -280,6 +285,134 @@ public class Entity {
         }
         storeMovement[0] = 0;
         storeMovement[1] = 0;
+    }
+
+
+    public void decideRestrain(String direction){
+        switch(direction) {
+            case "up":
+                if(blockedUp) stopDirections[0] = true;
+                break;
+            case "down":
+                if(blockedDown) stopDirections[1] = true;
+                break;
+            case "left":
+                if(blockedLeft) stopDirections[2] = true;
+                break;
+            case "right":
+                if(blockedRight) stopDirections[3] = true;
+                break;
+            default:
+        }
+    }
+
+    public void decideRestrainAll(){
+        decideRestrain("up");
+        decideRestrain("down");
+        decideRestrain("left");
+        decideRestrain("right");
+    }
+
+    public void decideLetGo(String direction){
+        switch(direction) {
+            case "up":
+                if(!blockedUp) stopDirections[0] = false;
+                break;
+            case "down":
+                if(!blockedDown) stopDirections[1] = false;
+                break;
+            case "left":
+                if(!blockedLeft) stopDirections[2] = false;
+                break;
+            case "right":
+                if(!blockedRight) stopDirections[3] = false;
+                break;
+            default:
+        }
+    }
+
+    public void decideLetGoAll (){
+        decideLetGo("up");
+        decideLetGo("down");
+        decideLetGo("left");
+        decideLetGo("right");
+    }
+
+    public void wander(){
+
+        int numberFree = 0;
+        for(int i = 0; i < stopDirections.length; i++){
+            if(!stopDirections[i]) numberFree++;
+        }
+        if(numberFree > 0){
+            if(numberFree == 1){
+                boolean notFound = true;
+                numberFree = 0;
+                while(notFound){
+                   notFound = stopDirections[numberFree];
+                   numberFree++;
+                }
+                switch(numberFree) {
+                    case 1:
+                        direction[0] = "up";
+                        break;
+                    case 2:
+                        direction[0] = "down";
+                        break;
+                    case 3:
+                        direction[0] = "left";
+                        break;
+                    case 4:
+                        direction[0] = "right";
+                        break;
+                }
+            } else {
+                String[] slotDirections = new String[numberFree];
+                numberFree = 0;
+                int i = 0;
+                while(numberFree < slotDirections.length){
+                    if(stopDirections[i] == false){
+                        switch(i) {
+                            case 0:
+                                slotDirections[numberFree] = "up";
+                                break;
+                            case 1:
+                                slotDirections[numberFree] = "down";
+                                break;
+                            case 2:
+                                slotDirections[numberFree] = "left";
+                                break;
+                            case 3:
+                                slotDirections[numberFree] = "right";
+                                break;
+                        }
+                        numberFree++;
+                    }
+                    i++;
+                }
+
+                Random random = new Random();
+                int randomMove = random.nextInt(120);
+
+                switch(slotDirections.length) {
+                    case 2:
+                        if(randomMove < 60) direction[0] = slotDirections[0];
+                        else direction[0] = slotDirections[1];
+                        break;
+                    case 3:
+                        if(randomMove < 40) direction[0] = slotDirections[0];
+                        else if(randomMove < 80) direction[0] = slotDirections[1];
+                        else direction[0] = slotDirections[2];
+                        break;
+                    case 4:
+                        if(randomMove < 30) direction[0] = slotDirections[0];
+                        else if(randomMove < 60) direction[0] = slotDirections[1];
+                        else if(randomMove < 90) direction[0] = slotDirections[2];
+                        else direction[0] = slotDirections[3];
+                        break;
+                }
+            }
+        }
     }
 
 

@@ -20,6 +20,7 @@ public class NPC_1 extends NPC{
         setDialogues();
     }
 
+    @Override
     public void getThisNPCImage(){
 
         up1 = getImage("/Player/up1.png");
@@ -32,6 +33,7 @@ public class NPC_1 extends NPC{
         right2 = getImage("/Player/right2.png");
     }
 
+    @Override
     public void setDialogues() {
 
         dialogues.add("Congratulations! you found the one piece!");

@@ -2,7 +2,6 @@ package entity.Monsters;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.Random;
 
 import entity.Entity;
 import entity.Player;
@@ -11,7 +10,6 @@ import main.GamePannel;
 public class Monster extends Entity{
     
     public int dommage;
-    public boolean blockRight = false, blockLeft = false, blockDown = false, blockUp = false;
     
     public Monster(GamePannel gp) {
         super(gp);
@@ -23,51 +21,33 @@ public class Monster extends Entity{
     }
 
     
+    // ici, bufferDirection enregistre la direction auquel le monstre veut aller pour aller vers le joueur
+    // seulement quand il est bloqué dans cette direction, en sorte de lui redonner cette direction après débloquage de cette direction
      public void setAction() {
 
         if(attackDelay < attackSpeed) attackDelay++;
 
-        if(!aggravated) gp.interactionChecker.noticePlayer(this);
+        if(!aggravated){
+            gp.interactionChecker.noticePlayer(this);
+            if(aggravated) decideLetGoAll();
+        }
 
         if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*gp.tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*gp.tileSize)) {
-            
+
             if(!isWithPlayer && isBlocked){
                 bufferDirection = null;
                 for(int i = 0; i < direction.length; i++){
                     if(direction[i] != null){
                         bufferDirection = direction[i];
                         direction[i] = null;
-                        switch(bufferDirection) {
-                            case "down":
-                                if(blockedDown) blockDown = true;
-                                break;
-                            case "up":
-                                if(blockedUp) blockUp = true;
-                                break;
-                            case "right":
-                                if(blockedRight) blockRight = true;
-                                break;
-                            case "left":
-                                if(blockedLeft) blockLeft = true;
-                                break;
-                        }
+                        decideRestrain(bufferDirection);
                     }
                 }
             } else {
-                if (bufferDirection != null){
-                    switch(bufferDirection) {
-                        case "down":
-                            if(!blockedDown) blockDown = false;
-                            break;
-                        case "up":
-                            if(!blockedUp) blockUp = false;
-                            break;
-                        case "right":
-                            if(!blockedRight) blockRight = false;
-                            break;
-                        case "left":
-                            if(!blockedLeft) blockLeft = false;
-                            break;
+                if (bufferDirection != null) decideLetGo(bufferDirection);
+                for(int i = 0; i < direction.length; i++){
+                    if(direction[i] != null){
+                        decideLetGo(direction[i]);
                     }
                 }
             }
@@ -75,23 +55,35 @@ public class Monster extends Entity{
             GoToPlayer(gp.player);
 
         } else {
-            aggravated = false;
+
+            if(aggravated){
+                decideLetGoAll();
+                aggravated = false;
+            }
+
             actionCounter++;
 
-            if(actionCounter >= 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
-                Random random = new Random();
-                int i = random.nextInt(100);
-
-                if(i < 25){
-                    direction[0] = "up";
-                } else if(i < 50){
-                    direction[0] = "down";
-                } else if(i < 75){
-                    direction[0] = "left";
-                } else if(i < 100){
-                    direction[0] = "right";
+            if(isBlocked){
+                for(int i = 0; i < direction.length; i++){
+                    if(direction[i] != null){
+                        decideRestrain(direction[i]);
+                    }
                 }
+                impatience++;
+            } else {
+                for(int i = 0; i < direction.length; i++){
+                    if(direction[i] != null){
+                        decideLetGo(direction[i]);
+                    }
+                }
+                impatience = 0;
+            }
+
+            if(actionCounter >= actionTimer || impatience >= impatienceTolerance){ //WAIT 2 SECONDS (120 frames = 2 seconds)
+                
+                wander();
                 actionCounter = 0;
+                impatience = 0;
             }
         }
 
@@ -101,15 +93,15 @@ public class Monster extends Entity{
     public void GoToPlayer(Player player) {
 
         if(worldY + solidAreaDefaultY + solidArea.height <= player.worldY + player.solidAreaDefaultY + 1){
-            if(!blockDown) direction[0] = "down";
+            if(!stopDirections[1]) direction[0] = "down";
         } else if(player.worldY + player.solidAreaDefaultY + player.solidArea.height <= worldY + solidAreaDefaultY + 1){
-            if(!blockUp) direction[0] = "up";
+            if(!stopDirections[0]) direction[0] = "up";
         }
 
         if(worldX + solidAreaDefaultX + solidArea.width <= player.worldX + player.solidAreaDefaultX + 1){
-            if(!blockRight) direction[0] = "right";
+            if(!stopDirections[3]) direction[0] = "right";
         } else if(player.worldX + player.solidAreaDefaultX + player.solidArea.width <= worldX + solidAreaDefaultX + 1){
-            if(!blockLeft) direction[0] = "left";
+            if(!stopDirections[2]) direction[0] = "left";
         }
 
         if(direction[0] == null){
@@ -121,17 +113,17 @@ public class Monster extends Entity{
                 case "down":
                 case "up":
                     if(worldX + solidAreaDefaultX < (player.worldX + player.solidAreaDefaultX)/tileSize){
-                        if(!blockRight) direction[0] = "right";
+                        if(!stopDirections[3]) direction[0] = "right";
                     } else if((player.worldX + player.solidAreaDefaultX)/tileSize < worldX + solidAreaDefaultX){
-                        if(!blockLeft) direction[0] = "left";
+                        if(!stopDirections[2]) direction[0] = "left";
                     }
                     break;
                 case "right":
                 case "left":
                     if(worldY + solidAreaDefaultY < (player.worldY + player.solidAreaDefaultY)/tileSize){
-                        if(!blockDown) direction[0] = "down";
+                        if(!stopDirections[1]) direction[0] = "down";
                     } else if((player.worldY + player.solidAreaDefaultY)/tileSize < worldY + solidAreaDefaultY){
-                        if(!blockUp) direction[0] = "up";
+                        if(!stopDirections[0]) direction[0] = "up";
                     }
                     break;
             }

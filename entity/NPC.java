@@ -1,7 +1,5 @@
 package entity;
 
-import java.util.Random;
-
 import main.GamePannel;
 
 public class NPC extends Entity{
@@ -25,29 +23,37 @@ public class NPC extends Entity{
     public void getThisNPCImage(){}
 
     public void setDialogues() {}
-    
+
+    // ici, bufferDirection enregistre la direction auquel le NPC fait face avant de "discuter" avec le joueur en sorte de lui redonner cette direction après discussion
     public void setAction(){
 
         actionCounter++;
+
+        if(isBlocked){
+            for(int i = 0; i < direction.length; i++){
+                if(direction[i] != null){
+                    decideRestrain(direction[i]);
+                }
+            }
+            impatience++;
+        } else {
+            for(int i = 0; i < direction.length; i++){
+                if(direction[i] != null){
+                    decideLetGo(direction[i]);
+                }
+            }
+            impatience = 0;
+        }
         
         if(gp.gameState == gp.playState && bufferDirection != null){
             direction[0] = bufferDirection;
             bufferDirection = null;
 
-        } else if(actionCounter >= 120){ //WAIT 2 SECONDS (120 frames = 2 seconds)
-            Random random = new Random();
-            int i = random.nextInt(100);
-
-            if(i < 25){
-                direction[0] = "up";
-            } else if(i < 50){
-                direction[0] = "down";
-            } else if(i < 75){
-                direction[0] = "left";
-            } else if(i < 100){
-                direction[0] = "right";
-            }
+        } else if(actionCounter >= actionTimer || impatience >= impatienceTolerance){ //WAIT 2 SECONDS (120 frames = 2 seconds)
+            
+            wander();
             actionCounter = 0;
+            impatience = 0;
         }
     }
 
