@@ -39,7 +39,7 @@ public class Ability extends Entity{
             
             abilityCollisionIndex = monsterCollision();
             if(abilityCollision){
-                gp.monster[abilityCollisionIndex].receiveDmg(dmg);
+                gp.monster.get(abilityCollisionIndex).receiveDmg(dmg);
             }
             rangeAbility();
             
@@ -47,17 +47,17 @@ public class Ability extends Entity{
     }
              
     public int monsterCollision() {
-        for(int i = 0; i < gp.monster.length; i++){
-            abilityCollision = false;
-            if (gp.monster[i] != null){
 
-                //C'est bon
+        for(int i = 0; i < gp.monster.size(); i++){
+            abilityCollision = false;
+            if (gp.monster.get(i) != null){
+
                 solidArea.x += worldX;
                 solidArea.y += worldY;
-                gp.monster[i].solidArea.x += gp.monster[i].worldX;
-                gp.monster[i].solidArea.y += gp.monster[i].worldY;
+                gp.monster.get(i).solidArea.x += gp.monster.get(i).worldX;
+                gp.monster.get(i).solidArea.y += gp.monster.get(i).worldY;
 
-                if (solidArea.intersects(gp.monster[i].solidArea)){
+                if (solidArea.intersects(gp.monster.get(i).solidArea)){
                     abilityCollision = true;
                     direction[0] = null;
                     gp.player.ballOn = 0;
@@ -65,19 +65,19 @@ public class Ability extends Entity{
 
                     solidArea.x = solidAreaDefaultX;
                     solidArea.y = solidAreaDefaultY;
-                    gp.monster[i].solidArea.x = gp.monster[i].solidAreaDefaultX;
-                    gp.monster[i].solidArea.y = gp.monster[i].solidAreaDefaultY;
+                    gp.monster.get(i).solidArea.x = gp.monster.get(i).solidAreaDefaultX;
+                    gp.monster.get(i).solidArea.y = gp.monster.get(i).solidAreaDefaultY;
 
                     return i;
                 }
 
                 solidArea.x = solidAreaDefaultX;
                 solidArea.y = solidAreaDefaultY;
-                gp.monster[i].solidArea.x = gp.monster[i].solidAreaDefaultX;
-                gp.monster[i].solidArea.y = gp.monster[i].solidAreaDefaultY;
+                gp.monster.get(i).solidArea.x = gp.monster.get(i).solidAreaDefaultX;
+                gp.monster.get(i).solidArea.y = gp.monster.get(i).solidAreaDefaultY;
             }
         }
-        return 999;        
+        return 999;
     }
 
     public void rangeAbility(){

@@ -4,17 +4,9 @@ import main.GamePannel;
 
 public class NPC_1 extends NPC{
     
-    public NPC_1(GamePannel gp){
+    public NPC_1(GamePannel gp, String inputedDirection, int coordX, int coordY){
 
-        super(gp);
-
-        noticeRange = 0;
-        
-        direction[0] = "down";
-        direction[1] = null;
-        facing = direction[0];
-        bufferDirection = null;
-        speed = 1;
+        super(gp, inputedDirection, coordX, coordY);
 
         getThisNPCImage();
         setDialogues();

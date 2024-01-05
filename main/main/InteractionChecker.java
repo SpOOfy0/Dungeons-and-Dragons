@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Rectangle;
+import java.util.Vector;
 
 import entity.Entity;
 
@@ -47,7 +48,7 @@ public class InteractionChecker {
 
 
 
-    public int interactPossible(Entity entity, Entity[] target){
+    public int interactPossible(Entity entity, Vector<? extends Entity> target){
 
         entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
         entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
@@ -77,27 +78,29 @@ public class InteractionChecker {
         int distanceInBetween = gp.tileSize;
         int closestDistance = (gp.tileSize)/2;
         
-        for(int i = 0; i < target.length; i++){
+        for(int i = 0; i < target.size(); i++){
 
-            if (closestDistance > 0 && target[i] != null){
+            Entity studiedTarget = target.get(i);
+
+            if (closestDistance > 0 && studiedTarget != null){
 
                 //Get object's solid area position
-                target[i].solidArea.x = target[i].worldX + target[i].solidArea.x;
-                target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
+                studiedTarget.solidArea.x = studiedTarget.worldX + studiedTarget.solidArea.x;
+                studiedTarget.solidArea.y = studiedTarget.worldY + studiedTarget.solidArea.y;
 
-                if (zoneDetect.intersects(target[i].solidArea)){
+                if (zoneDetect.intersects(studiedTarget.solidArea)){
                     switch(entity.facing) {
                         case "up":
-                            distanceInBetween = entity.solidArea.y - target[i].solidArea.y - target[i].solidArea.height;
+                            distanceInBetween = entity.solidArea.y - studiedTarget.solidArea.y - studiedTarget.solidArea.height;
                             break;
                         case "down":
-                            distanceInBetween = target[i].solidArea.y - entity.solidArea.y - entity.solidArea.height;
+                            distanceInBetween = studiedTarget.solidArea.y - entity.solidArea.y - entity.solidArea.height;
                             break;
                         case "left":
-                            distanceInBetween = entity.solidArea.x - target[i].solidArea.x - target[i].solidArea.width;
+                            distanceInBetween = entity.solidArea.x - studiedTarget.solidArea.x - studiedTarget.solidArea.width;
                             break;
                         case "right":
-                            distanceInBetween = target[i].solidArea.x - entity.solidArea.x - entity.solidArea.width;
+                            distanceInBetween = studiedTarget.solidArea.x - entity.solidArea.x - entity.solidArea.width;
                             break;
                     }
                     if  ((closestDistance > distanceInBetween && distanceInBetween >= 0) || distanceInBetween >= closestDistance*2){
@@ -107,8 +110,8 @@ public class InteractionChecker {
                 }
                 
                 //Reset object's solid area position
-                target[i].solidArea.x = target[i].solidAreaDefaultX;
-                target[i].solidArea.y = target[i].solidAreaDefaultY;
+                studiedTarget.solidArea.x = studiedTarget.solidAreaDefaultX;
+                studiedTarget.solidArea.y = studiedTarget.solidAreaDefaultY;
             }
         }
         //Reset entity's solid area position

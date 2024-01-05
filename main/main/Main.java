@@ -19,6 +19,7 @@ public class Main{
         window.setVisible(true);
 
         gamePannel.setUpObject();
+        gamePannel.gameState = gamePannel.playState;
         //gamePannel.startGameThread();
         //GameStart frame = new GameStart();
         

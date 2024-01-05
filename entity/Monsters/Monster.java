@@ -11,11 +11,19 @@ public class Monster extends Entity{
     
     public int dommage;
     
-    public Monster(GamePannel gp) {
+    public Monster(GamePannel gp, String inputedDirection, int coordX, int coordY) {
         super(gp);
         
         aggravated = false;
         noticeRange = 2;
+
+        worldX = coordX * gp.tileSize;
+        worldY = coordY * gp.tileSize;
+
+        if(inputedDirection != null) direction[0] = inputedDirection;
+        else direction[0] = "up";
+        direction[1] = null;
+        facing = direction[0];
     }
 
 

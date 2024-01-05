@@ -4,25 +4,28 @@ import main.GamePannel;
 
 public class NPC extends Entity{
     
-    public NPC(GamePannel gp){
+    public NPC(GamePannel gp, String inputedDirection, int coordX, int coordY){
 
         super(gp);
 
         noticeRange = 0;
+
+        worldX = coordX * gp.tileSize;
+        worldY = coordY * gp.tileSize;
         
-        direction[0] = "down";
+        if(inputedDirection != null) direction[0] = inputedDirection;
+        else direction[0] = "down";
         direction[1] = null;
         facing = direction[0];
         bufferDirection = null;
         speed = 1;
-
-        getThisNPCImage();
-        setDialogues();
     }
 
     public void getThisNPCImage(){}
 
     public void setDialogues() {}
+
+
 
     // ici, "bufferDirection" enregistre la direction auquel le NPC fait face avant de "discuter" avec le joueur en sorte de lui redonner cette direction après discussion
     public void setAction(){
@@ -61,6 +64,8 @@ public class NPC extends Entity{
             impatience = 0;
         }
     }
+
+
 
     public void speak(){
 

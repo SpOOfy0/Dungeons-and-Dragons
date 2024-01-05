@@ -206,12 +206,14 @@ public class CollisionChecker {
 
 
 
-    public Vector<Integer> checkEntity(Entity entity, Entity[] target){
+    public Vector<Integer> checkEntity(Entity entity, Vector<? extends Entity> target){
         Vector<Integer> index = new Vector<Integer>();
         
-        for(int i = 0; i < target.length; i++){
+        for(int i = 0; i < target.size(); i++){
+            
+            Entity studiedTarget = target.get(i);
 
-            if (target[i] != null){
+            if (target.get(i) != null){
 
                 boolean[] isGoingToDirection = {false, false, false, false};
 
@@ -237,8 +239,8 @@ public class CollisionChecker {
                 }
 
                 //Get object's solid area position
-                target[i].solidArea.x = target[i].worldX + target[i].solidArea.x;
-                target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
+                studiedTarget.solidArea.x = studiedTarget.worldX + studiedTarget.solidArea.x;
+                studiedTarget.solidArea.y = studiedTarget.worldY + studiedTarget.solidArea.y;
 
                 int pos1 = 0, pos2 = 1;
 
@@ -254,28 +256,28 @@ public class CollisionChecker {
                         case 0: //up
                             entity.solidArea.y -= entity.speed;
                             pos1 = entity.solidArea.y + entity.solidArea.height/2;
-                            pos2 = target[i].solidArea.y + target[i].solidArea.height/2;
+                            pos2 = studiedTarget.solidArea.y + studiedTarget.solidArea.height/2;
                             break;
                         case 1: //left
                             entity.solidArea.x -= entity.speed;
                             pos1 = entity.solidArea.x + entity.solidArea.width/2;
-                            pos2 = target[i].solidArea.x + target[i].solidArea.width/2;
+                            pos2 = studiedTarget.solidArea.x + studiedTarget.solidArea.width/2;
                             break;
                         case 2: //down
                             entity.solidArea.y += entity.speed;
-                            pos1 = target[i].solidArea.y + target[i].solidArea.height/2;
+                            pos1 = studiedTarget.solidArea.y + studiedTarget.solidArea.height/2;
                             pos2 = entity.solidArea.y + entity.solidArea.height/2;
                             break;
                         case 3: //right
                             entity.solidArea.x += entity.speed;
-                            pos1 = target[i].solidArea.x + target[i].solidArea.width/2;
+                            pos1 = studiedTarget.solidArea.x + studiedTarget.solidArea.width/2;
                             pos2 = entity.solidArea.x + entity.solidArea.width/2;
                             break;
                     }
 
-                    if (entity.solidArea.intersects(target[i].solidArea)){
+                    if (entity.solidArea.intersects(studiedTarget.solidArea)){
                         if(pos1 > pos2){
-                            intersection = entity.solidArea.intersection(target[i].solidArea);
+                            intersection = entity.solidArea.intersection(studiedTarget.solidArea);
                             if (j%2 == 0){
                                 if(intersection.height < intersection.width){
                                     if(j == 0) entity.blockedUp = true;
@@ -297,8 +299,8 @@ public class CollisionChecker {
                 entity.solidArea.x = entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.solidAreaDefaultY;
                 //Reset object's solid area position
-                target[i].solidArea.x = target[i].solidAreaDefaultX;
-                target[i].solidArea.y = target[i].solidAreaDefaultY;
+                studiedTarget.solidArea.x = studiedTarget.solidAreaDefaultX;
+                studiedTarget.solidArea.y = studiedTarget.solidAreaDefaultY;
             }
         }
         return index;

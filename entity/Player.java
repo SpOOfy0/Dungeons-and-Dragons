@@ -357,7 +357,7 @@ public class Player extends Entity {
     public void interactNPC(int npcIndex){
         
         if(npcIndex != 999 && gp.keyHandler.xPressed){
-            gp.npc[npcIndex].speak();
+            gp.npc.get(npcIndex).speak();
         }
         gp.keyHandler.xPressed = false;
     }
@@ -382,16 +382,16 @@ public class Player extends Entity {
 
         baseAttack(monsterIndex);
 
-        if(gp.monster[monsterIndex].attackDelay >= gp.monster[monsterIndex].attackSpeed){
-            gp.monster[monsterIndex].attackPlayer();
+        if(gp.monster.get(monsterIndex).attackDelay >= gp.monster.get(monsterIndex).attackSpeed){
+            gp.monster.get(monsterIndex).attackPlayer();
         }
     }
 
     public void baseAttack(int monsterIndex){
 
         if(gp.keyHandler.sPressed && attackDelay >= attackSpeed){
-            gp.monster[monsterIndex].receiveDmg(1);
-            gp.monster[monsterIndex].giveForcedMovement(gp.interactionChecker.awayFromPlayer(gp.monster[monsterIndex]), 2, 30);
+            gp.monster.get(monsterIndex).receiveDmg(1);
+            gp.monster.get(monsterIndex).giveForcedMovement(gp.interactionChecker.awayFromPlayer(gp.monster.get(monsterIndex)), 2, 30);
             gp.keyHandler.sPressed = false;
 
             attackDelay = 0;

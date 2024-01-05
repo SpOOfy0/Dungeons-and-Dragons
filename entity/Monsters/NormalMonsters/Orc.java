@@ -8,12 +8,11 @@ import entity.Monsters.MonsterInterface;
 
 public class Orc extends Monster implements MonsterInterface {
     
-    public Orc (GamePannel gp) {
-        super(gp);
+    public Orc (GamePannel gp, String inputedDirection, int coordX, int coordY) {
+        super(gp, inputedDirection, coordX, coordY);
 
         getThisMonsterImage();
         MonsterSetting();
-   
     }
 
     @Override
@@ -34,14 +33,10 @@ public class Orc extends Monster implements MonsterInterface {
         noticeRange = 3;
         aggroRange = 4;
 
-        direction[0] = "up";
-        direction[1] = null;
-        facing = direction[0];
         speed = 1;
         maxLife = 4;
         life = maxLife;
         dommage = 1;
-        
     }
 
 }

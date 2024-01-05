@@ -5,10 +5,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.util.Vector;
 
-import entity.Entity;
+import entity.NPC;
+import entity.NPC_1;
 import entity.Player;
 import entity.Monsters.Monster;
+import entity.Monsters.NormalMonsters.Orc;
 import entity.Abilities.Ability;
 import entity.Abilities.FireBall.FireBall;
 import object.OBJ_healPotion;
@@ -48,8 +51,13 @@ public class GamePannel extends JPanel implements Runnable {
     public Player player = Player.getInstance(this, keyHandler);
     public SuperObject healPotion = new OBJ_healPotion(this);
     public SuperObject obj[] = new SuperObject[10];
-    public Entity npc[] = new Entity[10];
-    public Monster monster[] = new Monster[20];
+
+    // public Entity npc[] = new Entity[10];
+    // public Monster monster[] = new Monster[20];
+
+    public Vector<NPC> npc = new Vector<NPC>();
+    public Vector<Monster> monster = new Vector<Monster>();
+
     //public Ability ability[] = new Ability[10];
     public Ability ability = new Ability(this);
     public FireBall fireBall ;
@@ -75,10 +83,11 @@ public class GamePannel extends JPanel implements Runnable {
 
     public void setUpObject(){
         
-        objSetter.setObject();
-        objSetter.setNPC();
-        objSetter.setMonster();
-        gameState = playState;
+        objSetter.setItems();
+        objSetter.setNPC(new NPC_1(this, "down", 14, 21));
+        objSetter.setMonster(new Orc(this, "up", 14, 20));
+        objSetter.setMonster(new Orc(this, "up", 14, 23));
+        objSetter.setMonster(new Orc(this, "up", 10, 20));
     }
 
     public void startGameThread(){
@@ -95,21 +104,17 @@ public class GamePannel extends JPanel implements Runnable {
 
         while(gameThread != null){
 
-            //UPDATE THE CHARACHTER POSITION
+            //UPDATE THE CHARACTER POSITION
             update();
 
-            //DRAW THE SCREEN WITH THE NEW CGARACHTER POSITION
+            //DRAW THE SCREEN WITH THE NEW CHARACTER POSITION
             repaint();
-
-            
 
             try {
                 double remainingTime = nextDrawTime - System.nanoTime();
                 remainingTime = remainingTime / 1000000;  
 
-                if(remainingTime < 0){
-                    remainingTime = 0;
-                }
+                if(remainingTime < 0) remainingTime = 0;
 
                 Thread.sleep((long) remainingTime);
 
@@ -118,7 +123,6 @@ public class GamePannel extends JPanel implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         
         }
     }
@@ -128,26 +132,18 @@ public class GamePannel extends JPanel implements Runnable {
         
         if(gameState == playState){
             player.update();
-            for(int i = 0; i < npc.length; i++){
-                if(npc[i] != null){
-                    npc[i].update();
+            for(int i = 0; i < npc.size(); i++){
+                if(npc.get(i) != null) npc.get(i).update();
+            }
+            for(int i = 0; i < monster.size(); i++){
+                if(monster.get(i) != null){
+                    if(monster.get(i).life <= 0) monster.remove(i);
+                    else monster.get(i).update();
                 }
             }
-            for(int i = 0; i < monster.length; i++){
-                if(monster[i] != null){
-                    if(monster[i].life <= 0) monster[i] = null;
-                    else monster[i].update();
-                }
-            }
-            if(ability != null){
-                ability.update();
-            }
+            if(ability != null) ability.update();
         }
-        if(gameState == pauseState){
-            //nothing
-        }
-        
-        
+
     }
 
     public void paint(Graphics g){
@@ -159,23 +155,19 @@ public class GamePannel extends JPanel implements Runnable {
 
         //OBJECT
         for(int i = 0; i < obj.length; i++){
-            if(obj[i] != null){
-            obj[i].draw(g2, this);
-            }
+            if(obj[i] != null) obj[i].draw(g2, this);
         }
 
         //NPC
-        for(int i = 0; i < npc.length; i++){
-            if(npc[i] != null){
-            npc[i].draw(g2);
-            }
+        for(int i = 0; i < npc.size(); i++){
+            if(npc.get(i) != null) npc.get(i).draw(g2);
         }
 
         //MONSTER
-        for(int i = 0; i < monster.length; i++){
-            if(monster[i] != null){
-            monster[i].draw(g2);
-            monster[i].paintComponent(g2);
+        for(int i = 0; i < monster.size(); i++){
+            if(monster.get(i) != null){
+                monster.get(i).draw(g2);
+                monster.get(i).paintComponent(g2);
             }
         }
 
@@ -185,9 +177,7 @@ public class GamePannel extends JPanel implements Runnable {
             ability[i].draw(g2);
             }
         }*/
-        if(ability != null){
-            ability.draw(g2);
-        }
+        if(ability != null) ability.draw(g2);
 
         //PLAYER
         player.draw(g2);
