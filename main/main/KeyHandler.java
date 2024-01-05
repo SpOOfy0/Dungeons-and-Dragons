@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+
 public class KeyHandler implements ActionListener, KeyListener{
 
     GamePannel gp;
@@ -15,6 +16,7 @@ public class KeyHandler implements ActionListener, KeyListener{
     public KeyHandler(GamePannel gp) {
         this.gp = gp;
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -60,6 +62,7 @@ public class KeyHandler implements ActionListener, KeyListener{
                 case KeyEvent.VK_SPACE:
                     gp.gameState = gp.playState;
                     break;
+                case KeyEvent.VK_ENTER:
                 case KeyEvent.VK_B:
                     gp.gameState = gp.inventoryState;
                     break;
@@ -138,27 +141,5 @@ public class KeyHandler implements ActionListener, KeyListener{
         }
         
     }
-
-    /*public static void main(String agrs[]){
-        //test keyhandler
-        JFrame window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
-        window.setTitle("Donjons & Dragons");
-
-        KeyHandler keyHandler = new KeyHandler();
-        window.addKeyListener(keyHandler);
-
-        window.pack();
-
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-
-
-
-    }*/
-
-    
-    
 
 }

@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 
 import main.GamePannel;
 
+
 public class OBJ_healPotion extends SuperObject {
     
     GamePannel gp;
@@ -14,9 +15,9 @@ public class OBJ_healPotion extends SuperObject {
         
         name = "healPotion";
         
-        try{
+        try {
             image = ImageIO.read(getClass().getResourceAsStream("/Objects/HealPotion.png"));
-        }catch(Exception e){
+        } catch(Exception e){
             System.out.println("Error loading image");
         }
         

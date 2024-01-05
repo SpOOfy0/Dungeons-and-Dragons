@@ -71,6 +71,7 @@ public class Player extends Entity {
         return new Player(gp, keyH);
     }
 
+
     public void setDefaultValues(){
 
         noticeRange = 0;
@@ -88,16 +89,16 @@ public class Player extends Entity {
     }
 
     public void getPlayerImage(){
-
-            up1 = getImage("/Player/up1.png");
-            up2 = getImage("/Player/up2.png");
-            down1 = getImage("/Player/down1.png");
-            down2 = getImage("/Player/down2.png");
-            left1 = getImage("/Player/left1.png");
-            left2 = getImage("/Player/left2.png");
-            right1 = getImage("/Player/right1.png");
-            right2 = getImage("/Player/right2.png");
+        up1 = getImage("/Player/up1.png");
+        up2 = getImage("/Player/up2.png");
+        down1 = getImage("/Player/down1.png");
+        down2 = getImage("/Player/down2.png");
+        left1 = getImage("/Player/left1.png");
+        left2 = getImage("/Player/left2.png");
+        right1 = getImage("/Player/right1.png");
+        right2 = getImage("/Player/right2.png");
     }
+
 
     public void update(){
 
@@ -238,6 +239,7 @@ public class Player extends Entity {
         storeMovement[0] = 0;
         storeMovement[1] = 0;
     }
+
     
     
 
@@ -284,6 +286,9 @@ public class Player extends Entity {
         }
         return -1;  // Retourne -1 si l'image n'est pas trouvée
     }*/
+
+
+
 
     public void pickUpObject(int objIndex){
         
@@ -363,6 +368,7 @@ public class Player extends Entity {
     }
 
 
+
     public int fireAttaque(){
 
         if(gp.keyHandler.dPressed && attackDelay >= attackSpeed && ballOn == 0){
@@ -399,6 +405,7 @@ public class Player extends Entity {
 
         }
     }
+    
     
 
     public void draw(Graphics2D g2){

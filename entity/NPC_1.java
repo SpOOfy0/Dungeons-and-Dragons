@@ -12,9 +12,9 @@ public class NPC_1 extends NPC{
         setDialogues();
     }
 
+
     @Override
     public void getThisNPCImage(){
-
         up1 = getImage("/Player/up1.png");
         up2 = getImage("/Player/up2.png");
         down1 = getImage("/Player/down1.png");
@@ -27,7 +27,6 @@ public class NPC_1 extends NPC{
 
     @Override
     public void setDialogues() {
-
         dialogues.add("Congratulations! you found the one piece!");
         dialogues.add("To get the one piece you need to defeat all \n the monsters");
         dialogues.add("Each one is stronger than the other");

@@ -20,8 +20,6 @@ public class Main{
 
         gamePannel.setUpObject();
         gamePannel.gameState = gamePannel.playState;
-        //gamePannel.startGameThread();
-        //GameStart frame = new GameStart();
-        
     }
+    
 }

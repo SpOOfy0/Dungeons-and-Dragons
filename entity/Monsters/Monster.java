@@ -17,8 +17,10 @@ public class Monster extends Entity{
         aggravated = false;
         noticeRange = 2;
 
-        worldX = coordX * gp.tileSize;
-        worldY = coordY * gp.tileSize;
+        int[] newCoords = gp.tileM.verifyAndCorrectPlacement(coordX, coordY);
+
+        worldX = newCoords[0] * gp.tileSize;
+        worldY = newCoords[1] * gp.tileSize;
 
         if(inputedDirection != null) direction[0] = inputedDirection;
         else direction[0] = "up";
@@ -44,6 +46,10 @@ public class Monster extends Entity{
         }
 
         if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*gp.tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*gp.tileSize)) {
+
+            System.out.println("bufferDirection: " + bufferDirection);
+            System.out.println("isBlocked: " + isBlocked);
+            System.out.println("up:" + stopDirections[0] + " down:" + stopDirections[1] + " left:" + stopDirections[2] + " right:" + stopDirections[3]);
 
             // si l'entité est bloquée dans son mouvement mais qu'elle n'est pas bloquée contre le joueur,
             // on récupère les dernières directions prises, enregistre ces directions dans "bufferFirection",
@@ -72,6 +78,7 @@ public class Monster extends Entity{
 
         } else {
 
+
             // si l'entité vient de changer de la traque à la non-traque, tous les blocages de choix de direction sont retirés
             if(aggravated){
                 decideLetGoAll();
@@ -89,13 +96,11 @@ public class Monster extends Entity{
                 }
                 impatience++;
 
-            // si l'entité est bloquée dans son mouvement, on récupère les dernières directions prises,
-            // et on redonne indivduellement le choix de prendre ces directions si l'entité n'est pas bloquée dans les directions correspondantes
+            // si l'entité n'est pas bloquée dans son mouvement, on redonne le choix de prendre les directions précédemment bloquées
+            // du moment que l'entité n'est pas bloquée dans les directions correspondantes
             // de plus, on réinitialise la variable d'impatience
             } else {
-                for(int i = 0; i < direction.length; i++){
-                    if(direction[i] != null) decideLetGo(direction[i]);
-                }
+                decideLetGoAll();
                 impatience = 0;
             }
 
@@ -106,6 +111,7 @@ public class Monster extends Entity{
                 actionCounter = 0;
                 impatience = 0;
             }
+            
         }
 
     }
@@ -154,6 +160,7 @@ public class Monster extends Entity{
     }
     
 
+
     public void attackPlayer() {
         gp.player.life -= dommage;
         attackDelay = 0;
@@ -163,6 +170,7 @@ public class Monster extends Entity{
         life -= dmg;
         aggravated = true;
     }
+
 
     public void paintComponent(Graphics2D g2) {
             
@@ -176,5 +184,4 @@ public class Monster extends Entity{
         g2.fillRect(screenX, screenY - 10, lifeBarWidth, 8);
     }
 
-    
 }

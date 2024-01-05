@@ -47,15 +47,6 @@ public class Entity {
     public int impatience = 0;
     public int impatienceTolerance = 30;
 
-    // public Rectangle interactionArea = new Rectangle(-1, -1, 50, 50);   // Est utilisé pour toute interaction "initiée"
-    // public int interactionAreaDefaultX, interactionAreaDefaultY;
-    // public boolean interactUp = false;
-    // public boolean interactDown = false;
-    // public boolean interactLeft = false;
-    // public boolean interactRight = false;
-    // public boolean isInteracting;                   // Non-utilisés pour l'instant
-    
-
     public Vector<String> dialogues = new Vector<String>();
     int dialogueIndex = 0;
 
@@ -74,33 +65,46 @@ public class Entity {
                                         // if false, will exist indefinitely until it gets destroyer through another mean
         private int remainingDuration;  // remaining number of frames the movement will be applied on the entity before the instance gets destroyed
 
+
         public ForcedMovement(String inputedDirection, int amountPushed) {
+
             if(inputedDirection != null && amountPushed != 0){
+
                 direction = inputedDirection;
                 distance = amountPushed;
                 timebased = false;
+
             } else {
+
                 direction = "up";
                 distance = 0;
                 timebased = true;
+
             }
             remainingDuration = 1;
         }
 
+
         public ForcedMovement(String inputedDirection, int amountPushed, int duration) {
+
             if(inputedDirection != null && amountPushed != 0 && duration > 0){
+
                 direction = inputedDirection;
                 distance = amountPushed;
                 remainingDuration = duration;
+
             } else {
+
                 direction = "up";
                 distance = 0;
                 remainingDuration = 1;
+
             }
             timebased = true;
         }
 
         public void applyForcedMovement(){
+
             switch(direction){
                 case "up":
                     storeMovement[1] -= distance;
@@ -124,6 +128,7 @@ public class Entity {
         }
 
         public void applyForcedMovement(boolean consumeDuration){
+
             switch(direction){
                 case "up":
                     storeMovement[1] -= distance;
@@ -174,12 +179,14 @@ public class Entity {
 
 
 
+
     public Entity(GamePannel gp) {
         this.gp = gp;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         isWithPlayer = false;
     }
+
 
     public void setAction(){} 
 
@@ -228,6 +235,7 @@ public class Entity {
         }   
     }
 
+
     // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
     // aussi étudie les collisions entre l'entité et son environnement
     public void verifyMovement(String direction){
@@ -266,6 +274,7 @@ public class Entity {
         storeMovement[1] = 0;
     }
 
+    
     // vérifie et applique les mouvements dans "storeMovement" dans les directions entrées comme variable
     // aussi étudie les collisions entre l'entité et son environnement
     public void verifyMovement(String[] direction){

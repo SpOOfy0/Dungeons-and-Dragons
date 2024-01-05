@@ -51,13 +51,8 @@ public class GamePannel extends JPanel implements Runnable {
     public Player player = Player.getInstance(this, keyHandler);
     public SuperObject healPotion = new OBJ_healPotion(this);
     public SuperObject obj[] = new SuperObject[10];
-
-    // public Entity npc[] = new Entity[10];
-    // public Monster monster[] = new Monster[20];
-
     public Vector<NPC> npc = new Vector<NPC>();
     public Vector<Monster> monster = new Vector<Monster>();
-
     //public Ability ability[] = new Ability[10];
     public Ability ability = new Ability(this);
     public FireBall fireBall ;
@@ -72,15 +67,6 @@ public class GamePannel extends JPanel implements Runnable {
     
 
 
-    public GamePannel(){
-        
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.BLACK);
-        this.setDoubleBuffered(true);
-        this.startGameThread();
-        
-    }
-
     public void setUpObject(){
         
         objSetter.setItems();
@@ -90,11 +76,19 @@ public class GamePannel extends JPanel implements Runnable {
         objSetter.setMonster(new Orc(this, "up", 10, 20));
     }
 
+    public GamePannel(){
+        
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        this.setBackground(Color.BLACK);
+        this.setDoubleBuffered(true);
+        this.startGameThread(); 
+    }
+
+
     public void startGameThread(){
         
         gameThread = new Thread(this);
         gameThread.start();
-        
     }
 
     public void run(){
@@ -182,13 +176,10 @@ public class GamePannel extends JPanel implements Runnable {
         //PLAYER
         player.draw(g2);
        
-
         //UI
         ui.draw(g2);
 
         g2.dispose();
-
     }
-
     
 }

@@ -1,7 +1,5 @@
 package entity.Monsters.NormalMonsters;
 
-
-
 import main.GamePannel;
 import entity.Monsters.Monster;
 import entity.Monsters.MonsterInterface;

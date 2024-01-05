@@ -10,8 +10,10 @@ public class NPC extends Entity{
 
         noticeRange = 0;
 
-        worldX = coordX * gp.tileSize;
-        worldY = coordY * gp.tileSize;
+        int[] newCoords = gp.tileM.verifyAndCorrectPlacement(coordX, coordY);
+
+        worldX = newCoords[0] * gp.tileSize;
+        worldY = newCoords[1] * gp.tileSize;
         
         if(inputedDirection != null) direction[0] = inputedDirection;
         else direction[0] = "down";
@@ -20,10 +22,11 @@ public class NPC extends Entity{
         bufferDirection = null;
         speed = 1;
     }
+    
 
     public void getThisNPCImage(){}
 
-    public void setDialogues() {}
+    public void setDialogues(){}
 
 
 
@@ -41,13 +44,11 @@ public class NPC extends Entity{
             }
             impatience++;
 
-        // si l'entité est bloquée dans son mouvement, on récupère les dernières directions prises,
-        // et on redonne indivduellement le choix de prendre ces directions si l'entité n'est pas bloquée dans les directions correspondantes
+        // si l'entité n'est pas bloquée dans son mouvement, on redonne le choix de prendre les directions précédemment bloquées
+        // du moment que l'entité n'est pas bloquée dans les directions correspondantes
         // de plus, on réinitialise la variable d'impatience
         } else {
-            for(int i = 0; i < direction.length; i++){
-                if(direction[i] != null) decideLetGo(direction[i]);
-            }
+            decideLetGoAll();
             impatience = 0;
         }
         

@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import entity.Entity;
 
+
 public class InteractionChecker {
 
     GamePannel gp;
@@ -12,6 +13,10 @@ public class InteractionChecker {
     public InteractionChecker(GamePannel gp) {
         this.gp = gp;
     }
+
+
+
+
 
     public String awayFromPlayer(Entity entity){
         
@@ -45,6 +50,8 @@ public class InteractionChecker {
 
         return valueToReturn;
     }
+
+
 
 
 
@@ -123,7 +130,7 @@ public class InteractionChecker {
 
 
 
-    
+
 
     public void noticePlayer(Entity entity){
 

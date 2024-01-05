@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 
 import main.GamePannel;
 
+
 public class TileManager {
     
     GamePannel gp;
@@ -45,6 +46,72 @@ public class TileManager {
         }
     }
 
+
+
+    public boolean isCollision(int typeTile){
+        return tile[typeTile].collision;
+    }
+    
+    public boolean isCollision(int coordX, int coordY){
+        return tile[mapTileNum[coordX][coordY]].collision;
+    }
+
+    public int[] verifyAndCorrectPlacement(int coordX, int coordY){
+
+        int[] finalCoord = {coordX, coordY};
+        
+        int offset = 1, limit = Math.min(coordX, coordY);
+        if(isCollision(coordX, coordY)){
+            while (finalCoord[0] == coordX && finalCoord[1] == coordY || offset <= limit){
+                finalCoord = iteratorWithOffset(coordX, coordY, offset, limit);
+                offset++;
+            }
+        }
+        return finalCoord;
+    }
+
+    public int[] iteratorWithOffset(int baseCoordX, int baseCoordY, int offset, int limit){
+
+        int coordX = baseCoordX, coordY = baseCoordY;
+        int i = -offset, j;
+
+        while(i <= offset){
+
+            if(Math.abs(i) <= limit){
+                coordX += i;
+                j = offset - Math.abs(i);
+                if(j <= limit){
+
+                    if (j == 0){
+                        if (!isCollision(coordX, coordY)) i = offset;
+                        else {
+                            coordX = baseCoordX;
+                            coordY = baseCoordY;
+                        }
+
+                    } else {
+                        coordY -= j;
+                        if (!isCollision(coordX, coordY)) i = offset;
+                        else {
+                            coordY += j*2;
+                            if (!isCollision(coordX, coordY)) i = offset;
+                            else {
+                                coordX = baseCoordX;
+                                coordY = baseCoordY;
+                            }
+                        }
+                    }
+                } else coordX = baseCoordX;
+            }
+            i++;
+        }
+
+        int[] finalCoord = {coordX, coordY};
+        return finalCoord;
+    }
+
+
+
     public void loadMap(String filePath){
         try{
             InputStream is = getClass().getResourceAsStream(filePath);
@@ -71,10 +138,11 @@ public class TileManager {
         }
     }
 
+
     public void draw(Graphics2D g2){
-//      g2.drawImage(tile[0].image, 0, 0,30,30, null);
-//      g2.drawImage(tile[1].image, 30, 0,30,30, null);
-//      g2.drawImage(tile[2].image, 0, 30,30,30, null);
+        // g2.drawImage(tile[0].image, 0, 0,30,30, null);
+        // g2.drawImage(tile[1].image, 30, 0,30,30, null);
+        // g2.drawImage(tile[2].image, 0, 30,30,30, null);
         int worldCol = 0;
         int worldRow = 0;
 
@@ -105,5 +173,6 @@ public class TileManager {
             }
         }
     }
+
 }
  

@@ -11,6 +11,7 @@ import object.OBJ_LifeHeart;
 import object.OBJ_healPotion;
 import object.SuperObject;
 
+
 public class UI {
 
     private static UI instance;
@@ -60,29 +61,27 @@ public class UI {
 
         time += (double)1/60;
         return time;
-    
     }
 
     public void showMessage(String text){
 
         message = text;
         messageOn = true;
-    
     }
 
-        public void drawMessage(){
-            if(messageOn == true ){
-                g2.setFont(new Font("Arial", Font.PLAIN, 20));
-                g2.setColor(Color.white);
-                g2.drawString(message, gp.screenWidth / 2 - gp.tileSize * 2 , gp.screenHeight / 4 - gp.tileSize);
-                messageCounter++;
-            
-                if(messageCounter > 100){
-                    messageOn = false;
-                    messageCounter = 0;
-                }   
-            }
+    public void drawMessage(){
+        if(messageOn == true ){
+            g2.setFont(new Font("Arial", Font.PLAIN, 20));
+            g2.setColor(Color.white);
+            g2.drawString(message, gp.screenWidth / 2 - gp.tileSize * 2 , gp.screenHeight / 4 - gp.tileSize);
+            messageCounter++;
+        
+            if(messageCounter > 100){
+                messageOn = false;
+                messageCounter = 0;
+            }   
         }
+    }
 
     /*public void draw(Graphics2D g2) {
 
@@ -146,8 +145,8 @@ public class UI {
             g2.drawString(line, x, y);
             y += 40;
         }
-        
     }
+
 
     public void drawSubWindow(int x, int y, int width, int height){
 
@@ -158,6 +157,7 @@ public class UI {
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x, y, width, height, 20, 20);
     }
+
 
     public void drawPlayerLife(){
 
@@ -186,8 +186,8 @@ public class UI {
         if(life == 1){
             g2.drawImage(halfHeart, x, y, gp.tileSize, gp.tileSize, null);
         }
-        
     }
+
 
     public void drawInventory() {
         int startX = gp.screenWidth / 2 + gp.tileSize;
@@ -245,6 +245,7 @@ public class UI {
         }
     }
 
+
     public void colorBorder(int x ,int y, int width, int height){
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, width, height);
@@ -252,6 +253,7 @@ public class UI {
 
 
     public void pressObject(){}
+
     
     // Modifier la méthode draw pour appeler drawInventory
     public void draw(Graphics2D g2) {
@@ -285,11 +287,5 @@ public class UI {
             
         }
     }
-
-
-   
-
     
 }
-
-

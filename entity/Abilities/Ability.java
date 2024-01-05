@@ -8,8 +8,6 @@ import java.awt.image.BufferedImage;
 
 public class Ability extends Entity{
 
-    //protected static String direction[0] = null;
-
     public boolean abilityCollision = false;
     public int abilityCollisionIndex = 999;
 
@@ -111,23 +109,22 @@ public class Ability extends Entity{
         worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
         worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { 
         
-                switch(direction[0]){
-                    case "up":
-                        image = up1;
-                        break;
-                    case "down":
-                        image = down1;
-                        break;
-                    case "left":
-                        image = left1;
-                        break;
-                    case "right":
-                        image = right1;
-                        break;                              
-                }
+            switch(direction[0]){
+                case "up":
+                    image = up1;
+                    break;
+                case "down":
+                    image = down1;
+                    break;
+                case "left":
+                    image = left1;
+                    break;
+                case "right":
+                    image = right1;
+                    break;
+            }
         
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-            
         }
     }
     
