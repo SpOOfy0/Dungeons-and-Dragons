@@ -60,6 +60,11 @@ public class Player extends Entity {
         solidAreaDefaultY = solidArea.y;
         setDefaultValues();
         getPlayerImage();
+        
+        int[] newCoords = gp.tileM.verifyAndCorrectPlacement(worldX/gp.tileSize, worldY/gp.tileSize);
+
+        worldX = newCoords[0] * gp.tileSize;
+        worldY = newCoords[1] * gp.tileSize;
     }
 
     public static Player getInstance(GamePannel gp, KeyHandler keyH) {
@@ -77,9 +82,9 @@ public class Player extends Entity {
         noticeRange = 0;
 
         //PLAYER WORLD POSITION
-        worldX = gp.tileSize * 23; 
-        worldY = gp.tileSize * 21; 
-        speed = 4;
+        worldX = gp.tileSize * 25; 
+        worldY = gp.tileSize * 25; 
+        initSpeed(4);
         facing = "down";
 
         //PLAYER STATUS

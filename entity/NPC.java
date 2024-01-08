@@ -20,7 +20,7 @@ public class NPC extends Entity{
         direction[1] = null;
         facing = direction[0];
         bufferDirection = null;
-        speed = 1;
+        initSpeed(1);
     }
     
 

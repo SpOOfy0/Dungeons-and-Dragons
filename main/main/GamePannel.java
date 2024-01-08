@@ -67,14 +67,19 @@ public class GamePannel extends JPanel implements Runnable {
 
     public void setUpObject(){
         
-        objSetter.setItem(new OBJ_healPotion(this, 14, 21));
-        objSetter.setItem(new OBJ_healPotion(this, 14, 35));
-        objSetter.setItem(new OBJ_healPotion(this, 14, 36));
-        objSetter.setItem(new OBJ_healPotion(this, 14, 37));
-        objSetter.setNPC(new NPC_1(this, "down", 14, 21));
-        objSetter.setMonster(new Orc(this, "up", 14, 20));
-        objSetter.setMonster(new Orc(this, "up", 14, 23));
-        objSetter.setMonster(new Orc(this, "up", 10, 20));
+        objSetter.setItem(new OBJ_healPotion(this, 19, 19));
+        objSetter.setItem(new OBJ_healPotion(this, 19, 30));
+        objSetter.setItem(new OBJ_healPotion(this, 30, 19));
+        objSetter.setItem(new OBJ_healPotion(this, 30, 30));
+        objSetter.setNPC(new NPC_1(this, "down", 22, 22));
+        objSetter.setMonster(new Orc(this, "right", 3, 3));
+        objSetter.setMonster(new Orc(this, "down", 22, 3));
+        objSetter.setMonster(new Orc(this, "left", 46, 3));
+        objSetter.setMonster(new Orc(this, "up", 3, 27));
+        objSetter.setMonster(new Orc(this, "up", 46, 27));
+        objSetter.setMonster(new Orc(this, "right", 3, 46));
+        objSetter.setMonster(new Orc(this, "up", 27, 46));
+        objSetter.setMonster(new Orc(this, "left", 46, 46));
     }
 
     public GamePannel(){

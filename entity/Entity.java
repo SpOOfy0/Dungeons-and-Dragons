@@ -15,7 +15,13 @@ public class Entity {
     public GamePannel gp;
 
     public int worldX, worldY;
+    public int baseSpeed;
     public int speed;
+    public void initSpeed(int inputSpeed){
+        baseSpeed = inputSpeed;
+        speed = baseSpeed;
+    }
+
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String facing;       // direction dans laquelle l'entité regarde
     public String[] direction = new String[2]; // pour les entités qui peuvent se déplacer en diagonale [0: axe horizontal; 1: axe vertical]

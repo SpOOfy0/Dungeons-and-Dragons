@@ -25,7 +25,7 @@ public class FireBall extends Ability implements AbilityInterface {
     @Override
     public void AbilitySetting() {
         dmg = 1;
-        speed = 5;
+        initSpeed(5);
         range = 8;  
         worldX = gp.player.worldX ;
         worldY = gp.player.worldY ;
