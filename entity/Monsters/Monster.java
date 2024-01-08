@@ -47,10 +47,6 @@ public class Monster extends Entity{
 
         if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*gp.tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*gp.tileSize)) {
 
-            System.out.println("bufferDirection: " + bufferDirection);
-            System.out.println("isBlocked: " + isBlocked);
-            System.out.println("up:" + stopDirections[0] + " down:" + stopDirections[1] + " left:" + stopDirections[2] + " right:" + stopDirections[3]);
-
             // si l'entité est bloquée dans son mouvement mais qu'elle n'est pas bloquée contre le joueur,
             // on récupère les dernières directions prises, enregistre ces directions dans "bufferFirection",
             // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes

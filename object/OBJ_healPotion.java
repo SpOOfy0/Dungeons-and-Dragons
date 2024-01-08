@@ -9,6 +9,29 @@ public class OBJ_healPotion extends SuperObject {
     
     GamePannel gp;
 
+    // pour avoir la potion chargé sur le terrain
+    public OBJ_healPotion(GamePannel gp, int coordX, int coordY){
+        
+        this.gp = gp;
+
+        int[] newCoords = gp.tileM.verifyAndCorrectPlacement(coordX, coordY);
+
+        worldX = newCoords[0] * gp.tileSize;
+        worldY = newCoords[1] * gp.tileSize;
+        
+        name = "healPotion";
+        
+        try {
+            image = ImageIO.read(getClass().getResourceAsStream("/Objects/HealPotion.png"));
+        } catch(Exception e){
+            System.out.println("Error loading image");
+        }
+        
+        newRectangle(0, 0, 48, 48);
+    }
+
+
+    // pour avoir la potion chargé sur un aure endroit que sur le terrain (comme l'inventaire)
     public OBJ_healPotion(GamePannel gp){
         
         this.gp = gp;

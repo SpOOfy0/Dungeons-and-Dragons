@@ -110,9 +110,9 @@ public class CollisionChecker {
 
         Vector<Integer> index = new Vector<Integer>();
         
-        for(int i = 0; i < gp.obj.length; i++){
+        for(int i = 0; i < gp.item.size(); i++){
 
-            if (gp.obj[i] != null){
+            if (gp.item.get(i) != null){
 
                 boolean[] isGoingToDirection = {false, false, false, false};
 
@@ -138,8 +138,8 @@ public class CollisionChecker {
                 }
 
                 //Get object's solid area position
-                gp.obj[i].solidArea.x = gp.obj[i].worldX + gp.obj[i].solidArea.x;
-                gp.obj[i].solidArea.y = gp.obj[i].worldY + gp.obj[i].solidArea.y;
+                gp.item.get(i).solidArea.x = gp.item.get(i).worldX + gp.item.get(i).solidArea.x;
+                gp.item.get(i).solidArea.y = gp.item.get(i).worldY + gp.item.get(i).solidArea.y;
 
                 for(int j = 0; j < 4; j++){
 
@@ -162,8 +162,8 @@ public class CollisionChecker {
                             break;
                     }
 
-                    if (entity.solidArea.intersects(gp.obj[i].solidArea)){
-                        if (gp.obj[i].collision){
+                    if (entity.solidArea.intersects(gp.item.get(i).solidArea)){
+                        if (gp.item.get(i).collision){
                             switch(j){
                                 case 0: //up
                                     entity.blockedUp = true;
@@ -189,8 +189,8 @@ public class CollisionChecker {
                 entity.solidArea.x = entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.solidAreaDefaultY;
                 //Reset object's solid area position
-                gp.obj[i].solidArea.x = gp.obj[i].solidAreaDefaultX;
-                gp.obj[i].solidArea.y = gp.obj[i].solidAreaDefaultY;
+                gp.item.get(i).solidArea.x = gp.item.get(i).solidAreaDefaultX;
+                gp.item.get(i).solidArea.y = gp.item.get(i).solidAreaDefaultY;
             }
 
         }

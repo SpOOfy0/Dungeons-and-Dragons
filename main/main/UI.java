@@ -223,10 +223,9 @@ public class UI {
     
                 switch (objName) {
                     case "healPotion":
-                        BufferedImage image = gp.healPotion.image;
                         int count = gp.player.inventory.get(objName);
                         String Count = String.valueOf(count);
-                        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+                        g2.drawImage(HealPotionImage, x, y, gp.tileSize, gp.tileSize, null);
                         //Add count
                         g2.setFont(new Font("Arial", Font.PLAIN, gp.tileSize / 4));
                         g2.setColor(Color.white);

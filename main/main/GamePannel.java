@@ -14,8 +14,8 @@ import entity.Monsters.Monster;
 import entity.Monsters.NormalMonsters.Orc;
 import entity.Abilities.Ability;
 import entity.Abilities.FireBall.FireBall;
-import object.OBJ_healPotion;
 import object.SuperObject;
+import object.OBJ_healPotion;
 import tile.TileManager;
 
 
@@ -49,8 +49,7 @@ public class GamePannel extends JPanel implements Runnable {
     public InteractionChecker interactionChecker = new InteractionChecker(this);
     public ClassSetter objSetter = new ClassSetter(this);
     public Player player = Player.getInstance(this, keyHandler);
-    public SuperObject healPotion = new OBJ_healPotion(this);
-    public SuperObject obj[] = new SuperObject[10];
+    public Vector<SuperObject> item = new Vector<SuperObject>();
     public Vector<NPC> npc = new Vector<NPC>();
     public Vector<Monster> monster = new Vector<Monster>();
     //public Ability ability[] = new Ability[10];
@@ -64,12 +63,14 @@ public class GamePannel extends JPanel implements Runnable {
     public int pauseState = 2;
     public int dialogueState = 3;
     public int inventoryState = 4;
-    
 
 
     public void setUpObject(){
         
-        objSetter.setItems();
+        objSetter.setItem(new OBJ_healPotion(this, 14, 21));
+        objSetter.setItem(new OBJ_healPotion(this, 14, 35));
+        objSetter.setItem(new OBJ_healPotion(this, 14, 36));
+        objSetter.setItem(new OBJ_healPotion(this, 14, 37));
         objSetter.setNPC(new NPC_1(this, "down", 14, 21));
         objSetter.setMonster(new Orc(this, "up", 14, 20));
         objSetter.setMonster(new Orc(this, "up", 14, 23));
@@ -148,8 +149,8 @@ public class GamePannel extends JPanel implements Runnable {
         tileM.draw(g2);
 
         //OBJECT
-        for(int i = 0; i < obj.length; i++){
-            if(obj[i] != null) obj[i].draw(g2, this);
+        for(int i = 0; i < item.size(); i++){
+            if(item.get(i) != null) item.get(i).draw(g2, this);
         }
 
         //NPC

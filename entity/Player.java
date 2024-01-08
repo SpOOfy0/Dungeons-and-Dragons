@@ -294,7 +294,7 @@ public class Player extends Entity {
         
         if(objIndex != 999){
             
-            String objName = gp.obj[objIndex].name;
+            String objName = gp.item.get(objIndex).name;
             
             switch(objName){
                 case "healPotion":
@@ -305,7 +305,7 @@ public class Player extends Entity {
                         //New object
                         inventory.put(objName, 1);
                     }
-                    gp.obj[objIndex] = null;
+                    gp.item.remove(objIndex);
                     gp.ui.showMessage("You got a heal potion!");
                     break;
             }            
