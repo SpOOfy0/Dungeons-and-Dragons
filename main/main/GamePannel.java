@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.awt.Color;
 
 import entity.Entity;
@@ -51,6 +52,8 @@ public class GamePannel extends JPanel implements Runnable {
     public SuperObject obj[] = new SuperObject[10];
     public Entity npc[] = new Entity[10];
     public Monster monster[] = new Monster[20];
+    public Monster monsters[] = new Monster[20];
+    //public ArrayList<Monster> Monster = new ArrayList<Monster>();
     //public Ability ability[] = new Ability[10];
     public Ability ability = new Ability(this);
     public FireBall fireBall ;
@@ -143,6 +146,7 @@ public class GamePannel extends JPanel implements Runnable {
             if(ability != null){
                 ability.update();
             }
+            objSetter.MonsterSpawner(14 * tileSize, 25 * tileSize);
         }
         if(gameState == pauseState){
             //nothing
@@ -181,11 +185,6 @@ public class GamePannel extends JPanel implements Runnable {
         }
 
         //ABILITY
-        /*for(int i = 0; i < ability.length; i++){
-            if(ability[i] != null){
-            ability[i].draw(g2);
-            }
-        }*/
         if(ability != null){
             ability.draw(g2);
         }

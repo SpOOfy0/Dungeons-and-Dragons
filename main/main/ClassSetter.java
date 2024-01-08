@@ -9,6 +9,9 @@ import object.OBJ_manaPotion;
 public class ClassSetter {
     
     GamePannel gp;
+    int counter = 0;
+    int s = 0;
+    int index  = 3;
 
     public ClassSetter(GamePannel gp) {
         this.gp = gp;
@@ -55,12 +58,15 @@ public class ClassSetter {
     }
 
     public void setMonster() {
+        
+        for (int i = 0; i < gp.monster.length; i++) {
+            gp.monsters[i] = new Orc(gp);
+        }
+
         gp.monster[0] = new Orc(gp);
         gp.monster[0].worldX = 14 * gp.tileSize;
         gp.monster[0].worldY = 20 * gp.tileSize;
-
-        //More monsters
-
+        
         gp.monster[1] = new Orc(gp);
         gp.monster[1].worldX = 14 * gp.tileSize;
         gp.monster[1].worldY = 23 * gp.tileSize;
@@ -68,16 +74,21 @@ public class ClassSetter {
         gp.monster[2] = new Orc(gp);
         gp.monster[2].worldX = 10 * gp.tileSize;
         gp.monster[2].worldY = 20 * gp.tileSize;
+    
+    }
+
+    public void MonsterSpawner(int worldX, int worldY){
+        if (counter == 30 && index < gp.monster.length) {
+            
+            gp.monsters[index].worldX = worldX;
+            gp.monsters[index].worldY = worldY;
+            gp.monster[index] = gp.monsters[index];
+            index++;
+            counter = 0;
+        
+        }
+
+        counter++;
 
     }
-    
-    /*public void spwanMonster(int worldX, int worldY){
-        for(int i = 0; i < gp.monster.length; i++){
-            if(gp.monster[i] != null){
-                gp.monster[i] = new Orc(gp);
-                gp.monster[i].worldX = worldX * gp.tileSize;
-                gp.monster[i].worldY = worldY * gp.tileSize;
-            }
-        }
-    }*/
 }
