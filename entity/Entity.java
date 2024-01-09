@@ -3,6 +3,7 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
@@ -472,8 +473,8 @@ public class Entity {
 
         try{
             image = ImageIO.read(getClass().getResourceAsStream(ImagePath));
-        }catch(Exception e){
-            System.out.println("Error loading image (" + ImagePath + ")");
+        }catch(IOException e){
+            System.out.println(e + " -> Error loading image (" + ImagePath + ")");
         }
 
         return image;

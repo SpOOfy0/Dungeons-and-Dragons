@@ -42,7 +42,11 @@ public class Monster extends Entity{
         if(!aggravated){
             gp.interactionChecker.noticePlayer(this);
             // si l'entité vient de changer de la non-traque à la traque, tous les blocages de choix de direction sont retirés
-            if(aggravated) decideLetGoAll();
+            if(aggravated){
+                bufferDirection = null;
+                decideLetGoAll();
+                if(speed != baseSpeed) speed = baseSpeed;
+            }
         }
 
         if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*gp.tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*gp.tileSize)) {
@@ -66,7 +70,9 @@ public class Monster extends Entity{
             } else {
                 if (bufferDirection != null) decideLetGo(bufferDirection);
                 for(int i = 0; i < direction.length; i++){
-                    if(direction[i] != null) decideLetGo(direction[i]);
+                    if(direction[i] != null){
+                        decideLetGo(direction[i]);
+                    }
                 }
             }
 
@@ -78,6 +84,8 @@ public class Monster extends Entity{
             // si l'entité vient de changer de la traque à la non-traque, tous les blocages de choix de direction sont retirés
             if(aggravated){
                 decideLetGoAll();
+                bufferDirection = null;
+                if(speed != baseSpeed) speed = baseSpeed;
                 aggravated = false;
             }
 
@@ -106,6 +114,7 @@ public class Monster extends Entity{
                 wander();
                 actionCounter = 0;
                 impatience = 0;
+                if(speed != baseSpeed) speed = baseSpeed;
             }
             
         }
@@ -118,41 +127,78 @@ public class Monster extends Entity{
 
         // to follow the player
         if(worldY + solidAreaDefaultY + solidArea.height <= player.worldY + player.solidAreaDefaultY + 1){
-            if(!stopDirections[1]) direction[0] = "down";
+            if(!stopDirections[1]){
+                direction[0] = "down";
+                if(speed != baseSpeed) speed = baseSpeed;
+            }
         } else if(player.worldY + player.solidAreaDefaultY + player.solidArea.height <= worldY + solidAreaDefaultY + 1){
-            if(!stopDirections[0]) direction[0] = "up";
+            if(!stopDirections[0]){
+                direction[0] = "up";
+                if(speed != baseSpeed) speed = baseSpeed;
+            }
         }
 
         if(worldX + solidAreaDefaultX + solidArea.width <= player.worldX + player.solidAreaDefaultX + 1){
-            if(!stopDirections[3]) direction[0] = "right";
+            if(!stopDirections[3]){
+                direction[0] = "right";
+                if(speed != baseSpeed) speed = baseSpeed;
+            }
         } else if(player.worldX + player.solidAreaDefaultX + player.solidArea.width <= worldX + solidAreaDefaultX + 1){
-            if(!stopDirections[2]) direction[0] = "left";
+            if(!stopDirections[2]){
+                direction[0] = "left";
+                if(speed != baseSpeed) speed = baseSpeed;
+            }
         }
+
+        System.out.println("direction before: " + direction[0]);
 
         if(direction[0] == null){
 
             int tileSize = gp.tileSize;
 
-            // to follow the player when can't be followed with the previous functions
+            // to follow the player when can't be followed with the previous functions (like in gaps)
             switch(bufferDirection) {
                 case "down":
                 case "up":
                     if(worldX + solidAreaDefaultX < (player.worldX + player.solidAreaDefaultX)/tileSize){
-                        if(!stopDirections[3]) direction[0] = "right";
+                        decideLetGo("right");
+                        if(!stopDirections[3]){
+                            direction[0] = "right";
+                            if(speed > 1) speed--;
+                        }
                     } else if((player.worldX + player.solidAreaDefaultX)/tileSize < worldX + solidAreaDefaultX){
-                        if(!stopDirections[2]) direction[0] = "left";
+                        decideLetGo("left");
+                        if(!stopDirections[2]){
+                            direction[0] = "left";
+                            if(speed > 1) speed--;
+                        }
                     }
                     break;
                 case "right":
                 case "left":
                     if(worldY + solidAreaDefaultY < (player.worldY + player.solidAreaDefaultY)/tileSize){
-                        if(!stopDirections[1]) direction[0] = "down";
+                        decideLetGo("down");
+                        if(!stopDirections[1]){
+                            direction[0] = "down";
+                            if(speed > 1) speed--;
+                        }
                     } else if((player.worldY + player.solidAreaDefaultY)/tileSize < worldY + solidAreaDefaultY){
-                        if(!stopDirections[0]) direction[0] = "up";
+                        decideLetGo("up");
+                        if(!stopDirections[0]){
+                            direction[0] = "up";
+                            if(speed > 1) speed--;
+                        }
                     }
                     break;
             }
         }
+
+        System.out.println("bufferDirection: " + bufferDirection);
+        System.out.println("direction after: " + direction[0]);
+        
+        System.out.println("blockDirections up:" + blockedUp + " down:" + blockedDown + " left:" + blockedLeft + " right:" + blockedRight);
+        System.out.println("stopDirections up:" + stopDirections[0] + " down:" + stopDirections[1] + " left:" + stopDirections[2] + " right:" + stopDirections[3]);
+        System.out.println(" ");
     }
     
 

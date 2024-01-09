@@ -12,6 +12,8 @@ import entity.NPC_1;
 import entity.Player;
 import entity.Monsters.Monster;
 import entity.Monsters.NormalMonsters.Orc;
+import entity.Monsters.NormalMonsters.BlueOrc;
+import entity.Monsters.NormalMonsters.RedOrc;
 import entity.Abilities.Ability;
 import entity.Abilities.FireBall.FireBall;
 import object.SuperObject;
@@ -72,14 +74,14 @@ public class GamePannel extends JPanel implements Runnable {
         objSetter.setItem(new OBJ_healPotion(this, 30, 19));
         objSetter.setItem(new OBJ_healPotion(this, 30, 30));
         objSetter.setNPC(new NPC_1(this, "down", 22, 22));
-        objSetter.setMonster(new Orc(this, "right", 3, 3));
-        objSetter.setMonster(new Orc(this, "down", 22, 3));
-        objSetter.setMonster(new Orc(this, "left", 46, 3));
-        objSetter.setMonster(new Orc(this, "up", 3, 27));
-        objSetter.setMonster(new Orc(this, "up", 46, 27));
-        objSetter.setMonster(new Orc(this, "right", 3, 46));
-        objSetter.setMonster(new Orc(this, "up", 27, 46));
-        objSetter.setMonster(new Orc(this, "left", 46, 46));
+        objSetter.setMonster(new BlueOrc(this, "right", 3, 3));
+        objSetter.setMonster(new RedOrc(this, "down", 22, 3));
+        objSetter.setMonster(new BlueOrc(this, "left", 46, 3));
+        objSetter.setMonster(new RedOrc(this, "up", 3, 27));
+        objSetter.setMonster(new RedOrc(this, "up", 46, 27));
+        objSetter.setMonster(new BlueOrc(this, "right", 3, 46));
+        objSetter.setMonster(new RedOrc(this, "up", 27, 46));
+        objSetter.setMonster(new BlueOrc(this, "left", 46, 46));
     }
 
     public GamePannel(){

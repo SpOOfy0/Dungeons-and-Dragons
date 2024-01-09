@@ -29,10 +29,10 @@ public class Orc extends Monster implements MonsterInterface {
     public void MonsterSetting() {
 
         noticeRange = 3;
-        aggroRange = 4;
+        aggroRange = 5;
 
         initSpeed(1);
-        maxLife = 4;
+        maxLife = 8;
         life = maxLife;
         dommage = 1;
     }
