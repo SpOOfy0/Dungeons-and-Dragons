@@ -9,6 +9,11 @@ public class ClassSetter {
     
     GamePannel gp;
 
+    //CodeMonsterSpawner
+    // int counter = 0;
+    // int s = 0;
+    // int index = 3;
+
     public ClassSetter(GamePannel gp) {
         this.gp = gp;
     }
@@ -25,13 +30,16 @@ public class ClassSetter {
         gp.monster.add(element);
     }
     
-    /*public void spwanMonster(int worldX, int worldY){
-        for(int i = 0; i < gp.monster.length; i++){
-            if(gp.monster[i] != null){
-                gp.monster[i] = new Orc(gp);
-                gp.monster[i].worldX = worldX * gp.tileSize;
-                gp.monster[i].worldY = worldY * gp.tileSize;
-            }
-        }
-    }*/
+    //CodeMonsterSpawner
+    // public void MonsterSpawner(int worldX, int worldY){
+    //     if (counter == 30 && index < gp.monster.length) {
+    //         gp.monsters[index].worldX = worldX;
+    //         gp.monsters[index].worldY = worldY;
+    //         gp.monster[index] = gp.monsters[index];
+    //         index++;
+    //         counter = 0;
+    //     }
+    //     counter++;
+    // }
+
 }

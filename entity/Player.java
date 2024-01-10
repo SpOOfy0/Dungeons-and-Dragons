@@ -156,6 +156,9 @@ public class Player extends Entity {
         // levelUp();
 
 
+        playerDeath();
+
+
         verifyMovement(direction);
 
         applyForcedMovement();
@@ -478,9 +481,7 @@ public class Player extends Entity {
 
 
     public void playerDeath(){
-        if(life <= 0){
-            gp.gameState = gp.gameOverState;
-        }
+        if(life <= 0) gp.gameState = gp.gameOverState;
     }
     
     

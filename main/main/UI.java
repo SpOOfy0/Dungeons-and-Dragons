@@ -298,7 +298,7 @@ public class UI {
     }
 
     public void drawPlayerStatus(){
-        if (gp.keyHandler.nPressed == true){
+        if (gp.keyHandler.nPressed){
             int x = gp.screenWidth / 8 - gp.tileSize;
             int y = gp.screenHeight / 2 - gp.tileSize * 4;
             int width = gp.screenWidth / 2 - gp.tileSize * 2;
@@ -339,7 +339,6 @@ public class UI {
                 textY += lineHeight; 
             }
         }
-
     }
 
     public int getXForAlightToRightOfText(String text, int tailX, Graphics2D graphics2D) {

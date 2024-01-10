@@ -54,7 +54,7 @@ public class GamePannel extends JPanel implements Runnable {
     public InteractionChecker interactionChecker = new InteractionChecker(this);
     public ClassSetter objSetter = new ClassSetter(this);
     public Player player = Player.getInstance(this, keyHandler);
-    public ArrayList<SuperObject> item = new ArrayList<SuperObject>();
+    public Vector<SuperObject> item = new Vector<SuperObject>();
     public Vector<NPC> npc = new Vector<NPC>();
     public Vector<Monster> monster = new Vector<Monster>();
     //public Ability ability[] = new Ability[10];
@@ -73,10 +73,10 @@ public class GamePannel extends JPanel implements Runnable {
 
     public void setUpObject(){
         
-        objSetter.setItem(new OBJ_healPotion(this, 19, 19));
-        objSetter.setItem(new OBJ_healPotion(this, 19, 30));
-        objSetter.setItem(new OBJ_healPotion(this, 30, 19));
-        objSetter.setItem(new OBJ_healPotion(this, 30, 30));
+        objSetter.setItem(new OBJ_healPotion(this, 20, 20));
+        objSetter.setItem(new OBJ_healPotion(this, 20, 29));
+        objSetter.setItem(new OBJ_healPotion(this, 29, 20));
+        objSetter.setItem(new OBJ_healPotion(this, 29, 29));
         //CodeMana
         // objSetter.setItem(new OBJ_manaPotion(this, 14, 22));
         // objSetter.setItem(new OBJ_manaPotion(this, 14, 38));
@@ -191,11 +191,6 @@ public class GamePannel extends JPanel implements Runnable {
         }
 
         //ABILITY
-        /*for(int i = 0; i < ability.length; i++){
-            if(ability[i] != null){
-            ability[i].draw(g2);
-            }
-        }*/
         if(ability != null) ability.draw(g2);
 
         //PLAYER
