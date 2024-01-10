@@ -1,6 +1,7 @@
 package entity.Abilities;
 
 import entity.Entity;
+import entity.Monsters.Monster;
 import main.GamePannel;
 
 import java.awt.Graphics2D;
@@ -11,7 +12,9 @@ public class Ability extends Entity{
     public boolean abilityCollision = false;
     public int abilityCollisionIndex = 999;
 
-    public int dmg;
+    //CodeMana
+    //Mana cost for each ability
+    //public int fireManaCost = 20;
 
     protected int range;
     protected int distanceTraveled;
@@ -37,25 +40,31 @@ public class Ability extends Entity{
             
             abilityCollisionIndex = monsterCollision();
             if(abilityCollision){
-                gp.monster.get(abilityCollisionIndex).receiveDmg(dmg);
+                gp.monster.get(abilityCollisionIndex).receiveDmg(damage);
             }
             rangeAbility();
             
         }
     }
+
+    //CodeMana
+    // public void AbilityManaCosr() {
+
+    // }
              
     public int monsterCollision() {
 
-        for(int i = 0; i < gp.monster.size(); i++){
+        int i = 0;
+        for(Monster iterMonster : gp.monster){
             abilityCollision = false;
-            if (gp.monster.get(i) != null){
+            if (iterMonster != null){
 
                 solidArea.x += worldX;
                 solidArea.y += worldY;
-                gp.monster.get(i).solidArea.x += gp.monster.get(i).worldX;
-                gp.monster.get(i).solidArea.y += gp.monster.get(i).worldY;
+                iterMonster.solidArea.x += iterMonster.worldX;
+                iterMonster.solidArea.y += iterMonster.worldY;
 
-                if (solidArea.intersects(gp.monster.get(i).solidArea)){
+                if (solidArea.intersects(iterMonster.solidArea)){
                     abilityCollision = true;
                     direction[0] = null;
                     gp.player.ballOn = 0;
@@ -63,17 +72,19 @@ public class Ability extends Entity{
 
                     solidArea.x = solidAreaDefaultX;
                     solidArea.y = solidAreaDefaultY;
-                    gp.monster.get(i).solidArea.x = gp.monster.get(i).solidAreaDefaultX;
-                    gp.monster.get(i).solidArea.y = gp.monster.get(i).solidAreaDefaultY;
+                    iterMonster.solidArea.x = iterMonster.solidAreaDefaultX;
+                    iterMonster.solidArea.y = iterMonster.solidAreaDefaultY;
 
                     return i;
                 }
 
                 solidArea.x = solidAreaDefaultX;
                 solidArea.y = solidAreaDefaultY;
-                gp.monster.get(i).solidArea.x = gp.monster.get(i).solidAreaDefaultX;
-                gp.monster.get(i).solidArea.y = gp.monster.get(i).solidAreaDefaultY;
+                iterMonster.solidArea.x = iterMonster.solidAreaDefaultX;
+                iterMonster.solidArea.y = iterMonster.solidAreaDefaultY;
             }
+
+            i++;
         }
         return 999;
     }
@@ -97,6 +108,11 @@ public class Ability extends Entity{
         }
 
     }
+
+    //CodeMana
+    // public void manaCost(){
+    //     gp.player.mana -= mana;
+    // }
 
     public void draw(Graphics2D g2) {
 

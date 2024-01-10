@@ -23,6 +23,9 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
+    //PLAYER'S TYPE OF MAGIC
+    public String typeOfMagic;
+
     //PLAYER'S OBJECT
     public int healPotion = 0;
 
@@ -91,6 +94,17 @@ public class Player extends Entity {
         maxLife = 8;
         life = maxLife;
         attackSpeed = 30;
+        damage = 1;
+
+        typeOfMagic = "fire";
+
+        //CodeExp
+        // level = 1;
+        // MaxXp = 1000;
+
+        //CodeMana
+        // maxMana = 100;
+        // mana = maxMana;
     }
 
     public void getPlayerImage(){
@@ -108,7 +122,7 @@ public class Player extends Entity {
     public void update(){
 
         if(attackDelay < attackSpeed) attackDelay++;
-        fireAttaque();
+        magicAttack();
         
 
         direction[0] = null;
@@ -138,6 +152,9 @@ public class Player extends Entity {
             else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
         }
 
+        //CodeExp
+        // levelUp();
+
 
         verifyMovement(direction);
 
@@ -148,7 +165,7 @@ public class Player extends Entity {
             pickUpObject(objIndexes.get(i));
 
         npcIndex = gp.interactionChecker.interactPossible(this, gp.npc);
-        interactNPC(npcIndex);
+        if(npcIndex != 999) interactNPC(npcIndex);
 
         for(int i = 0; i < monsterIndexes.size(); i++)
             interactMonster(monsterIndexes.get(i));
@@ -161,6 +178,18 @@ public class Player extends Entity {
             spriteCounter = 0;
         }
     }
+
+
+    //CodeExp
+    // public void levelUp(){
+    //     if( xp >= maxXp){
+    //         level ++;
+    //         gp.ui.showMessage("     You leveled up!");
+    //         xp = xp - maxXp;
+    //         maxXp += 250;
+
+    //     }
+    // }
 
 
     // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
@@ -313,6 +342,18 @@ public class Player extends Entity {
                     gp.item.remove(objIndex);
                     gp.ui.showMessage("You got a heal potion!");
                     break;
+                //CodeMana
+                // case "manaPotion":
+                //     if (inventory.containsKey(objName)) {
+                //         //Existing object
+                //         inventory.put(objName, inventory.get(objName) + 1);
+                //     } else {
+                //         //New object
+                //         inventory.put(objName, 1);
+                //     }
+                //     gp.item.remove(objIndex);
+                //     gp.ui.showMessage("You got a mana potion!");
+                //     break;
             }            
         }
     }
@@ -357,6 +398,16 @@ public class Player extends Entity {
                             if(inventory.get(objName) == 0) inventory.remove(objName);
                         }
                         break;
+                    //CodeMana
+                    // case "manaPotion":
+                    //     if(mana < maxMana){
+                    //         mana = Math.min(mana + 30, maxMana);
+                    //         inventory.put(objName, inventory.get(objName) - 1);
+                    //         if(inventory.get(objName) == 0){
+                    //             inventory.remove(objName);
+                    //         }
+                    //     }
+                    //     break;
                 }
             }
         }
@@ -365,27 +416,39 @@ public class Player extends Entity {
     
 
     public void interactNPC(int npcIndex){
+
+        NPC studiedNPC = gp.npc.get(npcIndex);
         
-        if(npcIndex != 999 && gp.keyHandler.xPressed){
-            gp.npc.get(npcIndex).speak();
+        if(gp.keyHandler.xPressed){
+            studiedNPC.speak();
         }
         gp.keyHandler.xPressed = false;
     }
 
 
+    //method to load the magic attack
+    public void magicAttack(){
 
-    public int fireAttaque(){
-
-        if(gp.keyHandler.dPressed && attackDelay >= attackSpeed && ballOn == 0){
-            gp.fireBall = new FireBall(gp);
-            gp.ability = gp.fireBall;
-            gp.keyHandler.dPressed = false;
-            attackDelay = 0;
-            positionXActivityOn = worldX;
-            positionYActivityOn = worldY;
-            ballOn = 1;
+        if (gp.keyHandler.dPressed && ballOn == 0 && attackDelay >= attackSpeed){
+            switch(typeOfMagic){
+                case "fire":
+                    //CodeMana
+                    // if(gp.ability.mana <= mana){
+                        gp.fireBall = new FireBall(gp);
+                        gp.ability = gp.fireBall;
+                        gp.keyHandler.dPressed = false;
+                        attackDelay = 0;
+                        positionXActivityOn = worldX;
+                        positionYActivityOn = worldY;
+                        //CodeMana
+                        // gp.ability.manaCost();
+                        ballOn = 1;
+                    //CodeMana
+                    // }
+                    break;
+                //Add other type of magic attack
+            }
         }
-        return ballOn;
     }
     
 
@@ -403,13 +466,20 @@ public class Player extends Entity {
     public void baseAttack(int monsterIndex){
 
         if(gp.keyHandler.sPressed && attackDelay >= attackSpeed){
-            gp.monster.get(monsterIndex).receiveDmg(1);
+            gp.monster.get(monsterIndex).receiveDmg(damage);
             gp.monster.get(monsterIndex).giveForcedMovement(gp.interactionChecker.awayFromPlayer(gp.monster.get(monsterIndex)), 2, 30);
             gp.keyHandler.sPressed = false;
 
             attackDelay = 0;
             //add the image of the player attacking with the sword
 
+        }
+    }
+
+
+    public void playerDeath(){
+        if(life <= 0){
+            gp.gameState = gp.gameOverState;
         }
     }
     

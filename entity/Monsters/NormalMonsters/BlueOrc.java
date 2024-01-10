@@ -34,7 +34,7 @@ public class BlueOrc extends Monster implements MonsterInterface {
         initSpeed(2);
         maxLife = 7;
         life = maxLife;
-        dommage = 1;
+        damage = 1;
     }
 
 }

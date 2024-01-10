@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import entity.Entity;
 import object.SuperObject;
@@ -203,7 +204,7 @@ public class CollisionChecker {
 
 
 
-    public ArrayList<Integer> checkEntity(Entity entity, ArrayList<? extends Entity> target){
+    public ArrayList<Integer> checkEntity(Entity entity, Vector<? extends Entity> target){
         ArrayList<Integer> index = new ArrayList<Integer>();
         int i = 0;
 

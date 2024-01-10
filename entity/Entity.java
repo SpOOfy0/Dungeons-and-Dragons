@@ -61,6 +61,17 @@ public class Entity {
     public int maxLife;
     public int life;
 
+    //CodeExp
+    // public int xp;
+    // public int maxXp; //xp needed to level up
+    // public int level;
+
+    public int damage;
+
+    //CodeMana
+    // public int mana;
+    // public int maxMana;
+
 
     // pour appliquer des mouvements qui ne proviennent pas d'un comportement de base aux entités
     private class ForcedMovement {

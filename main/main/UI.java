@@ -20,6 +20,8 @@ public class UI {
     Font arial_40;
     BufferedImage fullHeart ,halfHeart, emptyHeart; 
     BufferedImage HealPotionImage;
+    //CodeMana
+    // BufferedImage ManaPotionImage;
 
     public boolean messageOn = false;
     public String message = "";
@@ -37,6 +39,10 @@ public class UI {
         arial_40 = new Font("Arial", Font.PLAIN, 40);
         OBJ_healPotion HealPotion = new OBJ_healPotion(gp);
         HealPotionImage = HealPotion.image;
+        //CodeMana
+        // OBJ_manaPotion ManaPotion = new OBJ_manaPotion(gp);
+        // ManaPotionImage = ManaPotion.image;
+
 
         // CREAT HUD OBJET 
         SuperObject heart = new OBJ_LifeHeart(gp);
@@ -189,12 +195,43 @@ public class UI {
     }
 
 
+    //CodeExp
+    // public void drawPlayerXp() {
+    //     if (gp.player.maxXp > gp.player.xp){
+    //         int maxBarWidth = 200;
+    //         double percentage = (double) gp.player.xp / gp.player.maxXp;
+    //         double xpBarWidth = maxBarWidth * percentage;
+    //         int screenX = gp.tileSize / 2;
+    //         int screenY = gp.tileSize * 3 - 35;
+
+    //         g2.setColor(Color.WHITE);
+    //         g2.fillRect(screenX, screenY - 10, (int) xpBarWidth, 8);
+    //         colorBorder(screenX, screenY - 10, maxBarWidth, 8);
+    //     }
+    // }
+
+    //CodeMana
+    // public void drawPlayerMana() {
+    //     if (gp.player.maxMana >= gp.player.mana){
+    //         int maxBarWidth = 200;
+    //         double percentage = (double) gp.player.mana / gp.player.maxMana;
+    //         double manaBarWidth = maxBarWidth * percentage;
+    //         int screenX = gp.tileSize / 2;
+    //         int screenY = gp.tileSize * 2 - 10;
+
+    //         g2.setColor(Color.BLUE);
+    //         g2.fillRect(screenX, screenY - 10, (int) manaBarWidth, 8);
+    //         colorBorder(screenX, screenY - 10, maxBarWidth, 8);
+    //     }
+    // }
+
+
     public void drawInventory() {
         int startX = gp.screenWidth / 2 + gp.tileSize;
         int startY = gp.screenHeight / 2 - gp.tileSize * 4;
         int itemsPerRow = 5;
         int spacing = 10;
-    
+
         // Taille d'une case
         int cellSize = gp.tileSize + spacing;
     
@@ -208,7 +245,7 @@ public class UI {
             int x = startX + col * cellSize;
             int y = startY + row * cellSize;
     
-            // Dessinez la case colorée
+            // Colorer le fond de la case où notre curseur se trouve
             g2.setColor(new Color(100, 100, 100));
             g2.fillRect(x, y, gp.tileSize, gp.tileSize);
             
@@ -220,17 +257,33 @@ public class UI {
             // Si l'inventaire contient un objet à cet emplacement, dessinez-le
             if (itemIndex < gp.player.inventory.size()) {
                 String objName = gp.player.inventory.keySet().toArray(new String[0])[itemIndex];
-    
+
+                BufferedImage image;
+                int count;
+                String countInString;
+
                 switch (objName) {
                     case "healPotion":
-                        int count = gp.player.inventory.get(objName);
-                        String Count = String.valueOf(count);
-                        g2.drawImage(HealPotionImage, x, y, gp.tileSize, gp.tileSize, null);
+                        image = HealPotionImage;
+                        count = gp.player.inventory.get(objName);
+                        countInString = String.valueOf(count);
+                        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
                         //Add count
                         g2.setFont(new Font("Arial", Font.PLAIN, gp.tileSize / 4));
                         g2.setColor(Color.white);
-                        g2.drawString(Count, x + 5, y + 15);
+                        g2.drawString(countInString, x + 5, y + 15);
                         break;
+                    //CodeMana
+                    // case "manaPotion":
+                    //     image = ManaPotionImage;
+                    //     count = gp.player.inventory.get(objName);
+                    //     countInString = String.valueOf(count);
+                    //     g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+                    //     //Add count
+                    //     g2.setFont(new Font("Arial", Font.PLAIN, gp.tileSize / 4));
+                    //     g2.setColor(Color.white);
+                    //     g2.drawString(countInString, x + 5, y + 15);
+                    //     break;
     
                     // Add other cases for objName
     
@@ -244,14 +297,120 @@ public class UI {
         }
     }
 
+    public void drawPlayerStatus(){
+        if (gp.keyHandler.nPressed == true){
+            int x = gp.screenWidth / 8 - gp.tileSize;
+            int y = gp.screenHeight / 2 - gp.tileSize * 4;
+            int width = gp.screenWidth / 2 - gp.tileSize * 2;
+            int height = gp.screenHeight - gp.tileSize * 4;
+            int arcWidth = 20;
+            int arcHeight = 20; 
+
+            g2.setColor(new Color(100, 100, 100, 200));
+            g2.fillRoundRect(x, y, width, height, arcWidth, arcHeight);
+            g2.setColor(Color.white);
+            g2.drawRoundRect(x, y, width, height, arcWidth, arcHeight);
+
+            int lineHeight = g2.getFontMetrics().getHeight();
+            int textX = x + 20; 
+            int valueX;    // The x-coordinate of the value text
+            int textY = y + 40; 
+
+            // Add lines of text
+            String[] lines = {
+                //CodeExp
+                // "Level: " , "" + gp.player.level,
+                // "XP: " , "" + gp.player.xp + "/" + gp.player.maxXp,
+                "Life: " , "" + gp.player.life + "/" + gp.player.maxLife,
+                "Strengh: " , "" + gp.player.damage,
+                //CodeMana
+                // "Mana" , "" + gp.player.mana + "/" + gp.player.maxMana,
+                "Speed Attack: " , "" + gp.player.attackSpeed,
+                // Add other lines of text
+            };
+
+            // Draw each line of text
+            for (int i = 0; i < lines.length; i += 2) {
+                g2.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2.setColor(Color.white);
+                g2.drawString(lines[i], textX, textY);
+                valueX = getXForAlightToRightOfText(lines[i + 1], textX + width, g2);
+                g2.drawString(lines[i + 1], valueX, textY);
+                textY += lineHeight; 
+            }
+        }
+
+    }
+
+    public int getXForAlightToRightOfText(String text, int tailX, Graphics2D graphics2D) {
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        return tailX - length - gp.tileSize / 2;
+    }
+
+    public static int getXForCenterOfText(String text, GamePannel gamePanel, Graphics2D graphics2D) {
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        return gamePanel.screenWidth / 2 - length / 2;
+    }
+
+
+    private void drawGameOverScreen() {
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int textX;
+        int textY;
+        String text;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 110f));
+
+        // TITLE TEXT
+        text = "Game Over";
+
+        // Shadow
+        g2.setColor(Color.black);
+        textX = getXForCenterOfText(text, gp, g2);
+        textY = gp.tileSize * 4;
+        g2.drawString(text, textX, textY);
+
+        // Text
+        g2.setColor(Color.WHITE);
+        g2.drawString(text, textX - 4, textY - 4);
+
+        // RETRY
+        g2.setFont(g2.getFont().deriveFont(50f));
+        text = "Retry";
+        textX = getXForCenterOfText(text, gp, g2);
+        textY += gp.tileSize * 4;
+        g2.drawString(text, textX, textY);
+        // if (commandNumber == 0) {
+        //     g2.drawString(">", textX - 40, textY);
+        //     if (gp.getKeyHandler().isEnterPressed()) {
+        //         commandNumber = 0;
+        //         gp.retry();
+        //     }
+        // }
+
+        // BACK TO TITLE
+        text = "Quit";
+        textX = getXForCenterOfText(text, gp, g2);
+        textY += 55;
+        g2.drawString(text, textX, textY);
+        // if (commandNumber == 1) {
+        //     g2.drawString(">", textX - 40, textY);
+        //     if (gp.getKeyHandler().isEnterPressed()) {
+        //         commandNumber = 0;
+        //         gp.restart();
+        //     }
+        // }
+
+        // gp.setEnterPressed(false);
+    }
+
+
 
     public void colorBorder(int x ,int y, int width, int height){
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, width, height);
     }
-
-
-    public void pressObject(){}
 
     
     // Modifier la méthode draw pour appeler drawInventory
@@ -261,10 +420,23 @@ public class UI {
         g2.setFont(arial_40);
         g2.setColor(Color.white);
 
+
+        //CodeExp
+        // drawPlayerXp();
+
+        //CodeMana
+        // drawPlayerMana();
+
+
         // PLAY STATE
         if (gp.gameState == gp.playState) {
             drawPlayerLife();
             drawMessage();
+            drawPlayerStatus();
+        }
+
+        if (gp.gameState == gp.gameOverState){
+            drawGameOverScreen();
         }
 
         // PAUSE STATE

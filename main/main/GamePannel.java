@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import entity.NPC;
 import entity.NPC_1;
@@ -18,6 +19,8 @@ import entity.Abilities.Ability;
 import entity.Abilities.FireBall.FireBall;
 import object.SuperObject;
 import object.OBJ_healPotion;
+//CodeMana
+// import object.OBJ_manaPotion;
 import tile.TileManager;
 
 
@@ -52,8 +55,8 @@ public class GamePannel extends JPanel implements Runnable {
     public ClassSetter objSetter = new ClassSetter(this);
     public Player player = Player.getInstance(this, keyHandler);
     public ArrayList<SuperObject> item = new ArrayList<SuperObject>();
-    public ArrayList<NPC> npc = new ArrayList<NPC>();
-    public ArrayList<Monster> monster = new ArrayList<Monster>();
+    public Vector<NPC> npc = new Vector<NPC>();
+    public Vector<Monster> monster = new Vector<Monster>();
     //public Ability ability[] = new Ability[10];
     public Ability ability = new Ability(this);
     public FireBall fireBall ;
@@ -65,6 +68,7 @@ public class GamePannel extends JPanel implements Runnable {
     public int pauseState = 2;
     public int dialogueState = 3;
     public int inventoryState = 4;
+    public int gameOverState = 5;
 
 
     public void setUpObject(){
@@ -73,7 +77,13 @@ public class GamePannel extends JPanel implements Runnable {
         objSetter.setItem(new OBJ_healPotion(this, 19, 30));
         objSetter.setItem(new OBJ_healPotion(this, 30, 19));
         objSetter.setItem(new OBJ_healPotion(this, 30, 30));
+        //CodeMana
+        // objSetter.setItem(new OBJ_manaPotion(this, 14, 22));
+        // objSetter.setItem(new OBJ_manaPotion(this, 14, 38));
+        // objSetter.setItem(new OBJ_manaPotion(this, 14, 39));
+
         objSetter.setNPC(new NPC_1(this, "down", 22, 22));
+
         objSetter.setMonster(new BlueOrc(this, "right", 3, 3));
         objSetter.setMonster(new RedOrc(this, "down", 22, 3));
         objSetter.setMonster(new BlueOrc(this, "left", 46, 3));
@@ -134,19 +144,26 @@ public class GamePannel extends JPanel implements Runnable {
         
         if(gameState == playState){
             player.update();
-            for(int i = 0; i < npc.size(); i++){
-                if(npc.get(i) != null) npc.get(i).update();
+            for(NPC iterNPC : npc){
+                if(iterNPC != null) iterNPC.update();
             }
             for(int i = 0; i < monster.size(); i++){
-                if(monster.get(i) != null){
-                    if(monster.get(i).life <= 0) monster.remove(i);
-                    else monster.get(i).update();
+                Monster iterMonster = monster.get(i);
+                if(iterMonster != null){
+                    if(iterMonster.life <= 0){
+                        monster.remove(i);
+
+                        //CodeExp
+                        // player.xp += iterMonster.xp;
+                    }
+                    else iterMonster.update();
                 }
             }
             if(ability != null) ability.update();
         }
 
     }
+
 
     public void paint(Graphics g){
 
@@ -156,20 +173,20 @@ public class GamePannel extends JPanel implements Runnable {
         tileM.draw(g2);
 
         //OBJECT
-        for(int i = 0; i < item.size(); i++){
-            if(item.get(i) != null) item.get(i).draw(g2, this);
+        for(SuperObject iterItem : item){
+            if(iterItem != null) iterItem.draw(g2, this);
         }
 
         //NPC
-        for(int i = 0; i < npc.size(); i++){
-            if(npc.get(i) != null) npc.get(i).draw(g2);
+        for(NPC iterNPC : npc){
+            if(iterNPC != null) iterNPC.draw(g2);
         }
 
         //MONSTER
-        for(int i = 0; i < monster.size(); i++){
-            if(monster.get(i) != null){
-                monster.get(i).draw(g2);
-                monster.get(i).paintComponent(g2);
+        for(Monster iterMonster : monster){
+            if(iterMonster != null){
+                iterMonster.draw(g2);
+                iterMonster.paintComponent(g2);
             }
         }
 

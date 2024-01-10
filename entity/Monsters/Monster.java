@@ -9,8 +9,6 @@ import main.GamePannel;
 
 public class Monster extends Entity{
     
-    public int dommage;
-    
     public Monster(GamePannel gp, String inputedDirection, int coordX, int coordY) {
         super(gp);
         
@@ -210,7 +208,7 @@ public class Monster extends Entity{
 
 
     public void attackPlayer() {
-        if(gp.player.life > 0) gp.player.life -= dommage;
+        if(gp.player.life > 0) gp.player.life -= damage;
         attackDelay = 0;
     }
 

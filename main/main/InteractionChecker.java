@@ -1,7 +1,7 @@
 package main;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import entity.Entity;
 
@@ -89,7 +89,7 @@ public class InteractionChecker {
 
 
 
-    public int interactPossible(Entity entity, ArrayList<? extends Entity> target){
+    public int interactPossible(Entity entity, Vector<? extends Entity> target){
 
         entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
         entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
@@ -119,9 +119,8 @@ public class InteractionChecker {
         int distanceInBetween = gp.tileSize;
         int closestDistance = (gp.tileSize)/2;
         
-        for(int i = 0; i < target.size(); i++){
-
-            Entity studiedTarget = target.get(i);
+        int i = 0;
+        for(Entity studiedTarget : target){
 
             if (closestDistance > 0 && studiedTarget != null){
 
@@ -154,7 +153,9 @@ public class InteractionChecker {
                 studiedTarget.solidArea.x = studiedTarget.solidAreaDefaultX;
                 studiedTarget.solidArea.y = studiedTarget.solidAreaDefaultY;
             }
+            i++;
         }
+
         //Reset entity's solid area position
         entity.solidArea.x = entity.solidAreaDefaultX;
         entity.solidArea.y = entity.solidAreaDefaultY;
