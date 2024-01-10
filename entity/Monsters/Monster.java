@@ -17,8 +17,8 @@ public class Monster extends Entity{
 
         int[] newCoords = gp.tileM.verifyAndCorrectPlacement(coordX, coordY);
 
-        worldX = newCoords[0] * gp.tileSize;
-        worldY = newCoords[1] * gp.tileSize;
+        worldX = newCoords[0] * tileSize;
+        worldY = newCoords[1] * tileSize;
 
         if(inputedDirection != null) direction[0] = inputedDirection;
         else direction[0] = "up";
@@ -47,7 +47,7 @@ public class Monster extends Entity{
             }
         }
 
-        if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*gp.tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*gp.tileSize)) {
+        if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*tileSize)) {
 
             
             if (!isWithPlayer){
@@ -222,7 +222,7 @@ public class Monster extends Entity{
             
         // Draw the life bar
         int reamningLife = maxLife - life;
-        int lifeBarWidth =  gp.tileSize - (gp.tileSize * reamningLife / maxLife);
+        int lifeBarWidth =  tileSize - (tileSize * reamningLife / maxLife);
         int screenX = worldX - gp.player.worldX + gp.player.screenX ;
         int screenY = worldY - gp.player.worldY + gp.player.screenY ;
 

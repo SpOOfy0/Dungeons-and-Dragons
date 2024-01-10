@@ -22,6 +22,8 @@ public class UI {
     BufferedImage HealPotionImage;
     //CodeMana
     // BufferedImage ManaPotionImage;
+    
+    public int tileSize;
 
     public boolean messageOn = false;
     public String message = "";
@@ -35,6 +37,7 @@ public class UI {
 
     private UI(GamePannel gp) {
         this.gp = gp;
+        tileSize = gp.tileSize;
 
         arial_40 = new Font("Arial", Font.PLAIN, 40);
         OBJ_healPotion HealPotion = new OBJ_healPotion(gp);
@@ -76,10 +79,10 @@ public class UI {
     }
 
     public void drawMessage(){
-        if(messageOn == true ){
+        if(messageOn){
             g2.setFont(new Font("Arial", Font.PLAIN, 20));
             g2.setColor(Color.white);
-            g2.drawString(message, gp.screenWidth / 2 - gp.tileSize * 2 , gp.screenHeight / 4 - gp.tileSize);
+            g2.drawString(message, gp.screenWidth / 2 - tileSize * 2 , gp.screenHeight / 4 - tileSize);
             messageCounter++;
         
             if(messageCounter > 100){
@@ -101,8 +104,8 @@ public class UI {
         g2.drawString("Time: " + df.format(timer), 650, 35);
 
         //Draw Heal Potion
-        g2.drawImage(HealPotionImage, 20, 5, gp.tileSize, gp.tileSize, null);
-        g2.drawString("x" + gp.player.healPotion, gp.tileSize+15, 35);
+        g2.drawImage(HealPotionImage, 20, 5, tileSize, tileSize, null);
+        g2.drawString("x" + gp.player.healPotion, tileSize+15, 35);
 
         // IF PLAYER GOT A HEAL POTION
         if(messageOn == true ){
@@ -135,17 +138,16 @@ public class UI {
     }
 
     public void drawDialogueScreen(){
-
-        int x = gp.tileSize*2;
-        int y = gp.tileSize/2;
-        int width = gp.screenWidth - gp.tileSize*4;
-        int height = gp.tileSize*4;
+        int x = tileSize*2;
+        int y = tileSize/2;
+        int width = gp.screenWidth - tileSize*4;
+        int height = tileSize*4;
 
         drawSubWindow(x, y, width, height);
 
         g2.setFont(g2.getFont().deriveFont(Font.PLAIN,25F));
-        x += gp.tileSize;
-        y += gp.tileSize;
+        x += tileSize;
+        y += tileSize;
 
         for(String line : currentDialogue.split("\n")){
             g2.drawString(line, x, y);
@@ -169,28 +171,28 @@ public class UI {
 
        //gp.player.life = 5; //for testing
 
-        int x = gp.tileSize/2;
-        int y = gp.tileSize/2;
+        int x = tileSize/2;
+        int y = tileSize/2;
         int life = gp.player.life;
 
         // DRAW PLAYER MAXLIFE
         for(int i = 0; i < gp.player.maxLife/2; i++){
-            g2.drawImage(emptyHeart, x, y, gp.tileSize, gp.tileSize, null);
-            x += gp.tileSize;
+            g2.drawImage(emptyHeart, x, y, tileSize, tileSize, null);
+            x += tileSize;
         }
 
         //RESET
-        x = gp.tileSize/2;
+        x = tileSize/2;
 
         // DRAW PLAYER LIFE
         while (life >= 2){
-            g2.drawImage(fullHeart, x, y, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(fullHeart, x, y, tileSize, tileSize, null);
             life -= 2;
-            x += gp.tileSize;
+            x += tileSize;
         }
 
         if(life == 1){
-            g2.drawImage(halfHeart, x, y, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(halfHeart, x, y, tileSize, tileSize, null);
         }
     }
 
@@ -201,8 +203,8 @@ public class UI {
     //         int maxBarWidth = 200;
     //         double percentage = (double) gp.player.xp / gp.player.maxXp;
     //         double xpBarWidth = maxBarWidth * percentage;
-    //         int screenX = gp.tileSize / 2;
-    //         int screenY = gp.tileSize * 3 - 35;
+    //         int screenX = tileSize / 2;
+    //         int screenY = tileSize * 3 - 35;
 
     //         g2.setColor(Color.WHITE);
     //         g2.fillRect(screenX, screenY - 10, (int) xpBarWidth, 8);
@@ -216,8 +218,8 @@ public class UI {
     //         int maxBarWidth = 200;
     //         double percentage = (double) gp.player.mana / gp.player.maxMana;
     //         double manaBarWidth = maxBarWidth * percentage;
-    //         int screenX = gp.tileSize / 2;
-    //         int screenY = gp.tileSize * 2 - 10;
+    //         int screenX = tileSize / 2;
+    //         int screenY = tileSize * 2 - 10;
 
     //         g2.setColor(Color.BLUE);
     //         g2.fillRect(screenX, screenY - 10, (int) manaBarWidth, 8);
@@ -227,13 +229,13 @@ public class UI {
 
 
     public void drawInventory() {
-        int startX = gp.screenWidth / 2 + gp.tileSize;
-        int startY = gp.screenHeight / 2 - gp.tileSize * 4;
+        int startX = gp.screenWidth / 2 + tileSize;
+        int startY = gp.screenHeight / 2 - tileSize * 4;
         int itemsPerRow = 5;
         int spacing = 10;
 
         // Taille d'une case
-        int cellSize = gp.tileSize + spacing;
+        int cellSize = tileSize + spacing;
     
         // Parcourir les emplacements de l'inventaire
         int itemIndex = 0;
@@ -247,12 +249,12 @@ public class UI {
     
             // Colorer le fond de la case où notre curseur se trouve
             g2.setColor(new Color(100, 100, 100));
-            g2.fillRect(x, y, gp.tileSize, gp.tileSize);
+            g2.fillRect(x, y, tileSize, tileSize);
             
             if (gp.player.index == i){
-                gp.player.selectOPbject(x, y,gp.tileSize, gp.tileSize);
+                gp.player.selectOPbject(x, y,tileSize, tileSize);
                 gp.player.useObject(i);
-                colorBorder(x, y, gp.tileSize, gp.tileSize);
+                colorBorder(x, y, tileSize, tileSize);
             }
             // Si l'inventaire contient un objet à cet emplacement, dessinez-le
             if (itemIndex < gp.player.inventory.size()) {
@@ -267,9 +269,9 @@ public class UI {
                         image = HealPotionImage;
                         count = gp.player.inventory.get(objName);
                         countInString = String.valueOf(count);
-                        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+                        g2.drawImage(image, x, y, tileSize, tileSize, null);
                         //Add count
-                        g2.setFont(new Font("Arial", Font.PLAIN, gp.tileSize / 4));
+                        g2.setFont(new Font("Arial", Font.PLAIN, tileSize / 4));
                         g2.setColor(Color.white);
                         g2.drawString(countInString, x + 5, y + 15);
                         break;
@@ -278,9 +280,9 @@ public class UI {
                     //     image = ManaPotionImage;
                     //     count = gp.player.inventory.get(objName);
                     //     countInString = String.valueOf(count);
-                    //     g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+                    //     g2.drawImage(image, x, y, tileSize, tileSize, null);
                     //     //Add count
-                    //     g2.setFont(new Font("Arial", Font.PLAIN, gp.tileSize / 4));
+                    //     g2.setFont(new Font("Arial", Font.PLAIN, tileSize / 4));
                     //     g2.setColor(Color.white);
                     //     g2.drawString(countInString, x + 5, y + 15);
                     //     break;
@@ -299,10 +301,10 @@ public class UI {
 
     public void drawPlayerStatus(){
         if (gp.keyHandler.nPressed){
-            int x = gp.screenWidth / 8 - gp.tileSize;
-            int y = gp.screenHeight / 2 - gp.tileSize * 4;
-            int width = gp.screenWidth / 2 - gp.tileSize * 2;
-            int height = gp.screenHeight - gp.tileSize * 4;
+            int x = gp.screenWidth / 8 - tileSize;
+            int y = gp.screenHeight / 2 - tileSize * 4;
+            int width = gp.screenWidth / 2 - tileSize * 2;
+            int height = gp.screenHeight - tileSize * 4;
             int arcWidth = 20;
             int arcHeight = 20; 
 
@@ -343,7 +345,7 @@ public class UI {
 
     public int getXForAlightToRightOfText(String text, int tailX, Graphics2D graphics2D) {
         int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
-        return tailX - length - gp.tileSize / 2;
+        return tailX - length - tileSize / 2;
     }
 
     public static int getXForCenterOfText(String text, GamePannel gamePanel, Graphics2D graphics2D) {
@@ -367,7 +369,7 @@ public class UI {
         // Shadow
         g2.setColor(Color.black);
         textX = getXForCenterOfText(text, gp, g2);
-        textY = gp.tileSize * 4;
+        textY = tileSize * 4;
         g2.drawString(text, textX, textY);
 
         // Text
@@ -378,7 +380,7 @@ public class UI {
         g2.setFont(g2.getFont().deriveFont(50f));
         text = "Retry";
         textX = getXForCenterOfText(text, gp, g2);
-        textY += gp.tileSize * 4;
+        textY += tileSize * 4;
         g2.drawString(text, textX, textY);
         // if (commandNumber == 0) {
         //     g2.drawString(">", textX - 40, textY);

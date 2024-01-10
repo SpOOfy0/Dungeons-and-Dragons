@@ -94,21 +94,23 @@ public class InteractionChecker {
         entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
         entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
 
+        int tileSize = gp.tileSize;
+
         // Création de la zone d'interaction, un rectangle avec la moitié d'une case en longueur et 2 blocs en largeur, toujours en face du joueur
         Rectangle zoneDetect;
 
         switch(entity.facing) {
             case "up":
-                zoneDetect = new Rectangle(entity.solidArea.x - 1 + (entity.solidArea.width/2), entity.solidArea.y - (gp.tileSize/2), 2, (gp.tileSize/2));
+                zoneDetect = new Rectangle(entity.solidArea.x - 1 + (entity.solidArea.width/2), entity.solidArea.y - (tileSize/2), 2, (tileSize/2));
                 break;
             case "down":
-                zoneDetect = new Rectangle(entity.solidArea.x - 1 + (entity.solidArea.width/2), entity.solidArea.y + entity.solidArea.height, 2, (gp.tileSize/2));
+                zoneDetect = new Rectangle(entity.solidArea.x - 1 + (entity.solidArea.width/2), entity.solidArea.y + entity.solidArea.height, 2, (tileSize/2));
                 break;
             case "left":
-                zoneDetect = new Rectangle(entity.solidArea.x - (gp.tileSize/2), entity.solidArea.y - 1 + (entity.solidArea.height/2), (gp.tileSize/2), 2);
+                zoneDetect = new Rectangle(entity.solidArea.x - (tileSize/2), entity.solidArea.y - 1 + (entity.solidArea.height/2), (tileSize/2), 2);
                 break;
             case "right":
-                zoneDetect = new Rectangle(entity.solidArea.x + entity.solidArea.width, entity.solidArea.y - 1 + (entity.solidArea.height/2), (gp.tileSize/2), 2);
+                zoneDetect = new Rectangle(entity.solidArea.x + entity.solidArea.width, entity.solidArea.y - 1 + (entity.solidArea.height/2), (tileSize/2), 2);
                 break;
             default:
                 return 999;
@@ -116,8 +118,8 @@ public class InteractionChecker {
 
         // Retourne l'index de l'entité du tableau le plus proche du joueur étant détecté par la zone d'interaction créée précédement
         int index = 999;
-        int distanceInBetween = gp.tileSize;
-        int closestDistance = (gp.tileSize)/2;
+        int distanceInBetween = tileSize;
+        int closestDistance = (tileSize)/2;
         
         int i = 0;
         for(Entity studiedTarget : target){

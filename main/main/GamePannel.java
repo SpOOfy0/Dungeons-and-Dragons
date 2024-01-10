@@ -37,8 +37,8 @@ public class GamePannel extends JPanel implements Runnable {
     public final int screenHeight = tileSize * maxScreenRow; //576 pixels
 
     //WORLD SETTINGS
-    public final int maxWorldCol = 50;
-    public final int maxWorldRow = 50;
+    public final int maxWorldCol = 62;
+    public final int maxWorldRow = 60;
     public final int worldWidth = tileSize * maxWorldCol; //800 pixels
     public final int worldHeight = tileSize * maxWorldRow; //800 pixels
 
@@ -73,25 +73,25 @@ public class GamePannel extends JPanel implements Runnable {
 
     public void setUpObject(){
         
-        objSetter.setItem(new OBJ_healPotion(this, 20, 20));
-        objSetter.setItem(new OBJ_healPotion(this, 20, 29));
-        objSetter.setItem(new OBJ_healPotion(this, 29, 20));
-        objSetter.setItem(new OBJ_healPotion(this, 29, 29));
+        objSetter.setItem(new OBJ_healPotion(this, 26, 25));
+        objSetter.setItem(new OBJ_healPotion(this, 26, 34));
+        objSetter.setItem(new OBJ_healPotion(this, 35, 25));
+        objSetter.setItem(new OBJ_healPotion(this, 35, 34));
         //CodeMana
         // objSetter.setItem(new OBJ_manaPotion(this, 14, 22));
         // objSetter.setItem(new OBJ_manaPotion(this, 14, 38));
         // objSetter.setItem(new OBJ_manaPotion(this, 14, 39));
 
-        objSetter.setNPC(new NPC_1(this, "down", 22, 22));
+        objSetter.setNPC(new NPC_1(this, "down", 28, 27));
 
-        objSetter.setMonster(new BlueOrc(this, "right", 3, 3));
-        objSetter.setMonster(new RedOrc(this, "down", 22, 3));
-        objSetter.setMonster(new BlueOrc(this, "left", 46, 3));
-        objSetter.setMonster(new RedOrc(this, "up", 3, 27));
-        objSetter.setMonster(new RedOrc(this, "up", 46, 27));
-        objSetter.setMonster(new BlueOrc(this, "right", 3, 46));
-        objSetter.setMonster(new RedOrc(this, "up", 27, 46));
-        objSetter.setMonster(new BlueOrc(this, "left", 46, 46));
+        objSetter.setMonster(new BlueOrc(this, "right", 9, 8));
+        objSetter.setMonster(new RedOrc(this, "down", 28, 8));
+        objSetter.setMonster(new BlueOrc(this, "left", 52, 8));
+        objSetter.setMonster(new RedOrc(this, "up", 9, 32));
+        objSetter.setMonster(new RedOrc(this, "up", 52, 32));
+        objSetter.setMonster(new BlueOrc(this, "right", 9, 51));
+        objSetter.setMonster(new RedOrc(this, "up", 33, 51));
+        objSetter.setMonster(new BlueOrc(this, "left", 52, 51));
     }
 
     public GamePannel(){

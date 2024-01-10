@@ -14,6 +14,7 @@ import main.GamePannel;
 public class Entity {
 
     public GamePannel gp;
+    public int tileSize;
 
     public int worldX, worldY;
     public int baseSpeed;
@@ -204,6 +205,7 @@ public class Entity {
         solidAreaDefaultY = solidArea.y;
         bufferDirection = null;
         isWithPlayer = false;
+        tileSize = gp.tileSize;
     }
 
 
@@ -487,22 +489,18 @@ public class Entity {
 
 
     public int getLeftTileBorder(){
-        int tileSize = gp.tileSize;
         return ((worldX + solidAreaDefaultX)/tileSize)*tileSize;
     }
 
     public int getRightTileBorder(){
-        int tileSize = gp.tileSize;
         return ( ((worldX + solidAreaDefaultX + solidArea.width)/tileSize) + 1)*tileSize;
     }
 
     public int getUpperTileBorder(){
-        int tileSize = gp.tileSize;
         return ((worldY + solidAreaDefaultY)/tileSize)*tileSize;
     }
 
     public int getLowerTileBorder(){
-        int tileSize = gp.tileSize;
         return ( ((worldY + solidAreaDefaultY + solidArea.height)/tileSize) + 1)*tileSize;
     }
 
@@ -528,10 +526,10 @@ public class Entity {
         int screenX = worldX - gp.player.worldX + gp.player.screenX ;
         int screenY = worldY - gp.player.worldY + gp.player.screenY ;
 
-        if( worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-            worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-            worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-            worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { 
+        if( worldX + tileSize > gp.player.worldX - gp.player.screenX &&
+            worldX - tileSize < gp.player.worldX + gp.player.screenX &&
+            worldY + tileSize > gp.player.worldY - gp.player.screenY &&
+            worldY - tileSize < gp.player.worldY + gp.player.screenY) { 
             
                 switch(facing){
                     case "up":
@@ -551,8 +549,8 @@ public class Entity {
                         else if (spriteNum == 2) image = right2;
                         break;                              
                 }
-                
-            g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            
+            g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
             
         }
     }

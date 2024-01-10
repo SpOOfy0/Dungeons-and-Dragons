@@ -55,8 +55,8 @@ public class Player extends Entity {
         this.keyHandler = keyH;
 
         //PLAYER SCREEN POSITION
-        screenX = gp.screenWidth/2 - gp.tileSize/2;
-        screenY = gp.screenHeight/2 - gp.tileSize/2;
+        screenX = gp.screenWidth/2 - tileSize/2;
+        screenY = gp.screenHeight/2 - tileSize/2;
 
         solidArea = new Rectangle(15, 24, 16, 12);
         solidAreaDefaultX = solidArea.x;
@@ -64,10 +64,10 @@ public class Player extends Entity {
         setDefaultValues();
         getPlayerImage();
         
-        int[] newCoords = gp.tileM.verifyAndCorrectPlacement(worldX/gp.tileSize, worldY/gp.tileSize);
+        int[] newCoords = gp.tileM.verifyAndCorrectPlacement(worldX/tileSize, worldY/tileSize);
 
-        worldX = newCoords[0] * gp.tileSize;
-        worldY = newCoords[1] * gp.tileSize;
+        worldX = newCoords[0] * tileSize;
+        worldY = newCoords[1] * tileSize;
     }
 
     public static Player getInstance(GamePannel gp, KeyHandler keyH) {
@@ -85,8 +85,8 @@ public class Player extends Entity {
         noticeRange = 0;
 
         //PLAYER WORLD POSITION
-        worldX = gp.tileSize * 25; 
-        worldY = gp.tileSize * 25; 
+        worldX = tileSize * 31; 
+        worldY = tileSize * 30; 
         initSpeed(4);
         facing = "down";
 
@@ -508,7 +508,8 @@ public class Player extends Entity {
                 else image = right2;
                 break;                              
         }
-        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+        g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
     }
     
 }

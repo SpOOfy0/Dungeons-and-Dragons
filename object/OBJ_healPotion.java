@@ -16,8 +16,9 @@ public class OBJ_healPotion extends SuperObject {
 
         int[] newCoords = gp.tileM.verifyAndCorrectPlacement(coordX, coordY);
 
-        worldX = newCoords[0] * gp.tileSize;
-        worldY = newCoords[1] * gp.tileSize;
+        int tileSize = gp.tileSize;
+        worldX = newCoords[0] * tileSize;
+        worldY = newCoords[1] * tileSize;
         
         name = "healPotion";
         

@@ -100,7 +100,7 @@ public class Ability extends Entity{
                 distanceTraveled = Math.abs(worldX - gp.player.positionXActivityOn);
                 rangeChecked = 1;
             }
-            if(distanceTraveled >= range*gp.tileSize){
+            if(distanceTraveled >= range*tileSize){
                 gp.player.ballOn = 0;
                 direction[0] = null;
                 gp.ability = null;
@@ -120,10 +120,10 @@ public class Ability extends Entity{
         int screenX = worldX - gp.player.worldX + gp.player.screenX ;
         int screenY = worldY - gp.player.worldY + gp.player.screenY ;
 
-        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-        worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-        worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-        worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { 
+        if(worldX + tileSize > gp.player.worldX - gp.player.screenX &&
+        worldX - tileSize < gp.player.worldX + gp.player.screenX &&
+        worldY + tileSize > gp.player.worldY - gp.player.screenY &&
+        worldY - tileSize < gp.player.worldY + gp.player.screenY) { 
         
             switch(direction[0]){
                 case "up":
@@ -140,7 +140,7 @@ public class Ability extends Entity{
                     break;
             }
         
-            g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
         }
     }
     

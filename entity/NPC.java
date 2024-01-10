@@ -12,8 +12,8 @@ public class NPC extends Entity{
 
         int[] newCoords = gp.tileM.verifyAndCorrectPlacement(coordX, coordY);
 
-        worldX = newCoords[0] * gp.tileSize;
-        worldY = newCoords[1] * gp.tileSize;
+        worldX = newCoords[0] * tileSize;
+        worldY = newCoords[1] * tileSize;
         
         if(inputedDirection != null) direction[0] = inputedDirection;
         else direction[0] = "down";
