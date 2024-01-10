@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 import entity.Abilities.FireBall.FireBall;
 import entity.Monsters.Monster;
@@ -28,10 +27,10 @@ public class Player extends Entity {
     public int healPotion = 0;
 
     //INDEX OF THE OBJECT THAT THE PLAYER IS CURRENTLY COLLIDING WITH
-    public Vector<Integer> objIndexes;
-    //public Vector<Integer> npcIndexes;
+    public ArrayList<Integer> objIndexes;
+    //public ArrayList<Integer> npcIndexes;
     public int npcIndex;
-    public Vector<Integer> monsterIndexes;
+    public ArrayList<Integer> monsterIndexes;
 
     public int ballOn = 0;
 

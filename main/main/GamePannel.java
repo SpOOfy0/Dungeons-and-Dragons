@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import entity.NPC;
 import entity.NPC_1;
@@ -51,9 +51,9 @@ public class GamePannel extends JPanel implements Runnable {
     public InteractionChecker interactionChecker = new InteractionChecker(this);
     public ClassSetter objSetter = new ClassSetter(this);
     public Player player = Player.getInstance(this, keyHandler);
-    public Vector<SuperObject> item = new Vector<SuperObject>();
-    public Vector<NPC> npc = new Vector<NPC>();
-    public Vector<Monster> monster = new Vector<Monster>();
+    public ArrayList<SuperObject> item = new ArrayList<SuperObject>();
+    public ArrayList<NPC> npc = new ArrayList<NPC>();
+    public ArrayList<Monster> monster = new ArrayList<Monster>();
     //public Ability ability[] = new Ability[10];
     public Ability ability = new Ability(this);
     public FireBall fireBall ;

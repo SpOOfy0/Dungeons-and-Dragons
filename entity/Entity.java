@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -54,7 +54,7 @@ public class Entity {
     public int impatience = 0;
     public int impatienceTolerance = 30;
 
-    public Vector<String> dialogues = new Vector<String>();
+    public ArrayList<String> dialogues = new ArrayList<String>();
     int dialogueIndex = 0;
 
     // CHARACTER STATUS
@@ -163,7 +163,7 @@ public class Entity {
         }
     }
 
-    public Vector<ForcedMovement> listForcedMovement = new Vector<ForcedMovement>();
+    public ArrayList<ForcedMovement> listForcedMovement = new ArrayList<ForcedMovement>();
 
     public void giveForcedMovement(String inputDirection, int inputDistance){
         listForcedMovement.add(new ForcedMovement(inputDirection, inputDistance));

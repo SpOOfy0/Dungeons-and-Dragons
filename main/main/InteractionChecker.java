@@ -1,7 +1,7 @@
 package main;
 
 import java.awt.Rectangle;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import entity.Entity;
 
@@ -89,7 +89,7 @@ public class InteractionChecker {
 
 
 
-    public int interactPossible(Entity entity, Vector<? extends Entity> target){
+    public int interactPossible(Entity entity, ArrayList<? extends Entity> target){
 
         entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
         entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
