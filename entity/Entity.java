@@ -191,6 +191,7 @@ public class Entity {
         this.gp = gp;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+        bufferDirection = null;
         isWithPlayer = false;
     }
 
@@ -342,10 +343,10 @@ public class Entity {
     }
 
     public void decideRestrainAll(){
-        decideRestrain("up");
-        decideRestrain("down");
-        decideRestrain("left");
-        decideRestrain("right");
+        if(blockedUp) stopDirections[0] = true;
+        if(blockedDown) stopDirections[1] = true;
+        if(blockedLeft) stopDirections[2] = true;
+        if(blockedRight) stopDirections[3] = true;
     }
 
     public void decideLetGo(String direction){
@@ -366,11 +367,18 @@ public class Entity {
         }
     }
 
-    public void decideLetGoAll (){
-        decideLetGo("up");
-        decideLetGo("down");
-        decideLetGo("left");
-        decideLetGo("right");
+    public void decideLetGoAll(){
+        if(!blockedUp) stopDirections[0] = false;
+        if(!blockedDown) stopDirections[1] = false;
+        if(!blockedLeft) stopDirections[2] = false;
+        if(!blockedRight) stopDirections[3] = false;
+    }
+
+    public void forceLetGoAll(){
+        stopDirections[0] = false;
+        stopDirections[1] = false;
+        stopDirections[2] = false;
+        stopDirections[3] = false;
     }
 
     public void wander(){
@@ -465,6 +473,28 @@ public class Entity {
 
         }
     }
+
+
+    public int getLeftTileBorder(){
+        int tileSize = gp.tileSize;
+        return ((worldX + solidAreaDefaultX)/tileSize)*tileSize;
+    }
+
+    public int getRightTileBorder(){
+        int tileSize = gp.tileSize;
+        return ( ((worldX + solidAreaDefaultX + solidArea.width)/tileSize) + 1)*tileSize;
+    }
+
+    public int getUpperTileBorder(){
+        int tileSize = gp.tileSize;
+        return ((worldY + solidAreaDefaultY)/tileSize)*tileSize;
+    }
+
+    public int getLowerTileBorder(){
+        int tileSize = gp.tileSize;
+        return ( ((worldY + solidAreaDefaultY + solidArea.height)/tileSize) + 1)*tileSize;
+    }
+
 
 
     public BufferedImage getImage(String ImagePath){

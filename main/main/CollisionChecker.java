@@ -106,7 +106,8 @@ public class CollisionChecker {
 
 
 
-    public Vector<Integer> checkObject(Entity entity, boolean player){ //We add player to be able to seperate player from the other entities like NPC's and monsters
+    //We add player to be able to seperate player from the other entities like NPC's and monsters
+    public Vector<Integer> checkObject(Entity entity, boolean player){
 
         Vector<Integer> index = new Vector<Integer>();
         
@@ -369,12 +370,12 @@ public class CollisionChecker {
                 if(pos1 > pos2){
                     intersection = entity.solidArea.intersection(gp.player.solidArea);
                     if (j%2 == 0){
-                        if(intersection.height < intersection.width){
+                        if(intersection.height <= intersection.width){
                             if(j == 0) entity.blockedUp = true;
                             else entity.blockedDown = true;
                         }
                     } else {
-                        if(intersection.height > intersection.width){
+                        if(intersection.height >= intersection.width){
                             if(j == 1) entity.blockedLeft = true;
                             else entity.blockedRight = true;
                         }

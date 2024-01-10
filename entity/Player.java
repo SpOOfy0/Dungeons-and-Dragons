@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import entity.Abilities.FireBall.FireBall;
+import entity.Monsters.Monster;
 import main.GamePannel;
 import main.KeyHandler;
 
@@ -391,10 +392,12 @@ public class Player extends Entity {
 
     public void interactMonster(int monsterIndex){
 
+        Monster studiedMonster = gp.monster.get(monsterIndex);
+
         baseAttack(monsterIndex);
 
-        if(gp.monster.get(monsterIndex).attackDelay >= gp.monster.get(monsterIndex).attackSpeed){
-            gp.monster.get(monsterIndex).attackPlayer();
+        if(studiedMonster.isWithPlayer && studiedMonster.attackDelay >= studiedMonster.attackSpeed){
+            studiedMonster.attackPlayer();
         }
     }
 

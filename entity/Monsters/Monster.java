@@ -44,46 +44,54 @@ public class Monster extends Entity{
             // si l'entité vient de changer de la non-traque à la traque, tous les blocages de choix de direction sont retirés
             if(aggravated){
                 bufferDirection = null;
-                decideLetGoAll();
+                forceLetGoAll();
                 if(speed != baseSpeed) speed = baseSpeed;
             }
         }
 
         if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*gp.tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*gp.tileSize)) {
 
-            // si l'entité est bloquée dans son mouvement mais qu'elle n'est pas bloquée contre le joueur,
-            // on récupère les dernières directions prises, enregistre ces directions dans "bufferFirection",
-            // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
-            if(!isWithPlayer && isBlocked){
-                bufferDirection = null;
-                for(int i = 0; i < direction.length; i++){
-                    if(direction[i] != null){
-                        bufferDirection = direction[i];
-                        direction[i] = null;
-                        decideRestrain(bufferDirection);
+            
+            if (!isWithPlayer){
+
+                // si l'entité est bloquée dans son mouvement mais qu'elle n'est pas bloquée contre le joueur,
+                // on récupère les dernières directions prises, enregistre ces directions dans "bufferFirection",
+                // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
+                if (isBlocked){
+                    bufferDirection = null;
+                    for (int i = 0; i < direction.length; i++){
+                        if (direction[i] != null){
+                            bufferDirection = direction[i];
+                            direction[i] = null;
+                            decideRestrain(bufferDirection);
+                        }
+                    }
+
+                // si l'entité n'est bloquée dans son mouvement et non bloquée contre le joueur,
+                // on redonne le choix de prendre la direction que "bufferDirection" a enregistré,
+                // et on effectue de même pour les dernières directions prises par l'entité sur l'image précédente
+                } else {
+                    if (bufferDirection != null) decideLetGo(bufferDirection);
+                    for (int i = 0; i < direction.length; i++){
+                        if (direction[i] != null){
+                            decideLetGo(direction[i]);
+                        }
                     }
                 }
-
-            // si l'entité n'est bloquée dans son mouvement ou qu'elle l'est mais est bloquée contre le joueur,
-            // on redonne le choix de prendre la direction que "bufferDirection" a enregistré,
-            // et on effectue de même pour les dernières directions prises par l'entité sur l'image précédente
+                
+                GoToPlayer(gp.player);
+                
+            // si l'entité est bloquée contre le joueur, elle ira en sa direction
             } else {
-                if (bufferDirection != null) decideLetGo(bufferDirection);
-                for(int i = 0; i < direction.length; i++){
-                    if(direction[i] != null){
-                        decideLetGo(direction[i]);
-                    }
-                }
+                bufferDirection = null;
+                direction[0] = gp.interactionChecker.towardsPlayer(this);
             }
-
-            GoToPlayer(gp.player);
 
         } else {
 
-
             // si l'entité vient de changer de la traque à la non-traque, tous les blocages de choix de direction sont retirés
             if(aggravated){
-                decideLetGoAll();
+                forceLetGoAll();
                 bufferDirection = null;
                 if(speed != baseSpeed) speed = baseSpeed;
                 aggravated = false;
@@ -126,7 +134,17 @@ public class Monster extends Entity{
     public void GoToPlayer(Player player) {
 
         // to follow the player
-        if(worldY + solidAreaDefaultY + solidArea.height <= player.worldY + player.solidAreaDefaultY + 1){
+        if(worldX + solidAreaDefaultX + solidArea.width <= player.worldX + player.solidAreaDefaultX + 1){
+            if(!stopDirections[3]){
+                direction[0] = "right";
+                if(speed != baseSpeed) speed = baseSpeed;
+            }
+        } else if(player.worldX + player.solidAreaDefaultX + player.solidArea.width <= worldX + solidAreaDefaultX + 1){
+            if(!stopDirections[2]){
+                direction[0] = "left";
+                if(speed != baseSpeed) speed = baseSpeed;
+            }
+        } else if(worldY + solidAreaDefaultY + solidArea.height <= player.worldY + player.solidAreaDefaultY + 1){
             if(!stopDirections[1]){
                 direction[0] = "down";
                 if(speed != baseSpeed) speed = baseSpeed;
@@ -138,73 +156,61 @@ public class Monster extends Entity{
             }
         }
 
-        if(worldX + solidAreaDefaultX + solidArea.width <= player.worldX + player.solidAreaDefaultX + 1){
-            if(!stopDirections[3]){
-                direction[0] = "right";
-                if(speed != baseSpeed) speed = baseSpeed;
-            }
-        } else if(player.worldX + player.solidAreaDefaultX + player.solidArea.width <= worldX + solidAreaDefaultX + 1){
-            if(!stopDirections[2]){
-                direction[0] = "left";
-                if(speed != baseSpeed) speed = baseSpeed;
-            }
-        }
-
-        System.out.println("direction before: " + direction[0]);
 
         if(direction[0] == null){
 
-            int tileSize = gp.tileSize;
+            int posTilePlayer;
+            int posMonster;
 
             // to follow the player when can't be followed with the previous functions (like in gaps)
             switch(bufferDirection) {
                 case "down":
                 case "up":
-                    if(worldX + solidAreaDefaultX < (player.worldX + player.solidAreaDefaultX)/tileSize){
+                    posTilePlayer = player.getLeftTileBorder();
+                    posMonster = worldX + solidAreaDefaultX;
+
+                    if (posMonster < posTilePlayer){
                         decideLetGo("right");
                         if(!stopDirections[3]){
                             direction[0] = "right";
-                            if(speed > 1) speed--;
+                            if (posMonster + solidArea.width > player.worldX + player.solidAreaDefaultX + 1 && speed > 1) speed--;
                         }
-                    } else if((player.worldX + player.solidAreaDefaultX)/tileSize < worldX + solidAreaDefaultX){
+                    } else if (posTilePlayer < posMonster){
                         decideLetGo("left");
                         if(!stopDirections[2]){
                             direction[0] = "left";
-                            if(speed > 1) speed--;
+                            if (player.worldX + player.solidAreaDefaultX + player.solidArea.width > posMonster + 1 && speed > 1) speed--;
                         }
                     }
                     break;
                 case "right":
                 case "left":
-                    if(worldY + solidAreaDefaultY < (player.worldY + player.solidAreaDefaultY)/tileSize){
+                    posTilePlayer = player.getUpperTileBorder();
+                    posMonster = worldY + solidAreaDefaultY;
+
+                    if (posMonster < posTilePlayer){
                         decideLetGo("down");
                         if(!stopDirections[1]){
                             direction[0] = "down";
-                            if(speed > 1) speed--;
+                            if (posMonster + solidArea.height > player.worldY + player.solidAreaDefaultY + 1 && speed > 1) speed--;
                         }
-                    } else if((player.worldY + player.solidAreaDefaultY)/tileSize < worldY + solidAreaDefaultY){
+                    } else if (posTilePlayer < posMonster ){
                         decideLetGo("up");
                         if(!stopDirections[0]){
                             direction[0] = "up";
-                            if(speed > 1) speed--;
+                            if (player.worldY + player.solidAreaDefaultY + player.solidArea.height > posMonster + 1 && speed > 1) speed--;
                         }
                     }
                     break;
             }
         }
 
-        System.out.println("bufferDirection: " + bufferDirection);
-        System.out.println("direction after: " + direction[0]);
-        
-        System.out.println("blockDirections up:" + blockedUp + " down:" + blockedDown + " left:" + blockedLeft + " right:" + blockedRight);
-        System.out.println("stopDirections up:" + stopDirections[0] + " down:" + stopDirections[1] + " left:" + stopDirections[2] + " right:" + stopDirections[3]);
-        System.out.println(" ");
     }
     
 
 
     public void attackPlayer() {
-        gp.player.life -= dommage;
+        if(gp.player.life > 0) gp.player.life -= dommage;
         attackDelay = 0;
     }
 

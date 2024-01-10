@@ -18,6 +18,40 @@ public class InteractionChecker {
 
 
 
+    public String towardsPlayer(Entity entity){
+        
+        entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
+        entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
+
+        gp.player.solidArea.x = gp.player.worldX + gp.player.solidArea.x;
+        gp.player.solidArea.y = gp.player.worldY + gp.player.solidArea.y;
+
+        int entityMiddleX = entity.solidArea.x + entity.solidArea.width/2;
+        int entityMiddleY = entity.solidArea.y + entity.solidArea.height/2;
+        int playerMiddleX = gp.player.solidArea.x + gp.player.solidArea.width/2;
+        int playerMiddleY = gp.player.solidArea.y + gp.player.solidArea.height/2;
+
+        String valueToReturn = null;
+
+        if (entityMiddleX < playerMiddleX) valueToReturn = "right";
+        else if (playerMiddleX < entityMiddleX) valueToReturn = "left";
+        
+        if(Math.abs(entityMiddleX - playerMiddleX) <= Math.abs(entityMiddleY - playerMiddleY)){
+            if (entityMiddleY < playerMiddleY) valueToReturn = "down";
+            else if (playerMiddleY < entityMiddleY) valueToReturn = "up";
+        }
+
+        //Reset entity's solid area position
+        entity.solidArea.x = entity.solidAreaDefaultX;
+        entity.solidArea.y = entity.solidAreaDefaultY;
+        //Reset object's solid area position
+        gp.player.solidArea.x = gp.player.solidAreaDefaultX;
+        gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+
+        return valueToReturn;
+    }
+    
+    
     public String awayFromPlayer(Entity entity){
         
         entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
