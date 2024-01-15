@@ -5,22 +5,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import entity.NPC;
-import entity.NPC_1;
 import entity.Player;
 import entity.Monsters.Monster;
-import entity.Monsters.NormalMonsters.Orc;
-import entity.Monsters.NormalMonsters.BlueOrc;
-import entity.Monsters.NormalMonsters.RedOrc;
 import entity.Abilities.Ability;
 import entity.Abilities.FireBall.FireBall;
+import entity.Abilities.ElectroBall.ElectroBall;
 import object.SuperObject;
-import object.OBJ_healPotion;
-//CodeMana
-// import object.OBJ_manaPotion;
 import tile.TileManager;
 
 
@@ -30,24 +23,24 @@ public class GamePannel extends JPanel implements Runnable {
     final int originalTileSize = 16; //16x16 is the original size of the player character or any other character in the game
     final int scale = 3;
 
-    public final int tileSize = originalTileSize * scale; //48x48 tile is new  size of the player character or any other character in the game
+    public final int tileSize = originalTileSize * scale; //48x48 tile is new size of the player character or any other character in the game
     public final int maxScreenCol = 16;
     public final int maxScreenRow = 12;
-    public final int screenWidth = tileSize * maxScreenCol; //768 pixels
-    public final int screenHeight = tileSize * maxScreenRow; //576 pixels
+    public final int screenWidth = tileSize * maxScreenCol; // 16 * 48 = 768 pixels
+    public final int screenHeight = tileSize * maxScreenRow; // 12 * 48 = 576 pixels
 
     //WORLD SETTINGS
     public final int maxWorldCol = 62;
     public final int maxWorldRow = 60;
-    public final int worldWidth = tileSize * maxWorldCol; //800 pixels
-    public final int worldHeight = tileSize * maxWorldRow; //800 pixels
+    public final int worldWidth = tileSize * maxWorldCol; // 62 * 48 = 2976 pixels
+    public final int worldHeight = tileSize * maxWorldRow; // 60 * 48 = 2880 pixels
 
     public int FPS = 60;
     public int index = 0;
 
     Thread  gameThread;
 
-    //INITIAT AUTHER OBJECT
+    //INITIATE OTHER OBJECTS
     public TileManager tileM = new TileManager(this);
     public KeyHandler keyHandler = new KeyHandler(this);
     public CollisionChecker collisionChecker = new CollisionChecker(this);
@@ -57,9 +50,11 @@ public class GamePannel extends JPanel implements Runnable {
     public Vector<SuperObject> item = new Vector<SuperObject>();
     public Vector<NPC> npc = new Vector<NPC>();
     public Vector<Monster> monster = new Vector<Monster>();
+    public Vector<Monster> monsterToSpown = new Vector<Monster>();
     //public Ability ability[] = new Ability[10];
-    public Ability ability = new Ability(this);
-    public FireBall fireBall ;
+    public Ability ability = null;
+    public FireBall fireBall = new FireBall(this);
+    public ElectroBall electroBall = new ElectroBall(this);
     //public List<FireBall> fireBall = new ArrayList<>();
     public UI ui = UI.getInstance(this);
     //GAME STATE
@@ -72,26 +67,10 @@ public class GamePannel extends JPanel implements Runnable {
 
 
     public void setUpObject(){
-        
-        objSetter.setItem(new OBJ_healPotion(this, 26, 25));
-        objSetter.setItem(new OBJ_healPotion(this, 26, 34));
-        objSetter.setItem(new OBJ_healPotion(this, 35, 25));
-        objSetter.setItem(new OBJ_healPotion(this, 35, 34));
-        //CodeMana
-        // objSetter.setItem(new OBJ_manaPotion(this, 14, 22));
-        // objSetter.setItem(new OBJ_manaPotion(this, 14, 38));
-        // objSetter.setItem(new OBJ_manaPotion(this, 14, 39));
 
-        objSetter.setNPC(new NPC_1(this, "down", 28, 27));
-
-        objSetter.setMonster(new BlueOrc(this, "right", 9, 8));
-        objSetter.setMonster(new RedOrc(this, "down", 28, 8));
-        objSetter.setMonster(new BlueOrc(this, "left", 52, 8));
-        objSetter.setMonster(new RedOrc(this, "up", 9, 32));
-        objSetter.setMonster(new RedOrc(this, "up", 52, 32));
-        objSetter.setMonster(new BlueOrc(this, "right", 9, 51));
-        objSetter.setMonster(new RedOrc(this, "up", 33, 51));
-        objSetter.setMonster(new BlueOrc(this, "left", 52, 51));
+        objSetter.setItems();
+        objSetter.setNPCs();
+        objSetter.setMonsters();
     }
 
     public GamePannel(){
@@ -152,9 +131,7 @@ public class GamePannel extends JPanel implements Runnable {
                 if(iterMonster != null){
                     if(iterMonster.life <= 0){
                         monster.remove(i);
-
-                        //CodeExp
-                        // player.xp += iterMonster.xp;
+                        player.xp += iterMonster.xp;
                     }
                     else iterMonster.update();
                 }

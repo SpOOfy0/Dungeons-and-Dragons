@@ -8,6 +8,8 @@ import entity.Player;
 import main.GamePannel;
 
 public class Monster extends Entity{
+
+    public boolean noKnockback = false;
     
     public Monster(GamePannel gp, String inputedDirection, int coordX, int coordY) {
         super(gp);

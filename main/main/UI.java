@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 
 import object.OBJ_LifeHeart;
 import object.OBJ_healPotion;
+import object.OBJ_manaPotion;
 import object.SuperObject;
 
 
@@ -20,8 +21,7 @@ public class UI {
     Font arial_40;
     BufferedImage fullHeart ,halfHeart, emptyHeart; 
     BufferedImage HealPotionImage;
-    //CodeMana
-    // BufferedImage ManaPotionImage;
+    BufferedImage ManaPotionImage;
     
     public int tileSize;
 
@@ -42,9 +42,8 @@ public class UI {
         arial_40 = new Font("Arial", Font.PLAIN, 40);
         OBJ_healPotion HealPotion = new OBJ_healPotion(gp);
         HealPotionImage = HealPotion.image;
-        //CodeMana
-        // OBJ_manaPotion ManaPotion = new OBJ_manaPotion(gp);
-        // ManaPotionImage = ManaPotion.image;
+        OBJ_manaPotion ManaPotion = new OBJ_manaPotion(gp);
+        ManaPotionImage = ManaPotion.image;
 
 
         // CREAT HUD OBJET 
@@ -197,35 +196,33 @@ public class UI {
     }
 
 
-    //CodeExp
-    // public void drawPlayerXp() {
-    //     if (gp.player.maxXp > gp.player.xp){
-    //         int maxBarWidth = 200;
-    //         double percentage = (double) gp.player.xp / gp.player.maxXp;
-    //         double xpBarWidth = maxBarWidth * percentage;
-    //         int screenX = tileSize / 2;
-    //         int screenY = tileSize * 3 - 35;
+    public void drawPlayerXp() {
+        if (gp.player.maxXp > gp.player.xp){
+            int maxBarWidth = 200;
+            double percentage = (double) gp.player.xp / gp.player.maxXp;
+            double xpBarWidth = maxBarWidth * percentage;
+            int screenX = tileSize / 2;
+            int screenY = tileSize * 3 - 35;
 
-    //         g2.setColor(Color.WHITE);
-    //         g2.fillRect(screenX, screenY - 10, (int) xpBarWidth, 8);
-    //         colorBorder(screenX, screenY - 10, maxBarWidth, 8);
-    //     }
-    // }
+            g2.setColor(Color.WHITE);
+            g2.fillRect(screenX, screenY - 10, (int) xpBarWidth, 8);
+            colorBorder(screenX, screenY - 10, maxBarWidth, 8);
+        }
+    }
 
-    //CodeMana
-    // public void drawPlayerMana() {
-    //     if (gp.player.maxMana >= gp.player.mana){
-    //         int maxBarWidth = 200;
-    //         double percentage = (double) gp.player.mana / gp.player.maxMana;
-    //         double manaBarWidth = maxBarWidth * percentage;
-    //         int screenX = tileSize / 2;
-    //         int screenY = tileSize * 2 - 10;
+    public void drawPlayerMana() {
+        if (gp.player.maxMana >= gp.player.mana){
+            int maxBarWidth = 200;
+            double percentage = (double) gp.player.mana / gp.player.maxMana;
+            double manaBarWidth = maxBarWidth * percentage;
+            int screenX = tileSize / 2;
+            int screenY = tileSize * 2 - 10;
 
-    //         g2.setColor(Color.BLUE);
-    //         g2.fillRect(screenX, screenY - 10, (int) manaBarWidth, 8);
-    //         colorBorder(screenX, screenY - 10, maxBarWidth, 8);
-    //     }
-    // }
+            g2.setColor(Color.BLUE);
+            g2.fillRect(screenX, screenY - 10, (int) manaBarWidth, 8);
+            colorBorder(screenX, screenY - 10, maxBarWidth, 8);
+        }
+    }
 
 
     public void drawInventory() {
@@ -275,17 +272,16 @@ public class UI {
                         g2.setColor(Color.white);
                         g2.drawString(countInString, x + 5, y + 15);
                         break;
-                    //CodeMana
-                    // case "manaPotion":
-                    //     image = ManaPotionImage;
-                    //     count = gp.player.inventory.get(objName);
-                    //     countInString = String.valueOf(count);
-                    //     g2.drawImage(image, x, y, tileSize, tileSize, null);
-                    //     //Add count
-                    //     g2.setFont(new Font("Arial", Font.PLAIN, tileSize / 4));
-                    //     g2.setColor(Color.white);
-                    //     g2.drawString(countInString, x + 5, y + 15);
-                    //     break;
+                    case "manaPotion":
+                        image = ManaPotionImage;
+                        count = gp.player.inventory.get(objName);
+                        countInString = String.valueOf(count);
+                        g2.drawImage(image, x, y, tileSize, tileSize, null);
+                        //Add count
+                        g2.setFont(new Font("Arial", Font.PLAIN, tileSize / 4));
+                        g2.setColor(Color.white);
+                        g2.drawString(countInString, x + 5, y + 15);
+                        break;
     
                     // Add other cases for objName
     
@@ -320,13 +316,11 @@ public class UI {
 
             // Add lines of text
             String[] lines = {
-                //CodeExp
-                // "Level: " , "" + gp.player.level,
-                // "XP: " , "" + gp.player.xp + "/" + gp.player.maxXp,
+                "Level: " , "" + gp.player.level,
+                "XP: " , "" + gp.player.xp + "/" + gp.player.maxXp,
                 "Life: " , "" + gp.player.life + "/" + gp.player.maxLife,
                 "Strengh: " , "" + gp.player.damage,
-                //CodeMana
-                // "Mana" , "" + gp.player.mana + "/" + gp.player.maxMana,
+                "Mana" , "" + gp.player.mana + "/" + gp.player.maxMana,
                 "Speed Attack: " , "" + gp.player.attackSpeed,
                 // Add other lines of text
             };
@@ -421,13 +415,9 @@ public class UI {
         g2.setFont(arial_40);
         g2.setColor(Color.white);
 
-
-        //CodeExp
-        // drawPlayerXp();
-
-        //CodeMana
-        // drawPlayerMana();
-
+        drawPlayerMana();
+        drawPlayerXp();
+        
 
         // PLAY STATE
         if (gp.gameState == gp.playState) {

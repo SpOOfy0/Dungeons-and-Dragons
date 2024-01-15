@@ -27,11 +27,12 @@ public class FireBall extends Ability implements AbilityInterface {
         damage = 2;
         initSpeed(5);
         range = 8;
-        //CodeMana
-        //mana = 20;
-        worldX = gp.player.worldX ;
-        worldY = gp.player.worldY ;
-        direction[0] = gp.player.facing;
+        mana = 4;
+
+        attackSpeed = 40;
+        attackDelay = attackSpeed;
+
+        direction[0] = null;
     }
 
 }

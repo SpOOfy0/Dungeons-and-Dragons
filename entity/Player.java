@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import entity.Abilities.FireBall.FireBall;
 import entity.Monsters.Monster;
 import main.GamePannel;
 import main.KeyHandler;
@@ -35,10 +34,18 @@ public class Player extends Entity {
     public int npcIndex;
     public ArrayList<Integer> monsterIndexes;
 
+    public boolean didMeleeAttack;
     public int ballOn = 0;
-
     public int positionXActivityOn;
     public int positionYActivityOn;
+    
+    public boolean isPreviousStateMove;
+
+    public BufferedImage    moveUp1, moveUp2, moveUp3, moveUp4,
+                            moveDown1, moveDown2, moveDown3, moveDown4,
+                            moveLeft1, moveLeft2, moveLeft3, moveLeft4, moveLeft5, moveLeft6,
+                            moveRight1, moveRight2, moveRight3, moveRight4, moveRight5, moveRight6,
+                            attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
 
     //PLAYER INVENTORY
     public ArrayList<BufferedImage> inventoryImage = new ArrayList<BufferedImage>();
@@ -98,51 +105,88 @@ public class Player extends Entity {
 
         typeOfMagic = "fire";
 
-        //CodeExp
-        // level = 1;
-        // MaxXp = 1000;
+        maxMana = 100;
+        mana = maxMana;
 
-        //CodeMana
-        // maxMana = 100;
-        // mana = maxMana;
+        level = 1;
+        maxXp = 1000;
     }
 
     public void getPlayerImage(){
-        up1 = getImage("/Player/up1.png");
-        up2 = getImage("/Player/up2.png");
-        down1 = getImage("/Player/down1.png");
-        down2 = getImage("/Player/down2.png");
-        left1 = getImage("/Player/left1.png");
-        left2 = getImage("/Player/left2.png");
-        right1 = getImage("/Player/right1.png");
-        right2 = getImage("/Player/right2.png");
+        up1 = getImage("/Player/Hero/Hero_Toggle_Up-0.png");
+        up2 = getImage("/Player/Hero/Hero_Toggle_Up-1.png");
+        down1 = getImage("/Player/Hero/Hero_Toggle_Down-0.png");
+        down2 = getImage("/Player/Hero/Hero_Toggle_Down-1.png");
+        left1 = getImage("/Player/Hero/Hero_Toggle_Left-0.png");
+        left2 = getImage("/Player/Hero/Hero_Toggle_Left-1.png");
+        right1 = getImage("/Player/Hero/Hero_Toggle_Right-0.png");
+        right2 = getImage("/Player/Hero/Hero_Toggle_Right-1.png");
+        
+        moveUp1 = getImage("/Player/Hero/Hero_walk_up-1.png");
+        moveUp2 = getImage("/Player/Hero/Hero_walk_up-2.png");
+        moveUp3 = getImage("/Player/Hero/Hero_walk_up-3.png");
+        moveUp4 = getImage("/Player/Hero/Hero_walk_up-0.png");
+
+        moveDown1 = getImage("/Player/Hero/Hero_walk_down-1.png");
+        moveDown2 = getImage("/Player/Hero/Hero_walk_down-2.png");
+        moveDown3 = getImage("/Player/Hero/Hero_walk_down-3.png");
+        moveDown4 = getImage("/Player/Hero/Hero_walk_down-0.png");
+        
+        moveLeft1 = getImage("/Player/Hero/Hero_walk_left-1.png");
+        moveLeft2 = getImage("/Player/Hero/Hero_walk_left-2.png");
+        moveLeft3 = getImage("/Player/Hero/Hero_walk_left-3.png");
+        moveLeft4 = getImage("/Player/Hero/Hero_walk_left-4.png");
+        moveLeft5 = getImage("/Player/Hero/Hero_walk_left-5.png");
+        moveLeft6 = getImage("/Player/Hero/Hero_walk_left-0.png");
+        
+        moveRight1 = getImage("/Player/Hero/Hero_walk_right-1.png");
+        moveRight2 = getImage("/Player/Hero/Hero_walk_right-2.png");
+        moveRight3 = getImage("/Player/Hero/Hero_walk_right-3.png");
+        moveRight4 = getImage("/Player/Hero/Hero_walk_right-4.png");
+        moveRight5 = getImage("/Player/Hero/Hero_walk_right-5.png");
+        moveRight6 = getImage("/Player/Hero/Hero_walk_right-0.png");
+        
+        attackUp1 = getImage("/Player/Hero/Hero_attack_up-0.png");
+        attackUp2 = getImage("/Player/Hero/Hero_attack_up-1.png");
+        attackDown1 = getImage("/Player/Hero/Hero_attack_down-0.png");
+        attackDown2 = getImage("/Player/Hero/Hero_attack_down-1.png");
+        attackLeft1 = getImage("/Player/Hero/Hero_attack_left-0.png");
+        attackLeft2 = getImage("/Player/Hero/Hero_attack_left-1.png");
+        attackRight1 = getImage("/Player/Hero/Hero_attack_right-0.png");
+        attackRight2 = getImage("/Player/Hero/Hero_attack_right-1.png");
     }
 
 
     public void update(){
 
-        if(attackDelay < attackSpeed) attackDelay++;
-        magicAttack();
-        
+        isPreviousStateMove = (direction[0] != null || direction[1] != null);
+
+        didWantedMovement = false;
 
         direction[0] = null;
-
-        if(keyHandler.leftPressed){
-            direction[0] = "left";
-            storeMovement[0] -= speed;
-        } else if(keyHandler.rightPressed){
-            direction[0] = "right";
-            storeMovement[0] += speed;
-        }
-        
         direction[1] = null;
 
-        if(keyHandler.upPressed){
-            direction[1] = "up";
-            storeMovement[1] -= speed;
-        } else if(keyHandler.downPressed){
-            direction[1] = "down";
-            storeMovement[1] += speed;
+
+        if(attackDelay < attackSpeed) attackDelay++;
+        else didMeleeAttack = baseAttack();
+        
+        // si le joueur fait une attaque de mêlée, il restera sur place
+        if(!didMeleeAttack) {
+            if(keyHandler.leftPressed){
+                direction[0] = "left";
+                storeMovement[0] -= speed;
+            } else if(keyHandler.rightPressed){
+                direction[0] = "right";
+                storeMovement[0] += speed;
+            }
+    
+            if(keyHandler.upPressed){
+                direction[1] = "up";
+                storeMovement[1] -= speed;
+            } else if(keyHandler.downPressed){
+                direction[1] = "down";
+                storeMovement[1] += speed;
+            }
         }
 
         // fonction pour décider la direction dans laquelle le joueur regardera
@@ -152,14 +196,15 @@ public class Player extends Entity {
             else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
         }
 
-        //CodeExp
-        // levelUp();
+        // les sorts ne dépendent que sur la direction dans laquelle le joueur fait face
+        magicAttack();
 
 
+        levelUp();
         playerDeath();
 
 
-        verifyMovement(direction);
+        didWantedMovement = verifyMovement(direction);
 
         applyForcedMovement();
 
@@ -172,32 +217,85 @@ public class Player extends Entity {
 
         for(int i = 0; i < monsterIndexes.size(); i++)
             interactMonster(monsterIndexes.get(i));
+        
 
 
-        if(spriteCounter < 12) spriteCounter++;
-        else if (keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
-            if (spriteNum == 1) spriteNum = 2;
-            else spriteNum = 1;
-            spriteCounter = 0;
+        if(direction[0] != null || direction[1] != null){
+            if(!isPreviousStateMove){
+                spriteCounter = 0;
+                spriteNum = 1;
+            }
+            if(spriteCounter < 23) spriteCounter++;
+            else spriteCounter = 0;
+            // à ce stade, spriteCounter a une valeur entière entre 0 et 23, donnant 24 possible états
+
+            if (facing == "up" || facing == "down") spriteNum = (spriteCounter/6) + 1;
+            else spriteNum = (spriteCounter/4) + 1;
+
+        } else if (didMeleeAttack){
+
+            if (spriteCounter < 6){
+                spriteCounter++;
+                if(spriteCounter <= 1 && spriteNum != 1) spriteNum = 1;
+                else if(spriteNum != 2) spriteNum = 2;
+            } else {
+                spriteCounter = 0;
+                spriteNum = 1;
+                didMeleeAttack = false;
+            }
+        } else {
+            if(isPreviousStateMove){
+                spriteCounter = 0;
+                spriteNum = 1;
+            }
+            if(spriteCounter < 30) spriteCounter++;
+            else {
+                if (spriteNum == 1) spriteNum = 2;
+                else spriteNum = 1;
+                spriteCounter = 0;
+            }
         }
     }
 
 
-    //CodeExp
-    // public void levelUp(){
-    //     if( xp >= maxXp){
-    //         level ++;
-    //         gp.ui.showMessage("     You leveled up!");
-    //         xp = xp - maxXp;
-    //         maxXp += 250;
+    public boolean baseAttack(){
 
-    //     }
-    // }
+        boolean didAttack = false;
+
+        if(gp.keyHandler.sPressed && attackDelay >= attackSpeed){
+            didAttack = true;
+            gp.keyHandler.sPressed = false;
+            attackDelay = 0;
+
+            gp.interactionChecker.meleeHitMonsters(this);
+            
+            //to reset sprite Counter
+            spriteCounter = 0;
+        }
+
+        return didAttack;
+    }
+
+
+    public void levelUp(){
+        if (xp >= maxXp){
+            level++;
+            gp.ui.showMessage("     You leveled up!");
+            xp -= maxXp;
+            maxXp += 250;
+            
+            // maxMana += 10;
+            // mana += 10;
+            // damage++;
+        }
+    }
 
 
     // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
     // aussi étudie les collisions entre le joueur et son environnement
-    public void verifyMovement(String direction){
+    public boolean verifyMovement(String direction){
+
+        boolean didMovement = false;
 
         // Initialization des variables
         isBlocked = false;
@@ -216,16 +314,28 @@ public class Player extends Entity {
         if(direction != null){
             switch(direction){
                 case "up":
-                    if(!blockedUp) worldY += storeMovement[1];
+                    if(!blockedUp){
+                        worldY += storeMovement[1];
+                        didMovement = true;
+                    }
                     break;
                 case "down":
-                    if(!blockedDown) worldY += storeMovement[1];
+                    if(!blockedDown){
+                        worldY += storeMovement[1];
+                        didMovement = true;
+                    }
                     break;
                 case "left":
-                    if(!blockedLeft) worldX += storeMovement[0];
+                    if(!blockedLeft){
+                        worldX += storeMovement[0];
+                        didMovement = true;
+                    }
                     break;
                 case "right":
-                    if(!blockedRight) worldX += storeMovement[0];
+                    if(!blockedRight){
+                        worldX += storeMovement[0];
+                        didMovement = true;
+                    }
                     break;
             }
         }
@@ -233,11 +343,15 @@ public class Player extends Entity {
         // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
+
+        return didMovement;
     }
 
     // vérifie et applique les mouvements dans "storeMovement" dans les directions entrées comme variable
     // aussi étudie les collisions entre le joueur et son environnement
-    public void verifyMovement(String[] direction){
+    public boolean verifyMovement(String[] direction){
+
+        boolean didMovement = false;
 
         // Initialization des variables
         isBlocked = false;
@@ -257,16 +371,28 @@ public class Player extends Entity {
             if(direction[i] != null){
                 switch(direction[i]){
                     case "up":
-                        if(!blockedUp) worldY += storeMovement[1];
+                        if(!blockedUp){
+                            worldY += storeMovement[1];
+                            didMovement = true;
+                        }
                         break;
                     case "down":
-                        if(!blockedDown) worldY += storeMovement[1];
+                        if(!blockedDown){
+                            worldY += storeMovement[1];
+                            didMovement = true;
+                        }
                         break;
                     case "left":
-                        if(!blockedLeft) worldX += storeMovement[0];
+                        if(!blockedLeft){
+                            worldX += storeMovement[0];
+                            didMovement = true;
+                        }
                         break;
                     case "right":
-                        if(!blockedRight) worldX += storeMovement[0];
+                        if(!blockedRight){
+                            worldX += storeMovement[0];
+                            didMovement = true;
+                        }
                         break;
                 }
             }
@@ -275,54 +401,10 @@ public class Player extends Entity {
         // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
+
+        return didMovement;
     }
 
-    
-    
-
-    //ArrayList version
-    /*public void pickUpObject(int objIndex){
-        
-        if(objIndex != 999){
-            
-            String objectName = gp.obj[objIndex].name;
-            BufferedImage objectImage = gp.obj[objIndex].image;
-            int index = indexOfImage(objectImage);
-            
-            switch(objectName){
-                case "healPotion":
-                    if(index == -1){
-                        System.out.println("New item");
-                        inventoryImage.add(objectImage);
-                        inventoryQuantity.add(1);
-                    }
-                    else{
-                        System.out.println("Item already in inventory");
-                        inventoryQuantity.set(index, inventoryQuantity.get(index) + 1);
-                    }
-                    gp.obj[objIndex] = null;
-                    gp.ui.showMessage("You got a heal potion!");
-                    break;
-                    // healPotion++;
-                    // life += 1; //Create a method for that 
-                    // gp.obj[objIndex] = null;
-                    // gp.ui.showMessage("You got a heal potion!");
-                    // break;
-            }
-        }
-    }*/
-
-    /*private int indexOfImage(BufferedImage image) {
-        for (int i = 0; i < inventoryImage.size(); i++) {
-            System.out.println("loop");
-            //the conditon in the if statement is always false
-            if (inventoryImage.get(i).equals(image)) {
-                System.out.println("found");
-                return i;
-            }
-        }
-        return -1;  // Retourne -1 si l'image n'est pas trouvée
-    }*/
 
 
 
@@ -345,18 +427,17 @@ public class Player extends Entity {
                     gp.item.remove(objIndex);
                     gp.ui.showMessage("You got a heal potion!");
                     break;
-                //CodeMana
-                // case "manaPotion":
-                //     if (inventory.containsKey(objName)) {
-                //         //Existing object
-                //         inventory.put(objName, inventory.get(objName) + 1);
-                //     } else {
-                //         //New object
-                //         inventory.put(objName, 1);
-                //     }
-                //     gp.item.remove(objIndex);
-                //     gp.ui.showMessage("You got a mana potion!");
-                //     break;
+                case "manaPotion":
+                    if (inventory.containsKey(objName)) {
+                        //Existing object
+                        inventory.put(objName, inventory.get(objName) + 1);
+                    } else {
+                        //New object
+                        inventory.put(objName, 1);
+                    }
+                    gp.item.remove(objIndex);
+                    gp.ui.showMessage("You got a mana potion!");
+                    break;
             }            
         }
     }
@@ -401,16 +482,15 @@ public class Player extends Entity {
                             if(inventory.get(objName) == 0) inventory.remove(objName);
                         }
                         break;
-                    //CodeMana
-                    // case "manaPotion":
-                    //     if(mana < maxMana){
-                    //         mana = Math.min(mana + 30, maxMana);
-                    //         inventory.put(objName, inventory.get(objName) - 1);
-                    //         if(inventory.get(objName) == 0){
-                    //             inventory.remove(objName);
-                    //         }
-                    //     }
-                    //     break;
+                    case "manaPotion":
+                        if(mana < maxMana){
+                            mana = Math.min(mana + 30, maxMana);
+                            inventory.put(objName, inventory.get(objName) - 1);
+                            if(inventory.get(objName) == 0){
+                                inventory.remove(objName);
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -432,24 +512,23 @@ public class Player extends Entity {
     //method to load the magic attack
     public void magicAttack(){
 
-        if (gp.keyHandler.dPressed && ballOn == 0 && attackDelay >= attackSpeed){
+        if (ballOn == 0 && gp.keyHandler.dPressed){
             switch(typeOfMagic){
                 case "fire":
-                    //CodeMana
-                    // if(gp.ability.mana <= mana){
-                        gp.fireBall = new FireBall(gp);
-                        gp.ability = gp.fireBall;
-                        gp.keyHandler.dPressed = false;
-                        attackDelay = 0;
-                        positionXActivityOn = worldX;
-                        positionYActivityOn = worldY;
-                        //CodeMana
-                        // gp.ability.manaCost();
-                        ballOn = 1;
-                    //CodeMana
-                    // }
+                    if(gp.ability != gp.fireBall) gp.ability = gp.fireBall;
+                    break;
+                case "electric":
+                    if(gp.ability != gp.electroBall) gp.ability = gp.electroBall;
                     break;
                 //Add other type of magic attack
+            }
+            if(gp.ability != null && gp.ability.attackDelay >= gp.ability.attackSpeed && gp.ability.mana <= mana){
+                gp.keyHandler.dPressed = false;
+                gp.ability.attackDelay = 0;
+                positionXActivityOn = worldX;
+                positionYActivityOn = worldY;
+                gp.ability.manaCost();
+                ballOn = 1;
             }
         }
     }
@@ -459,23 +538,8 @@ public class Player extends Entity {
 
         Monster studiedMonster = gp.monster.get(monsterIndex);
 
-        baseAttack(monsterIndex);
-
         if(studiedMonster.isWithPlayer && studiedMonster.attackDelay >= studiedMonster.attackSpeed){
             studiedMonster.attackPlayer();
-        }
-    }
-
-    public void baseAttack(int monsterIndex){
-
-        if(gp.keyHandler.sPressed && attackDelay >= attackSpeed){
-            gp.monster.get(monsterIndex).receiveDmg(damage);
-            gp.monster.get(monsterIndex).giveForcedMovement(gp.interactionChecker.awayFromPlayer(gp.monster.get(monsterIndex)), 2, 30);
-            gp.keyHandler.sPressed = false;
-
-            attackDelay = 0;
-            //add the image of the player attacking with the sword
-
         }
     }
 
@@ -490,26 +554,141 @@ public class Player extends Entity {
 
         BufferedImage image = null;
 
-        switch(facing){
-            case "up":
-                if (spriteNum == 1) image = up1;
-                else image = up2;
-                break;
-            case "down":
-                if (spriteNum == 1) image = down1;
-                else image = down2;
-                break;
-            case "left":
-                if (spriteNum == 1) image = left1;
-                else image = left2;
-                break;
-            case "right":
-                if (spriteNum == 1) image = right1;
-                else image = right2;
-                break;                              
-        }
+        if(didMeleeAttack){
 
-        g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
+            switch(facing){
+                case "up":
+                    if (spriteNum == 1) image = attackUp1;
+                    else image = attackUp2;
+
+                    g2.drawImage(image, screenX, screenY - (tileSize/2), tileSize, 3*tileSize/2, null);
+                    break;
+                case "down":
+                    if (spriteNum == 1) image = attackDown1;
+                    else image = attackDown2;
+
+                    g2.drawImage(image, screenX, screenY, tileSize, 3*tileSize/2, null);
+                    break;
+                case "left":
+                    if (spriteNum == 1) image = attackLeft1;
+                    else image = attackLeft2;
+
+                    g2.drawImage(image, screenX - (tileSize/2), screenY, 3*tileSize/2, tileSize, null);
+                    break;
+                case "right":
+                    if (spriteNum == 1) image = attackRight1;
+                    else image = attackRight2;
+
+                    g2.drawImage(image, screenX, screenY, 3*tileSize/2, tileSize, null);
+                    break;
+            }
+
+        } else {
+
+            if(direction[0] != null || direction[1] != null){
+                switch(facing){
+                    case "up":
+                        switch(spriteNum){
+                            case 1:
+                                image = moveUp1;
+                                break;
+                            case 2:
+                                image = moveUp2;
+                                break;
+                            case 3:
+                                image = moveUp3;
+                                break;
+                            case 4:
+                                image = moveUp4;
+                                break;
+                        }
+                        break;
+                    case "down":
+                        switch(spriteNum){
+                            case 1:
+                                image = moveDown1;
+                                break;
+                            case 2:
+                                image = moveDown2;
+                                break;
+                            case 3:
+                                image = moveDown3;
+                                break;
+                            case 4:
+                                image = moveDown4;
+                                break;
+                        }
+                        break;
+                    case "left":
+                        switch(spriteNum){
+                            case 1:
+                                image = moveLeft1;
+                                break;
+                            case 2:
+                                image = moveLeft2;
+                                break;
+                            case 3:
+                                image = moveLeft3;
+                                break;
+                            case 4:
+                                image = moveLeft4;
+                                break;
+                            case 5:
+                                image = moveLeft5;
+                                break;
+                            case 6:
+                                image = moveLeft6;
+                                break;
+                        }
+                        break;
+                    case "right":
+                        switch(spriteNum){
+                            case 1:
+                                image = moveRight1;
+                                break;
+                            case 2:
+                                image = moveRight2;
+                                break;
+                            case 3:
+                                image = moveRight3;
+                                break;
+                            case 4:
+                                image = moveRight4;
+                                break;
+                            case 5:
+                                image = moveRight5;
+                                break;
+                            case 6:
+                                image = moveRight6;
+                                break;
+                        }
+                        break;                              
+                }
+
+            } else {
+                switch(facing){
+                    case "up":
+                        if (spriteNum == 1) image = up1;
+                        else image = up2;
+                        break;
+                    case "down":
+                        if (spriteNum == 1) image = down1;
+                        else image = down2;
+                        break;
+                    case "left":
+                        if (spriteNum == 1) image = left1;
+                        else image = left2;
+                        break;
+                    case "right":
+                        if (spriteNum == 1) image = right1;
+                        else image = right2;
+                        break;                              
+                }
+            }
+
+            g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
+        }
     }
+
     
 }

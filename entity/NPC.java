@@ -77,7 +77,6 @@ public class NPC extends Entity{
             if(dialogueIndex >= dialogues.size()) dialogueIndex = 0;
             FacePlayer();
             gp.gameState = gp.dialogueState;
-            //gp.player.npcIndex = 0;
         }
 
     }

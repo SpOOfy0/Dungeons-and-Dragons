@@ -35,6 +35,9 @@ public class RedOrc extends Monster implements MonsterInterface {
         maxLife = 17;
         life = maxLife;
         damage = 2;
+        xp = 1000;
+
+        noKnockback = true;
     }
 
 }

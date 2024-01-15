@@ -35,6 +35,7 @@ public class Entity {
     public int attackDelay = 0;
 
     public int[] storeMovement = {0, 0};  // "valeurs de déplacement {horizontal, vertical}"
+    public boolean didWantedMovement;
 
     public Rectangle solidArea = new Rectangle(1, 1, 46, 46);   // Est utilisé pour la position et pour toute interaction "subie"
     public int solidAreaDefaultX, solidAreaDefaultY;
@@ -62,16 +63,14 @@ public class Entity {
     public int maxLife;
     public int life;
 
-    //CodeExp
-    // public int xp;
-    // public int maxXp; //xp needed to level up
-    // public int level;
-
     public int damage;
 
-    //CodeMana
-    // public int mana;
-    // public int maxMana;
+    public int mana;
+    public int maxMana;
+
+    public int xp;
+    public int maxXp; //xp needed to level up
+    public int level;
 
 
     // pour appliquer des mouvements qui ne proviennent pas d'un comportement de base aux entités
@@ -80,10 +79,19 @@ public class Entity {
         private String direction;       // only "up", "down", "left" or "right", never 'null'
         private int distance;           // distance the Entity will be moved per frame, will not be multiplied by tile size
 
-        private boolean timebased;      // if true, the instance will exist until remainingDuration hits 0 
+        protected boolean timebased;      // if true, the instance will exist until remainingDuration hits 0 
                                         // if false, will exist indefinitely until it gets destroyer through another mean
-        private int remainingDuration;  // remaining number of frames the movement will be applied on the entity before the instance gets destroyed
+        protected int remainingDuration;  // remaining number of frames the movement will be applied on the entity before the instance gets destroyed
 
+        private int id;
+        private static int idToShare = 0;
+
+
+        public ForcedMovement(int duration) {
+            if(duration > 0) remainingDuration = duration;
+            else remainingDuration = 1;
+            timebased = true;
+        }
 
         public ForcedMovement(String inputedDirection, int amountPushed) {
 
@@ -92,6 +100,8 @@ public class Entity {
                 direction = inputedDirection;
                 distance = amountPushed;
                 timebased = false;
+                id = idToShare;
+                idToShare++;
 
             } else {
 
@@ -102,7 +112,6 @@ public class Entity {
             }
             remainingDuration = 1;
         }
-
 
         public ForcedMovement(String inputedDirection, int amountPushed, int duration) {
 
@@ -122,7 +131,8 @@ public class Entity {
             timebased = true;
         }
 
-        public void applyForcedMovement(){
+
+        public void movementOperation(){
 
             switch(direction){
                 case "up":
@@ -138,42 +148,75 @@ public class Entity {
                     storeMovement[0] += distance;
                     break;
             }
-            
             verifyMovement(direction);
+        }
 
-            if(timebased){
-                remainingDuration--;
-            }
+        public void applyForcedMovement(){
+
+            movementOperation();
+            if(timebased) remainingDuration--;
         }
 
         public void applyForcedMovement(boolean consumeDuration){
+            
+            movementOperation();
+            if(consumeDuration) remainingDuration--;
+        }
 
-            switch(direction){
-                case "up":
-                    storeMovement[1] -= distance;
-                    break;
-                case "down":
-                    storeMovement[1] += distance;
-                    break;
-                case "left":
-                    storeMovement[0] -= distance;
-                    break;
-                case "right":
-                    storeMovement[0] += distance;
-                    break;
-            }
-            
-            verifyMovement(direction);
-            
-            if(consumeDuration){
-                remainingDuration--;
-            }
+        public int getID(){
+            if(!timebased) return id;
+            return -1;
         }
 
         public boolean hasExpired(){
             return remainingDuration <= 0;
         }
     }
+
+
+    private class BlockMovement extends ForcedMovement {
+
+        public BlockMovement(int duration){
+            super(duration);
+        }
+
+        public void movementOperation(){
+
+            if(didWantedMovement) {
+
+                for(int i = 0; i < Entity.this.direction.length; i++){
+                    String intendedDirection = Entity.this.direction[i];
+                    if(intendedDirection != null){
+                        switch(intendedDirection){
+                            case "up":
+                                storeMovement[1] += speed;
+                                break;
+                            case "down":
+                                storeMovement[1] -= speed;
+                                break;
+                            case "left":
+                                storeMovement[0] += speed;
+                                break;
+                            case "right":
+                                storeMovement[0] -= speed;
+                                break;
+                        }
+                        verifyMovement(intendedDirection);
+                    }
+                }
+            }
+        }
+
+        public int getDuration(){
+            return remainingDuration;
+        }
+
+        public void setDuration(int duration){
+            remainingDuration = duration;
+        }
+    }
+
+
 
     public ArrayList<ForcedMovement> listForcedMovement = new ArrayList<ForcedMovement>();
 
@@ -185,7 +228,30 @@ public class Entity {
         listForcedMovement.add(new ForcedMovement(inputDirection, inputDistance, inputDuration));
     }
 
+
+    private BlockMovement instanceBlockEntity;
+
+    public BlockMovement getInstanceBlockEntity(int duration) {
+
+        if(instanceBlockEntity == null)
+            instanceBlockEntity = new BlockMovement(duration);
+        
+        return instanceBlockEntity;
+    }
+
+    public void giveBlockMovement(int inputDuration){
+        BlockMovement newBlocker = getInstanceBlockEntity(inputDuration);
+        if(inputDuration >= newBlocker.getDuration()) newBlocker.setDuration(inputDuration);
+    }
+
+
+
     public void applyForcedMovement(){
+
+        if(instanceBlockEntity != null){
+            instanceBlockEntity.applyForcedMovement();
+            if(instanceBlockEntity.hasExpired()) instanceBlockEntity = null;
+        }
         for(int i = 0; i < listForcedMovement.size(); i++){
             ForcedMovement currentFMovement = listForcedMovement.get(i);
             currentFMovement.applyForcedMovement();
@@ -218,6 +284,8 @@ public class Entity {
         
         setAction();
 
+        didWantedMovement = false;
+
         // pour les non-joueurs, "direction[0]" ne doit pas avoir de valeur "null" vu qu'ils se déplacent constamment
         if(direction[0] == null) direction[0] = bufferDirection;
 
@@ -239,7 +307,7 @@ public class Entity {
         // les non-joueurs feront toujours face à la direction où ils veulent aller (sauf exception comme lors d'une "discussion" avec le joueur)
         facing = direction[0];
             
-        verifyMovement(direction);
+        didWantedMovement = verifyMovement(direction);
 
         applyForcedMovement();
 
@@ -259,7 +327,11 @@ public class Entity {
 
     // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
     // aussi étudie les collisions entre l'entité et son environnement
-    public void verifyMovement(String direction){
+    // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
+    // aussi étudie les collisions entre l'entité et son environnement
+    public boolean verifyMovement(String direction){
+
+        boolean didMovement = false;
 
         // Initialization des variables
         isBlocked = false;
@@ -276,16 +348,28 @@ public class Entity {
         if(direction != null){
             switch(direction){
                 case "up":
-                    if(!blockedUp) worldY += storeMovement[1];
+                    if(!blockedUp){
+                        worldY += storeMovement[1];
+                        didMovement = true;
+                    }
                     break;
                 case "down":
-                    if(!blockedDown) worldY += storeMovement[1];
+                    if(!blockedDown){
+                        worldY += storeMovement[1];
+                        didMovement = true;
+                    }
                     break;
                 case "left":
-                    if(!blockedLeft) worldX += storeMovement[0];
+                    if(!blockedLeft){
+                        worldX += storeMovement[0];
+                        didMovement = true;
+                    }
                     break;
                 case "right":
-                    if(!blockedRight) worldX += storeMovement[0];
+                    if(!blockedRight){
+                        worldX += storeMovement[0];
+                        didMovement = true;
+                    }
                     break;
             }
         }
@@ -293,12 +377,16 @@ public class Entity {
         // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
+
+        return didMovement;
     }
 
     
     // vérifie et applique les mouvements dans "storeMovement" dans les directions entrées comme variable
     // aussi étudie les collisions entre l'entité et son environnement
-    public void verifyMovement(String[] direction){
+    public boolean verifyMovement(String[] direction){
+
+        boolean didMovement = false;
 
         // Initialization des variables
         isBlocked = false;
@@ -316,16 +404,28 @@ public class Entity {
             if(direction[i] != null){
                 switch(direction[i]){
                     case "up":
-                        if(!blockedUp) worldY += storeMovement[1];
+                        if(!blockedUp){
+                            worldY += storeMovement[1];
+                            didMovement = true;
+                        }
                         break;
                     case "down":
-                        if(!blockedDown) worldY += storeMovement[1];
+                        if(!blockedDown){
+                            worldY += storeMovement[1];
+                            didMovement = true;
+                        }
                         break;
                     case "left":
-                        if(!blockedLeft) worldX += storeMovement[0];
+                        if(!blockedLeft){
+                            worldX += storeMovement[0];
+                            didMovement = true;
+                        }
                         break;
                     case "right":
-                        if(!blockedRight) worldX += storeMovement[0];
+                        if(!blockedRight){
+                            worldX += storeMovement[0];
+                            didMovement = true;
+                        }
                         break;
                 }
             }
@@ -334,6 +434,8 @@ public class Entity {
         // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
+
+        return didMovement;
     }
 
 
@@ -510,9 +612,9 @@ public class Entity {
 
         BufferedImage image = null;
 
-        try{
+        try {
             image = ImageIO.read(getClass().getResourceAsStream(ImagePath));
-        }catch(IOException e){
+        } catch(IOException e){
             System.out.println(e + " -> Error loading image (" + ImagePath + ")");
         }
 
@@ -534,19 +636,19 @@ public class Entity {
                 switch(facing){
                     case "up":
                         if (spriteNum == 1) image = up1;
-                        else if (spriteNum == 2) image = up2;
+                        else image = up2;
                         break;
                     case "down":
                         if (spriteNum == 1) image = down1;
-                        else if (spriteNum == 2) image = down2;
+                        else image = down2;
                         break;
                     case "left":
                         if (spriteNum == 1) image = left1;
-                        else if (spriteNum == 2) image = left2;
+                        else image = left2;
                         break;
                     case "right":
                         if (spriteNum == 1) image = right1;
-                        else if (spriteNum == 2) image = right2;
+                        else image = right2;
                         break;                              
                 }
             
