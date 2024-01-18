@@ -224,7 +224,7 @@ public class Monster extends Entity{
             
         // Draw the life bar
         int reamningLife = maxLife - life;
-        int lifeBarWidth =  tileSize - (tileSize * reamningLife / maxLife);
+        int lifeBarWidth = (solidArea.width+2) - ((solidArea.width+2) * reamningLife / maxLife);
         int screenX = worldX - gp.player.worldX + gp.player.screenX ;
         int screenY = worldY - gp.player.worldY + gp.player.screenY ;
 
