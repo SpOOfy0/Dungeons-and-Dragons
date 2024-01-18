@@ -54,39 +54,60 @@ public class CollisionChecker {
             }
         }
 
-        int tileNum1 = 0, tileNum2 = 0;
+        int iter;
+        boolean blocker = false;
 
         for(int i = 0; i < 4; i++){
             switch(i){
                 case 0: //up
                     entityTopRow = (entityTopWorldY - entity.speed*2) / tileSize;
-                    tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
-                    tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
+
+                    iter = entityLeftCol;
+                    while(iter <= entityRightCol){
+                        blocker = gp.tileM.isCollision(iter, entityTopRow);
+                        if(blocker) iter += entityRightCol;
+                        else iter++;
+                    }
                     
                     entityTopRow = entityTopWorldY / tileSize;
                     break;
                 case 1: //left
                     entityLeftCol = (entityLeftWorldX - entity.speed*2) / tileSize;
-                    tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
-                    tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
+
+                    iter = entityTopRow;
+                    while(iter <= entityBottomRow){
+                        blocker = gp.tileM.isCollision(entityLeftCol, iter);
+                        if(blocker) iter += entityBottomRow;
+                        else iter++;
+                    }
 
                     entityLeftCol = entityLeftWorldX / tileSize;
                     break;
                 case 2: //down
                     entityBottomRow = (entityBottomWorldY + entity.speed*2) / tileSize;
-                    tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
-                    tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
+
+                    iter = entityLeftCol;
+                    while(iter <= entityRightCol){
+                        blocker = gp.tileM.isCollision(iter, entityBottomRow);
+                        if(blocker) iter += entityRightCol;
+                        else iter++;
+                    }
 
                     entityBottomRow = entityBottomWorldY / tileSize;
                     break;
                 case 3: //right
                     entityRightCol = (entityRightWorldX + entity.speed*2) / tileSize;
-                    tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
-                    tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
+
+                    iter = entityTopRow;
+                    while(iter <= entityBottomRow){
+                        blocker = gp.tileM.isCollision(entityRightCol, iter);
+                        if(blocker) iter += entityBottomRow;
+                        else iter++;
+                    }
                     break; 
             }
 
-            if (gp.tileM.isCollision(tileNum1) || gp.tileM.isCollision(tileNum2)){
+            if (blocker){
                 switch(i){
                     case 0: //up
                         entity.blockedUp = true;
