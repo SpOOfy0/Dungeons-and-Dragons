@@ -279,6 +279,17 @@ public class UI {
                         g2.setColor(Color.white);
                         g2.drawString(countInString, x + 5, y + 15);
                         break;
+                    
+                    case "key":
+                        image = gp.key.image;
+                        count = gp.player.inventory.get(objName);
+                        countInString = String.valueOf(count);
+                        g2.drawImage(image, x, y, tileSize, tileSize, null);
+                        //Add count
+                        g2.setFont(new Font("Arial", Font.PLAIN, tileSize / 4));
+                        g2.setColor(Color.white);
+                        g2.drawString(countInString, x + 5, y + 15);
+                        break;
     
                     // Add other cases for objName
     
@@ -403,6 +414,7 @@ public class UI {
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, width, height);
     }
+
 
     
     // Modifier la méthode draw pour appeler drawInventory

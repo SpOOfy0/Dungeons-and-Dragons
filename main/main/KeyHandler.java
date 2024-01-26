@@ -9,7 +9,7 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements ActionListener, KeyListener{
 
     GamePannel gp;
-    public boolean upPressed, downPressed, leftPressed, rightPressed, xPressed, sPressed, dPressed, enterPressed, nPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, xPressed, sPressed, dPressed, enterPressed, nPressed, lPressed, aPressed;
     public int x = 100;
     public int y = 100;
 
@@ -68,6 +68,12 @@ public class KeyHandler implements ActionListener, KeyListener{
                     break;
                 case KeyEvent.VK_N:
                     nPressed = true;
+                    break;
+                case KeyEvent.VK_L:
+                    lPressed = true;
+                    break;
+                case KeyEvent.VK_A:
+                    aPressed = true;
                     break;
             }
         }

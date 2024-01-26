@@ -8,7 +8,6 @@ public class Orc extends Monster implements MonsterInterface {
     
     public Orc (GamePannel gp, String inputedDirection, int coordX, int coordY) {
         super(gp, inputedDirection, coordX, coordY);
-
         getThisMonsterImage();
         MonsterSetting();
     }
@@ -30,14 +29,13 @@ public class Orc extends Monster implements MonsterInterface {
 
         noticeRange = 3;
         aggroRange = 5;
-
         initSpeed(1);
         maxLife = 8;
         life = maxLife;
         damage = 1;
-
-        //CodeExp
-        // xp = 700;
+        xp = 700;
+        objToDrop[0] = "key";
+        objToDrop[1] = "manaPotion";
     }
 
 }

@@ -15,12 +15,15 @@ import entity.Monsters.Monster;
 import entity.Monsters.NormalMonsters.Orc;
 import entity.Monsters.NormalMonsters.BlueOrc;
 import entity.Monsters.NormalMonsters.RedOrc;
+import entity.Monsters.BossMonster.Torero;
 import entity.Abilities.Ability;
 import entity.Abilities.FireBall.FireBall;
 import object.SuperObject;
 import object.OBJ_LifeHeart;
 import object.OBJ_healPotion;
 import object.OBJ_manaPotion;
+import object.OBJ_Door;
+import object.OBJ_Key;
 //CodeMana
 // import object.OBJ_manaPotion;
 import tile.TileManager;
@@ -58,6 +61,7 @@ public class GamePannel extends JPanel implements Runnable {
     public Player player = Player.getInstance(this, keyHandler);
     public SuperObject healPotion = new OBJ_healPotion(this);
     public SuperObject manaPotion = new OBJ_manaPotion(this);
+    public SuperObject key = new OBJ_Key(this);
     public SuperObject heart = new OBJ_LifeHeart(this);
     public Vector<SuperObject> item = new Vector<SuperObject>();
     public Vector<NPC> npc = new Vector<NPC>();
@@ -65,7 +69,7 @@ public class GamePannel extends JPanel implements Runnable {
     public Vector<Monster> monsterToSpown = new Vector<Monster>();
     //public Ability ability[] = new Ability[10];
     public Ability ability = new Ability(this);
-    public FireBall fireBall ;
+    public FireBall fireBall = new FireBall(this);
     //public List<FireBall> fireBall = new ArrayList<>();
     public UI ui = UI.getInstance(this);
     //GAME STATE
@@ -83,10 +87,11 @@ public class GamePannel extends JPanel implements Runnable {
         objSetter.setItem(new OBJ_healPotion(this, 26, 34));
         objSetter.setItem(new OBJ_healPotion(this, 35, 25));
         objSetter.setItem(new OBJ_healPotion(this, 35, 34));
-        //CodeMana
-        // objSetter.setItem(new OBJ_manaPotion(this, 14, 22));
-        // objSetter.setItem(new OBJ_manaPotion(this, 14, 38));
-        // objSetter.setItem(new OBJ_manaPotion(this, 14, 39));
+        objSetter.setItem(new OBJ_Door(this, 11, 25));
+
+        objSetter.setItem(new OBJ_manaPotion(this, 14, 22));
+        objSetter.setItem(new OBJ_manaPotion(this, 14, 38));
+        objSetter.setItem(new OBJ_manaPotion(this, 14, 39));
 
         //objSetter.setNPC(new NPC_1(this, "down", 28, 27));
 
@@ -99,7 +104,8 @@ public class GamePannel extends JPanel implements Runnable {
         objSetter.setMonster(new RedOrc(this, "up", 33, 51));
         objSetter.setMonster(new BlueOrc(this, "left", 52, 51));
 
-        //objSetter.MonsterSpawner(12, 12, 10, "RedOrc");
+        //objSetter.setMonster(new Torero(this, "down", 27, 25));
+
     }
 
     public GamePannel(){
@@ -159,16 +165,26 @@ public class GamePannel extends JPanel implements Runnable {
                 Monster iterMonster = monster.get(i);
                 if(iterMonster != null){
                     if(iterMonster.life <= 0){
+                        iterMonster.DropObject();
                         monster.remove(i);
-
-                        //CodeExp
-                        // player.xp += iterMonster.xp;
+                        player.xp += iterMonster.xp;
+                    }
+                    else iterMonster.update();
+                }
+            }
+            for(int i = 0; i < monsterToSpown.size(); i++){
+                Monster iterMonster = monsterToSpown.get(i);
+                if(iterMonster != null){
+                    if(iterMonster.life <= 0){
+                        iterMonster.DropObject();
+                        monsterToSpown.remove(i);
+                        player.xp += iterMonster.xp;
                     }
                     else iterMonster.update();
                 }
             }
             if(ability != null) ability.update();
-            //objSetter.MonsterSpawner(28, 27, 20, "RedOrc");
+            //objSetter.MonsterSpawner(28, 27, 20);
         }
 
     }
@@ -192,10 +208,20 @@ public class GamePannel extends JPanel implements Runnable {
         }
 
         //MONSTER
-        for(Monster iterMonster : monster){
-            if(iterMonster != null){
-                iterMonster.draw(g2);
-                iterMonster.paintComponent(g2);
+        synchronized (monster) {
+            for(Monster iterMonster : monster){
+                if(iterMonster != null){
+                    iterMonster.draw(g2);
+                    iterMonster.paintComponent(g2);
+                }
+            }
+        }
+        synchronized (monsterToSpown) {
+            for(Monster iterMonster : monsterToSpown){
+                if(iterMonster != null){
+                    iterMonster.draw(g2);
+                    iterMonster.paintComponent(g2);
+                }
             }
         }
 

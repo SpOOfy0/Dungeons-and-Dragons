@@ -9,6 +9,10 @@ import main.GamePannel;
 
 public class Monster extends Entity{
     
+    public boolean noKnockback = false;
+    public int monsterSize;
+    
+    
     public Monster(GamePannel gp, String inputedDirection, int coordX, int coordY) {
         super(gp);
         
@@ -25,6 +29,9 @@ public class Monster extends Entity{
         direction[1] = null;
         facing = direction[0];
     }
+
+    public String[] objToDrop = new String[2];
+    
 
 
     
@@ -208,13 +215,38 @@ public class Monster extends Entity{
 
 
     public void attackPlayer() {
-        if(gp.player.life > 0) gp.player.life -= damage;
+        if(gp.player.life > 0) {
+        gp.player.life -= damage;
+        }
         attackDelay = 0;
     }
 
     public void receiveDmg(int dmg) {
         life -= dmg;
         aggravated = true;
+        
+    }
+
+    public void DropObject(){
+        for(String obj : objToDrop){
+            switch (obj){
+                case "key":
+                    gp.key.worldX = worldX;
+                    gp.key.worldY = worldY;
+                    gp.objSetter.setItem(gp.key);
+                    break;
+                case "healPotion":
+                    gp.healPotion.worldX = worldX + tileSize;
+                    gp.healPotion.worldY = worldY;
+                    gp.objSetter.setItem(gp.healPotion);
+                    break;
+                case "manaPotion":
+                    gp.manaPotion.worldX = worldX;
+                    gp.manaPotion.worldY = worldY + tileSize;
+                    gp.objSetter.setItem(gp.manaPotion);
+                    break;
+            }
+        }
     }
 
 

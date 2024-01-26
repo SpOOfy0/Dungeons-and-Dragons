@@ -30,11 +30,13 @@ public class BlueOrc extends Monster implements MonsterInterface {
 
         noticeRange = 3;
         aggroRange = 7;
-
         initSpeed(2);
         maxLife = 7;
         life = maxLife;
         damage = 1;
+        xp = 700;
+        objToDrop[0] = "key";
+        objToDrop[1] = "manaPotion";
     }
 
 }

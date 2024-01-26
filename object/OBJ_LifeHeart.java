@@ -1,7 +1,5 @@
 package object;
 
-import javax.imageio.ImageIO;
-
 import main.GamePannel;
 
 

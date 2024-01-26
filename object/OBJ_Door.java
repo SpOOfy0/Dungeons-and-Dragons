@@ -2,13 +2,11 @@ package object;
 
 import main.GamePannel;
 
-
-public class OBJ_healPotion extends SuperObject {
-    
-    GamePannel gp;
+public class OBJ_Door extends SuperObject {
+     GamePannel gp;
 
     // pour avoir la potion chargé sur le terrain
-    public OBJ_healPotion(GamePannel gp, int coordX, int coordY){
+    public OBJ_Door(GamePannel gp, int coordX, int coordY){
         
         this.gp = gp;
 
@@ -18,25 +16,24 @@ public class OBJ_healPotion extends SuperObject {
         worldX = newCoords[0] * tileSize;
         worldY = newCoords[1] * tileSize;
         
-        name = "healPotion";
+        name = "door";
         
-        image = getImage("/Objects/HealPotion.png");
+        image = getImage("/Objects/LifeHeart/fullHp.png");
         
         newRectangle(0, 0, 48, 48);
     }
 
 
     // pour avoir la potion chargé sur un aure endroit que sur le terrain (comme l'inventaire)
-    public OBJ_healPotion(GamePannel gp){
+    public OBJ_Door(GamePannel gp){
         
         this.gp = gp;
         
-        name = "healPotion";
+        name = "door";
         
-        image = getImage("/Objects/HealPotion.png");
+        image = getImage("/Objects/LifeHeart/fullHp.png");
         
         newRectangle(0, 0, 48, 48);
     }
 
 }
- 

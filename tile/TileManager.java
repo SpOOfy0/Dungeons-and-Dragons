@@ -41,6 +41,18 @@ public class TileManager {
             tile[2].collision = true;
             tile[2].opaque = true;
 
+            tile[3] = new Tile();
+            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Gate/UpGate.png"));
+            tile[3].collision = true;
+
+            tile[4] = new Tile();
+            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Gate/DownGate.png"));
+            tile[4].collision = true;
+
+            tile[5] = new Tile();
+            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Gate/LeftGate.png"));
+            tile[5].collision = true;
+
         }catch(Exception e){
             System.out.println("Error loading image");
         }
@@ -136,6 +148,28 @@ public class TileManager {
         }catch(Exception e){
             System.out.println("Error loading map");
         }
+    }
+
+    public void changeTile(int coordX, int coordY, int tileNum){
+        mapTileNum[coordX][coordY] = tileNum;
+    }
+
+    public int[] detectDoor(){
+        int worldX = gp.player.worldX / gp.tileSize;
+        int worldY = gp.player.worldY / gp.tileSize;
+        int[] coord = {worldX, worldY};
+        if(mapTileNum[worldX][worldY] == 3 || mapTileNum[worldX - 1][worldY] == 3 || mapTileNum[worldX][worldY + 1] == 3 || mapTileNum[worldX][worldY - 1] == 3 || mapTileNum[worldX][worldY] == 3){
+            return coord;
+        }
+        return null;
+        
+    }
+
+    public boolean closeToGate(int tileWorldX, int tileWorldY){
+        int worldX = gp.player.worldX / gp.tileSize;
+        int worldY = gp.player.worldY / gp.tileSize;
+        if (Math.abs(worldX - tileWorldX) <= 1 && Math.abs(worldY - tileWorldY) <= 1) return true;
+        return false;
     }
 
 

@@ -28,9 +28,7 @@ public class FireBall extends Ability implements AbilityInterface {
         initSpeed(5);
         range = 8;
         mana = 20;
-        worldX = gp.player.worldX ;
-        worldY = gp.player.worldY ;
-        direction[0] = gp.player.facing;
+        
     }
 
 }

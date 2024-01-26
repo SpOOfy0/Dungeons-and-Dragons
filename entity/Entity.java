@@ -213,7 +213,6 @@ public class Entity {
 
     public void speak(){}
 
-
     public void update(){
         
         setAction();
@@ -241,8 +240,7 @@ public class Entity {
             
         verifyMovement(direction);
 
-        applyForcedMovement();
-
+        applyForcedMovement(); 
 
         spriteCounter++;
         if(spriteCounter >= 12){
@@ -551,6 +549,7 @@ public class Entity {
                 }
             
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
+            g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
             
         }
     }

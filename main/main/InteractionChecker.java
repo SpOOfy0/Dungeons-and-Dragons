@@ -1,9 +1,13 @@
 package main;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Vector;
 
 import entity.Entity;
+import entity.Player;
+import entity.Monsters.Monster;
 
 
 public class InteractionChecker {
@@ -81,6 +85,7 @@ public class InteractionChecker {
         //Reset object's solid area position
         gp.player.solidArea.x = gp.player.solidAreaDefaultX;
         gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+        
 
         return valueToReturn;
     }
@@ -368,6 +373,47 @@ public class InteractionChecker {
         //Reset object's solid area position
         gp.player.solidArea.x = gp.player.solidAreaDefaultX;
         gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+    }
+
+    public void meleeHitMonsters(Player player) {
+
+        // Création de la zone d'interaction, un rectangle avec 41 de longueur dans la direction le joueur fait face et 54 de largeur
+        Rectangle zoneDetect = null;
+
+        switch(player.facing) {
+            case "up":
+                zoneDetect = new Rectangle(player.worldX - 2, player.worldY - 20, 52, 41);
+                break;
+            case "down":
+                zoneDetect = new Rectangle(player.worldX - 2, player.worldY + 27, 52, 41);
+                break;
+            case "left":
+                zoneDetect = new Rectangle(player.worldX - 20, player.worldY - 2, 41, 52);
+                break;
+            case "right":
+                zoneDetect = new Rectangle(player.worldX + 27, player.worldY - 2, 41, 52);
+                break;
+        }
+
+        if(zoneDetect != null){
+            for(Monster studiedMonster : gp.monster){
+
+                //Get object's solid area position
+                studiedMonster.solidArea.x = studiedMonster.worldX + studiedMonster.solidArea.x;
+                studiedMonster.solidArea.y = studiedMonster.worldY + studiedMonster.solidArea.y;
+
+                if (zoneDetect.intersects(studiedMonster.solidArea)){
+                    studiedMonster.receiveDmg(player.damage);
+                    if(!studiedMonster.noKnockback) studiedMonster.giveForcedMovement(awayFromPlayer(studiedMonster), 2 + (player.damage/2), 15);
+                }
+                
+                //Reset object's solid area position
+                studiedMonster.solidArea.x = studiedMonster.solidAreaDefaultX;
+                studiedMonster.solidArea.y = studiedMonster.solidAreaDefaultY;
+            }
+            
+        }
+
     }
 
 }
