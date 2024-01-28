@@ -8,7 +8,7 @@ public class Main{
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("Donjons & Dragons");
+        window.setTitle("Dungeons & Dragons");
 
         GamePannel gamePannel = new GamePannel();
         window.add(gamePannel);
@@ -19,7 +19,7 @@ public class Main{
         window.setVisible(true);
 
         gamePannel.setUpObject();
-        gamePannel.gameState = gamePannel.playState;
+        gamePannel.gameState = gamePannel.startState;
     }
     
 }

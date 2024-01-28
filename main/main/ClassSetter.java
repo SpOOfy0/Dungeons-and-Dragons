@@ -1,11 +1,17 @@
 package main;
 
 import entity.NPC;
+import entity.NPC_1;
 import entity.Monsters.Monster;
+import entity.Monsters.BossMonster.Torero;
 import entity.Monsters.NormalMonsters.BlueOrc;
+import object.OBJ_Door;
+import object.OBJ_healPotion;
+import object.OBJ_manaPotion;
 import object.SuperObject;
 import entity.Monsters.NormalMonsters.Orc;
 import entity.Monsters.NormalMonsters.RedOrc;
+
 
 
 public class ClassSetter {
@@ -57,8 +63,6 @@ public class ClassSetter {
     
     
     public void MonsterSpawner(int worldX, int worldY ,int numberOfMonsterToSpawn){
-
-
         if (numberOfMonsterToSpawn / 3 > monsterIndex) {
             
             System.out.println(monsterIndex);
@@ -79,6 +83,36 @@ public class ClassSetter {
         }
         counter++;
     }
+
+    public void setItems(){
+        setItem(new OBJ_healPotion(gp, 26, 25));
+        setItem(new OBJ_healPotion(gp, 26, 34));
+        setItem(new OBJ_healPotion(gp, 35, 25));
+        setItem(new OBJ_healPotion(gp, 35, 34));
+
+        setItem(new OBJ_manaPotion(gp, 26, 27));
+        setItem(new OBJ_manaPotion(gp, 26, 32));
+        setItem(new OBJ_manaPotion(gp, 35, 27));
+        setItem(new OBJ_manaPotion(gp, 35, 32));
+    }
+
+    public void setNPCs(){
+        setNPC(new NPC_1(gp, "down", 28, 27));
+    }
+
+    public void setMonsters(){
+        setMonster(new BlueOrc(gp, "right", 9, 8));
+        setMonster(new RedOrc(gp, "down", 28, 8));
+        setMonster(new BlueOrc(gp, "left", 52, 8));
+        setMonster(new RedOrc(gp, "up", 9, 32));
+        setMonster(new RedOrc(gp, "up", 52, 32));
+        setMonster(new BlueOrc(gp, "right", 9, 51));
+        setMonster(new RedOrc(gp, "up", 33, 51));
+        setMonster(new BlueOrc(gp, "left", 52, 51));
+
+        //setMonster(new Torero(gp, "down", 27, 25));
+    }
 }
+
 
 

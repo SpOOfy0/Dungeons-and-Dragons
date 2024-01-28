@@ -20,8 +20,6 @@ public class UI {
     Font arial_40;
     BufferedImage fullHeart ,halfHeart, emptyHeart; 
     BufferedImage HealPotionImage ,ManaPotionImage;
-    //CodeMana
-    // BufferedImage ManaPotionImage;
     
     public int tileSize;
 
@@ -33,6 +31,8 @@ public class UI {
 
     double timer = 0;
     DecimalFormat df = new DecimalFormat("#0.00");
+
+    int gameStartCommand = 0 ,gameOverCommand = 0;
 
 
     private UI(GamePannel gp) {
@@ -355,8 +355,79 @@ public class UI {
         return gamePanel.screenWidth / 2 - length / 2;
     }
 
+    public int selectedCommand(int commandNumber){
+        if(gp.keyHandler.downPressed){
+            commandNumber++;
+            gp.keyHandler.downPressed = false;
+        }
+        if(gp.keyHandler.upPressed){
+            commandNumber--;
+            gp.keyHandler.upPressed = false;
+        }
+        if(gp.keyHandler.enterPressed){
+            gp.keyHandler.enterPressed = false;
+            if(commandNumber == 0){
+                if(gp.gameState == gp.startState){
+                    gp.gameState = gp.playState;
+                }
+                if(gp.gameState == gp.gameOverState){
+                    gp.restartheGame();
+                }
+            }
+            if(commandNumber == 1){
+                System.exit(0);
+            }
+        }
+        return commandNumber = Math.abs(commandNumber) % 2;
+    }
+
+    public void drawGameStartScreen(){
+        gameStartCommand = selectedCommand(gameStartCommand);
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int textX;
+        int textY;
+        String text;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 70f));
+
+        // TITLE TEXT
+        text = "Dungeon & Dragons";
+        // Shadow
+        g2.setColor(Color.black);
+        textX = getXForCenterOfText(text, gp, g2);
+        textY = tileSize * 4;
+        g2.drawString(text, textX, textY);
+
+        // Text
+        g2.setColor(Color.WHITE);
+        g2.drawString(text, textX - 4, textY - 4);
+
+        // START
+        g2.setFont(g2.getFont().deriveFont(50f));
+        text = "Start";
+        textX = getXForCenterOfText(text, gp, g2);
+        textY += tileSize * 4;
+        g2.drawString(text, textX, textY);
+        if (gameStartCommand == 0) {
+            g2.drawString(">", textX - 40, textY);
+            
+        }
+
+        // QUIT
+        text = "Exit";
+        textX = getXForCenterOfText(text, gp, g2);
+        textY += 55;
+        g2.drawString(text, textX, textY);
+        if (gameStartCommand == 1) {
+            g2.drawString(">", textX - 40, textY);
+            
+        }
+    }
 
     private void drawGameOverScreen() {
+        gameOverCommand = selectedCommand(gameOverCommand);
+        System.out.println(gameOverCommand);
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
@@ -384,26 +455,21 @@ public class UI {
         textX = getXForCenterOfText(text, gp, g2);
         textY += tileSize * 4;
         g2.drawString(text, textX, textY);
-        // if (commandNumber == 0) {
-        //     g2.drawString(">", textX - 40, textY);
-        //     if (gp.getKeyHandler().isEnterPressed()) {
-        //         commandNumber = 0;
-        //         gp.retry();
-        //     }
-        // }
+        
+        if (gameOverCommand == 0) {
+            g2.drawString(">", textX - 40, textY);
+            
+        }
 
         // BACK TO TITLE
         text = "Quit";
         textX = getXForCenterOfText(text, gp, g2);
         textY += 55;
         g2.drawString(text, textX, textY);
-        // if (commandNumber == 1) {
-        //     g2.drawString(">", textX - 40, textY);
-        //     if (gp.getKeyHandler().isEnterPressed()) {
-        //         commandNumber = 0;
-        //         gp.restart();
-        //     }
-        // }
+        if (gameOverCommand == 1) {
+            g2.drawString(">", textX - 40, textY);
+            
+        }
 
         // gp.setEnterPressed(false);
     }
@@ -426,6 +492,11 @@ public class UI {
 
         drawPlayerXp();
         drawPlayerMana();
+
+        //START STATE
+        if (gp.gameState == gp.startState) {
+            drawGameStartScreen();
+        }
 
         // PLAY STATE
         if (gp.gameState == gp.playState) {

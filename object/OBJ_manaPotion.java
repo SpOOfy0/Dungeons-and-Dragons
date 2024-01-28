@@ -16,7 +16,7 @@ public class OBJ_manaPotion extends SuperObject {
         worldX = newCoords[0] * tileSize;
         worldY = newCoords[1] * tileSize;
         
-        name = "healPotion";
+        name = "manaPotion";
         
         image = getImage("/Objects/ManaPotion.png");
         

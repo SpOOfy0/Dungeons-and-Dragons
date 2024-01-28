@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sound.sampled.Clip;
+
 import entity.Abilities.FireBall.FireBall;
 import entity.Monsters.Monster;
 import main.GamePannel;
@@ -58,6 +60,8 @@ public class Player extends Entity {
 
     public int index = 0;
 
+    Clip clip;
+
 
   
     private Player(GamePannel gp, KeyHandler keyH){
@@ -102,7 +106,7 @@ public class Player extends Entity {
         facing = "down";
 
         //PLAYER STATUS
-        maxLife = 40;
+        maxLife = 8;
         life = maxLife;
         attackSpeed = 30;
         damage = 1;
@@ -116,6 +120,13 @@ public class Player extends Entity {
         //CodeMana
         maxMana = 100;
         mana = maxMana;
+
+        //Sounds
+    }
+
+    public void restart(){
+        setDefaultValues();
+        inventory.clear();
     }
 
     public void getPlayerImage(){
@@ -214,8 +225,9 @@ public class Player extends Entity {
         // System.out.println(m);
 
         // s'occuper des intéractions entre le joueur et son environnement
-        for(int i = 0; i < objIndexes.size(); i++)
-            pickUpObject(objIndexes.get(i));
+        pickUpObject(objIndexes);
+        // for(int i = 0; i < objIndexes.size(); i++)
+        //     pickUpObject(objIndexes.get(i));
 
         npcIndex = gp.interactionChecker.interactPossible(this, gp.npc);
         if(npcIndex != 999) interactNPC(npcIndex);
@@ -276,18 +288,20 @@ public class Player extends Entity {
         }
     }
 
-
-    //CodeExp
-    public void levelUp(){
+    public boolean levelUp(){
         if( xp >= maxXp){
             level ++;
             gp.ui.showMessage("     You leveled up!");
             xp = xp - maxXp;
             maxXp += 250;
-
+            return true;
         }
+        return false;
     }
 
+    public void updateAbilities(){
+        if(levelUp()){}
+    }
 
     // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
     // aussi étudie les collisions entre le joueur et son environnement
@@ -371,47 +385,40 @@ public class Player extends Entity {
         storeMovement[1] = 0;
     }
 
-    public void pickUpObject(int objIndex){
+    public void pickUpObject(ArrayList<Integer> objIndexes){
         
-        if(objIndex != 999){
-            
-            String objName = gp.item.get(objIndex).name;
-            
-            switch(objName){
-                case "healPotion":
-                    gp.ui.showMessage("You got a heal potion!");
-                    break;
-                case "manaPotion":
-                    gp.ui.showMessage("You got a mana potion!");
-                    break;
-                case "key":
-                    gp.ui.showMessage("You got a key!");
-                    break;
-            }
+        for (int i = objIndexes.size() - 1; i >= 0; i--) {
 
-            if (inventory.containsKey(objName)) {
-                //Existing object
-                inventory.put(objName, inventory.get(objName) + 1);
-            } else {
-                //New object
-                inventory.put(objName, 1);
-            }
+            int objIndex = objIndexes.get(i);
 
-            gp.item.remove(objIndex);            
+            if(objIndex != 999){
+                
+                String objName = gp.item.get(objIndex).name;
+                
+                switch(objName){
+                    case "healPotion":
+                        gp.ui.showMessage("You got a heal potion!");
+                        break;
+                    case "manaPotion":
+                        gp.ui.showMessage("You got a mana potion!");
+                        break;
+                    case "key":
+                        gp.ui.showMessage("You got a key!");
+                        break;
+                }
+
+                if (inventory.containsKey(objName)) {
+                    //Existing object
+                    inventory.put(objName, inventory.get(objName) + 1);
+                } else {
+                    //New object
+                    inventory.put(objName, 1);
+                }
+
+                gp.item.remove(objIndex);            
+            }
         }
     }
-
-    /*public void openDoor(int objIndex){
-        if (objIndex != 999){
-
-            if (gp.item.get(objIndex).name == "door" && inventory.containsKey("key") && gp.keyHandler.aPressed){ 
-                gp.ui.showMessage("You opened the door!");
-                gp.item.remove(objIndex);
-                inventory.put("key", inventory.get("key") - 1);
-                gp.keyHandler.aPressed = false;
-            }
-        }
-    }*/
 
     public void openGate(){
         if (inventory.containsKey("key") && gp.keyHandler.aPressed){
@@ -447,6 +454,7 @@ public class Player extends Entity {
             else if(gp.tileM.closeToGate(46,49)){
                 openDoor(46,49, 0); 
             }
+            gp.keyHandler.aPressed = false;
         }
     }
 
@@ -455,13 +463,7 @@ public class Player extends Entity {
         gp.tileM.changeTile(worldX,worldY, tileNum);
         inventory.put("key", inventory.get("key") - 1); 
         if(inventory.get("key") == 0) inventory.remove("key");
-        gp.keyHandler.aPressed = false;
     }
-
-
-
-
-
 
     public void selectOPbject(int x ,int y, int width, int height){
         
@@ -531,6 +533,7 @@ public class Player extends Entity {
     public String getTheTypeOfMgicAttack(){
         String typeOfAttack = "none";
         if(gp.keyHandler.dPressed == true){typeOfAttack = "fire";}
+        else if(gp.keyHandler.fPressed == true){typeOfAttack = "electro";}
         return typeOfAttack;
     }
 
@@ -551,6 +554,18 @@ public class Player extends Entity {
                         ballOn = 1;
                     }   
                     break;
+                case "electro":
+                    System.out.println("ddd");
+                    if(gp.ability.mana <= mana){
+                        gp.ability = gp.electroBall;
+                        gp.keyHandler.fPressed = false;
+                        attackDelay = 0;
+                        positionXActivityOn = worldX;
+                        positionYActivityOn = worldY;
+                        gp.ability.manaCost();
+                        ballOn = 1;
+                    }   
+                break;
                 //Add other type of magic attack
             }
         }

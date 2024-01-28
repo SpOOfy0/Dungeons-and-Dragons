@@ -150,19 +150,12 @@ public class TileManager {
         }
     }
 
-    public void changeTile(int coordX, int coordY, int tileNum){
-        mapTileNum[coordX][coordY] = tileNum;
+    public void reloadMap(){
+        loadMap("/Maps/map.txt");
     }
 
-    public int[] detectDoor(){
-        int worldX = gp.player.worldX / gp.tileSize;
-        int worldY = gp.player.worldY / gp.tileSize;
-        int[] coord = {worldX, worldY};
-        if(mapTileNum[worldX][worldY] == 3 || mapTileNum[worldX - 1][worldY] == 3 || mapTileNum[worldX][worldY + 1] == 3 || mapTileNum[worldX][worldY - 1] == 3 || mapTileNum[worldX][worldY] == 3){
-            return coord;
-        }
-        return null;
-        
+    public void changeTile(int coordX, int coordY, int tileNum){
+        mapTileNum[coordX][coordY] = tileNum;
     }
 
     public boolean closeToGate(int tileWorldX, int tileWorldY){
@@ -171,7 +164,6 @@ public class TileManager {
         if (Math.abs(worldX - tileWorldX) <= 1 && Math.abs(worldY - tileWorldY) <= 1) return true;
         return false;
     }
-
 
     public void draw(Graphics2D g2){
         // g2.drawImage(tile[0].image, 0, 0,30,30, null);

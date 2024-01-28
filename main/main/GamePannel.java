@@ -1,5 +1,6 @@
 package main;
 
+import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,6 +18,7 @@ import entity.Monsters.NormalMonsters.BlueOrc;
 import entity.Monsters.NormalMonsters.RedOrc;
 import entity.Monsters.BossMonster.Torero;
 import entity.Abilities.Ability;
+import entity.Abilities.ElectroBall.ElectroBall;
 import entity.Abilities.FireBall.FireBall;
 import object.SuperObject;
 import object.OBJ_LifeHeart;
@@ -70,42 +72,26 @@ public class GamePannel extends JPanel implements Runnable {
     //public Ability ability[] = new Ability[10];
     public Ability ability = new Ability(this);
     public FireBall fireBall = new FireBall(this);
+    public ElectroBall electroBall = new ElectroBall(this);
     //public List<FireBall> fireBall = new ArrayList<>();
     public UI ui = UI.getInstance(this);
+    public SoundManager soundManger = new SoundManager(this);
     //GAME STATE
     public int gameState;
+    public int startState = 0;
     public int playState = 1;
     public int pauseState = 2;
     public int dialogueState = 3;
     public int inventoryState = 4;
     public int gameOverState = 5;
+    Clip clip = soundManger.loadAudio("Sounds/WalkSound.wav");
 
 
     public void setUpObject(){
         
-        objSetter.setItem(new OBJ_healPotion(this, 26, 25));
-        objSetter.setItem(new OBJ_healPotion(this, 26, 34));
-        objSetter.setItem(new OBJ_healPotion(this, 35, 25));
-        objSetter.setItem(new OBJ_healPotion(this, 35, 34));
-        objSetter.setItem(new OBJ_Door(this, 11, 25));
-
-        objSetter.setItem(new OBJ_manaPotion(this, 14, 22));
-        objSetter.setItem(new OBJ_manaPotion(this, 14, 38));
-        objSetter.setItem(new OBJ_manaPotion(this, 14, 39));
-
-        //objSetter.setNPC(new NPC_1(this, "down", 28, 27));
-
-        objSetter.setMonster(new BlueOrc(this, "right", 9, 8));
-        objSetter.setMonster(new RedOrc(this, "down", 28, 8));
-        objSetter.setMonster(new BlueOrc(this, "left", 52, 8));
-        objSetter.setMonster(new RedOrc(this, "up", 9, 32));
-        objSetter.setMonster(new RedOrc(this, "up", 52, 32));
-        objSetter.setMonster(new BlueOrc(this, "right", 9, 51));
-        objSetter.setMonster(new RedOrc(this, "up", 33, 51));
-        objSetter.setMonster(new BlueOrc(this, "left", 52, 51));
-
-        //objSetter.setMonster(new Torero(this, "down", 27, 25));
-
+        objSetter.setItems();
+        objSetter.setNPCs();
+        objSetter.setMonsters();
     }
 
     public GamePannel(){
@@ -116,11 +102,25 @@ public class GamePannel extends JPanel implements Runnable {
         this.startGameThread(); 
     }
 
-
     public void startGameThread(){
         
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public void clear(){
+        item.clear();
+        npc.clear();
+        monster.clear();
+        monsterToSpown.clear();
+    }
+
+    public void restartheGame(){
+        clear();
+        setUpObject();
+        tileM.reloadMap();
+        player.restart();
+        gameState = playState; 
     }
 
     public void run(){
@@ -129,7 +129,7 @@ public class GamePannel extends JPanel implements Runnable {
         double nextDrawTime = System.nanoTime() + drawInterval;
 
         while(gameThread != null){
-
+            //SoundManager.play(clip);
             //UPDATE THE CHARACTER POSITION
             update();
 
@@ -198,14 +198,19 @@ public class GamePannel extends JPanel implements Runnable {
         tileM.draw(g2);
 
         //OBJECT
-        for(SuperObject iterItem : item){
-            if(iterItem != null) iterItem.draw(g2, this);
+        synchronized (item) {
+            for(SuperObject iterItem : item){
+                if(iterItem != null) iterItem.draw(g2, this);
+            }
         }
-
+        
         //NPC
-        for(NPC iterNPC : npc){
-            if(iterNPC != null) iterNPC.draw(g2);
+        synchronized (npc) {
+            for(NPC iterNPC : npc){
+                if(iterNPC != null) iterNPC.draw(g2);
+            }
         }
+        
 
         //MONSTER
         synchronized (monster) {

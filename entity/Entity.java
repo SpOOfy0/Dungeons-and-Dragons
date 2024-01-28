@@ -549,7 +549,7 @@ public class Entity {
                 }
             
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
-            g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            //g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
             
         }
     }

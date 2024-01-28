@@ -236,13 +236,13 @@ public class Monster extends Entity{
                     gp.objSetter.setItem(gp.key);
                     break;
                 case "healPotion":
-                    gp.healPotion.worldX = worldX + tileSize;
+                    gp.healPotion.worldX = worldX;
                     gp.healPotion.worldY = worldY;
                     gp.objSetter.setItem(gp.healPotion);
                     break;
                 case "manaPotion":
                     gp.manaPotion.worldX = worldX;
-                    gp.manaPotion.worldY = worldY + tileSize;
+                    gp.manaPotion.worldY = worldY;
                     gp.objSetter.setItem(gp.manaPotion);
                     break;
             }
