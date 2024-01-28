@@ -1,7 +1,6 @@
 package entity.Abilities.ElectroBall;
 
-import entity.Abilities.Ability;
-import entity.Abilities.AbilityInterface;
+import entity.Abilities.*;
 import entity.Monsters.Monster;
 import main.GamePannel;
 

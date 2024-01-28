@@ -7,10 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
-import object.OBJ_LifeHeart;
-import object.OBJ_healPotion;
-import object.OBJ_manaPotion;
-import object.SuperObject;
+import object.*;
 
 
 public class UI {
@@ -33,6 +30,10 @@ public class UI {
 
     double timer = 0;
     DecimalFormat df = new DecimalFormat("#0.00");
+    
+    //new
+    boolean showStatus = false;
+    boolean isHoldingN = false;
 
 
     private UI(GamePannel gp) {
@@ -296,7 +297,19 @@ public class UI {
     }
 
     public void drawPlayerStatus(){
-        if (gp.keyHandler.nPressed){
+
+        //new
+        if (!isHoldingN){
+            if (gp.keyHandler.nPressed){
+                isHoldingN = true;
+                if(showStatus) showStatus = false;
+                else showStatus = true;
+            }
+        } else {
+            if (!gp.keyHandler.nPressed) isHoldingN = false;
+        }
+
+        if (showStatus){
             int x = gp.screenWidth / 8 - tileSize;
             int y = gp.screenHeight / 2 - tileSize * 4;
             int width = gp.screenWidth / 2 - tileSize * 2;

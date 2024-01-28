@@ -210,7 +210,7 @@ public class Player extends Entity {
 
         // s'occuper des intéractions entre le joueur et son environnement
         for(int i = 0; i < objIndexes.size(); i++)
-            pickUpObject(objIndexes.get(i));
+            pickUpObject(objIndexes.get(i) - i);
 
         npcIndex = gp.interactionChecker.interactPossible(this, gp.npc);
         if(npcIndex != 999) interactNPC(npcIndex);

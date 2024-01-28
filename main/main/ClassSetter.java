@@ -6,9 +6,7 @@ import object.OBJ_manaPotion;
 import entity.NPC;
 import entity.NPC_1;
 import entity.Monsters.Monster;
-import entity.Monsters.NormalMonsters.Orc;
-import entity.Monsters.NormalMonsters.BlueOrc;
-import entity.Monsters.NormalMonsters.RedOrc;
+import entity.Monsters.NormalMonsters.*;
 
 
 public class ClassSetter {

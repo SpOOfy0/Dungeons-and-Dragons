@@ -60,7 +60,7 @@ public class CollisionChecker {
         for(int i = 0; i < 4; i++){
             switch(i){
                 case 0: //up
-                    entityTopRow = (entityTopWorldY - entity.speed*2) / tileSize;
+                    entityTopRow = (entityTopWorldY - entity.baseSpeed*2) / tileSize;
 
                     iter = entityLeftCol;
                     while(iter <= entityRightCol){
@@ -72,7 +72,7 @@ public class CollisionChecker {
                     entityTopRow = entityTopWorldY / tileSize;
                     break;
                 case 1: //left
-                    entityLeftCol = (entityLeftWorldX - entity.speed*2) / tileSize;
+                    entityLeftCol = (entityLeftWorldX - entity.baseSpeed*2) / tileSize;
 
                     iter = entityTopRow;
                     while(iter <= entityBottomRow){
@@ -84,7 +84,7 @@ public class CollisionChecker {
                     entityLeftCol = entityLeftWorldX / tileSize;
                     break;
                 case 2: //down
-                    entityBottomRow = (entityBottomWorldY + entity.speed*2) / tileSize;
+                    entityBottomRow = (entityBottomWorldY + entity.baseSpeed*2) / tileSize;
 
                     iter = entityLeftCol;
                     while(iter <= entityRightCol){
@@ -96,7 +96,7 @@ public class CollisionChecker {
                     entityBottomRow = entityBottomWorldY / tileSize;
                     break;
                 case 3: //right
-                    entityRightCol = (entityRightWorldX + entity.speed*2) / tileSize;
+                    entityRightCol = (entityRightWorldX + entity.baseSpeed*2) / tileSize;
 
                     iter = entityTopRow;
                     while(iter <= entityBottomRow){

@@ -1,8 +1,7 @@
 package entity.Monsters.NormalMonsters;
 
 import main.GamePannel;
-import entity.Monsters.Monster;
-import entity.Monsters.MonsterInterface;
+import entity.Monsters.*;
 
 public class RedOrc extends Monster implements MonsterInterface {
     
