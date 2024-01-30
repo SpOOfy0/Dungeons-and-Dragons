@@ -87,7 +87,7 @@ public class Player extends Entity {
             instance = new Player(gp, keyH);
         }
 
-        return new Player(gp, keyH);
+        return instance;
     }
 
 
