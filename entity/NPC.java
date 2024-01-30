@@ -3,7 +3,7 @@ package entity;
 import main.GamePannel;
 
 public class NPC extends Entity{
-    
+
     public NPC(GamePannel gp, String inputedDirection, int coordX, int coordY){
 
         super(gp);
@@ -71,15 +71,25 @@ public class NPC extends Entity{
     public void speak(){
 
         if(dialogues.get(dialogueIndex) != null){
+
             bufferDirection = direction[0];
+            FacePlayer();
+
+            gp.interactingNPC = this;
+
             gp.ui.currentDialogue = dialogues.get(dialogueIndex);
             dialogueIndex++;
             if(dialogueIndex >= dialogues.size()) dialogueIndex = 0;
-            FacePlayer();
+
             gp.gameState = gp.dialogueState;
-            //gp.player.npcIndex = 0;
         }
 
+    }
+
+    public void getNextDialogue(){
+        gp.ui.currentDialogue = dialogues.get(dialogueIndex);
+        dialogueIndex++;
+        if(dialogueIndex >= dialogues.size()) dialogueIndex = 0;
     }
 
     public void FacePlayer(){

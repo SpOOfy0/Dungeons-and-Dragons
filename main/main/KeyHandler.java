@@ -9,7 +9,9 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements ActionListener, KeyListener{
 
     GamePannel gp;
-    public boolean upPressed, downPressed, leftPressed, rightPressed, xPressed, sPressed, dPressed, enterPressed, nPressed, lPressed, aPressed, fPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed,
+                    xPressed, sPressed, dPressed, enterPressed, nPressed,
+                    lPressed, aPressed, fPressed, spacePressed;
     public int x = 100;
     public int y = 100;
 
@@ -60,6 +62,7 @@ public class KeyHandler implements ActionListener, KeyListener{
                     gp.gameState = gp.pauseState;
                     break;
                 case KeyEvent.VK_SPACE:
+                    spacePressed = true;
                     gp.gameState = gp.playState;
                     break;
                 case KeyEvent.VK_ENTER:
@@ -84,6 +87,7 @@ public class KeyHandler implements ActionListener, KeyListener{
         else if(gp.gameState == gp.pauseState){
             switch (keyCode) {
                 case KeyEvent.VK_SPACE:
+                    spacePressed = true;
                 case KeyEvent.VK_P:
                     gp.gameState = gp.playState;
                     break;
@@ -93,6 +97,8 @@ public class KeyHandler implements ActionListener, KeyListener{
         else if(gp.gameState == gp.dialogueState){
             switch (keyCode) {
                 case KeyEvent.VK_SPACE:
+                    spacePressed = true;
+                    break;
                 case KeyEvent.VK_X:
                     gp.gameState = gp.playState;
                     break;
@@ -102,6 +108,7 @@ public class KeyHandler implements ActionListener, KeyListener{
         else if(gp.gameState == gp.inventoryState){
             switch (keyCode) {
                 case KeyEvent.VK_SPACE:
+                    spacePressed = true;
                 case KeyEvent.VK_B:
                     gp.gameState = gp.playState;
                     break;
@@ -180,6 +187,12 @@ public class KeyHandler implements ActionListener, KeyListener{
                 break;
             case KeyEvent.VK_N:
                 nPressed = false;
+                break;
+            case KeyEvent.VK_A:
+                aPressed = false;
+                break;
+            case KeyEvent.VK_SPACE:
+                spacePressed = false;
                 break;
         }
         

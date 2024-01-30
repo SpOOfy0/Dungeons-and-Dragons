@@ -1,4 +1,4 @@
-package entity.Abilities.FireBall;
+package entity.Abilities.MagicBalls;
 
 import entity.Abilities.Ability;
 import entity.Abilities.AbilityInterface;
@@ -27,8 +27,9 @@ public class FireBall extends Ability implements AbilityInterface {
         damage = 2;
         initSpeed(5);
         range = 8;
-        mana = 20;
+        mana = 4;
         
+        initiateMagicSpeed(40);
     }
 
 }

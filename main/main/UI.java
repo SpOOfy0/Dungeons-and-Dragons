@@ -7,10 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
-import object.OBJ_LifeHeart;
-import object.OBJ_healPotion;
-import object.SuperObject;
-
 
 public class UI {
 
@@ -18,8 +14,8 @@ public class UI {
     GamePannel gp;
     Graphics2D g2;
     Font arial_40;
-    BufferedImage fullHeart ,halfHeart, emptyHeart; 
-    BufferedImage HealPotionImage ,ManaPotionImage;
+    BufferedImage fullHeart, halfHeart, emptyHeart; 
+    BufferedImage HealPotionImage, ManaPotionImage;
     
     public int tileSize;
 
@@ -32,7 +28,11 @@ public class UI {
     double timer = 0;
     DecimalFormat df = new DecimalFormat("#0.00");
 
-    int gameStartCommand = 0 ,gameOverCommand = 0;
+    int gameStartCommand = 0, gameOverCommand = 0;
+
+    //new
+    boolean showStatus = false;
+    boolean isHoldingN = false;
 
 
     private UI(GamePannel gp) {
@@ -148,6 +148,11 @@ public class UI {
         for(String line : currentDialogue.split("\n")){
             g2.drawString(line, x, y);
             y += 40;
+        }
+
+        if(gp.keyHandler.spacePressed){
+            gp.keyHandler.spacePressed = false;
+            gp.interactingNPC.getNextDialogue();
         }
     }
 
@@ -304,7 +309,18 @@ public class UI {
     }
 
     public void drawPlayerStatus(){
-        if (gp.keyHandler.nPressed){
+
+        if (!isHoldingN){
+            if (gp.keyHandler.nPressed){
+                isHoldingN = true;
+                if(showStatus) showStatus = false;
+                else showStatus = true;
+            }
+        } else {
+            if (!gp.keyHandler.nPressed) isHoldingN = false;
+        }
+
+        if (showStatus){
             int x = gp.screenWidth / 8 - tileSize;
             int y = gp.screenHeight / 2 - tileSize * 4;
             int width = gp.screenWidth / 2 - tileSize * 2;
@@ -427,7 +443,6 @@ public class UI {
 
     private void drawGameOverScreen() {
         gameOverCommand = selectedCommand(gameOverCommand);
-        System.out.println(gameOverCommand);
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
@@ -490,9 +505,6 @@ public class UI {
         g2.setFont(arial_40);
         g2.setColor(Color.white);
 
-        drawPlayerXp();
-        drawPlayerMana();
-
         //START STATE
         if (gp.gameState == gp.startState) {
             drawGameStartScreen();
@@ -501,6 +513,8 @@ public class UI {
         // PLAY STATE
         if (gp.gameState == gp.playState) {
             drawPlayerLife();
+            drawPlayerXp();
+            drawPlayerMana();
             drawMessage();
             drawPlayerStatus();
         }
@@ -512,18 +526,24 @@ public class UI {
         // PAUSE STATE
         if (gp.gameState == gp.pauseState) {
             drawPlayerLife();
+            drawPlayerXp();
+            drawPlayerMana();
             drawPauseScreen();
         }
 
         // DIALOGUE STATE
         if (gp.gameState == gp.dialogueState) {
             drawPlayerLife();
+            drawPlayerXp();
+            drawPlayerMana();
             drawDialogueScreen();
         }
 
         // INVENTORY STATE
         if (gp.gameState == gp.inventoryState) {
             drawPlayerLife();
+            drawPlayerXp();
+            drawPlayerMana();
             drawInventory();
             
         }

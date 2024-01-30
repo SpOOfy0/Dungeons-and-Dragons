@@ -18,14 +18,41 @@ public class Ability extends Entity{
 
     protected int range;
     protected int distanceTraveled;
-    int rangeChecked = 0;
+
     
+
+    public static int MagicAtkMaxSpeed = 0;
+    public int MagicAtkSpeed;
+    public static int MagicAtkDelay = 0;
+
+    public void initiateMagicSpeed(int value){
+        MagicAtkSpeed = value;
+        if(MagicAtkMaxSpeed < value) MagicAtkMaxSpeed = value;
+    }
+
+    public boolean canUseMagic(){
+        return MagicAtkDelay >= MagicAtkSpeed;
+    }
+
+    public boolean canUseAllMagic(){
+        return MagicAtkDelay >= MagicAtkMaxSpeed;
+    }
+
+    public void startMagicDelay(){
+        MagicAtkDelay = 0;
+    }
+    
+
+
     public Ability(GamePannel gp) {
 
         super(gp);
     }
 
     public void update() {
+
+        if(!canUseAllMagic()) MagicAtkDelay++;
+
         if (gp.player.ballOn == 1) {
            
             if (direction[0] == null) {
@@ -33,30 +60,42 @@ public class Ability extends Entity{
                 facing = gp.player.facing;
                 worldX = gp.player.worldX;
                 worldY = gp.player.worldY;
+                distanceTraveled = 0;
+
+            } else {
+                actionWhileActive();
+
+                if(direction[0] == "up") worldY -= speed;
+                else if(direction[0] == "down") worldY += speed;
+                else if(direction[0] == "left") worldX -= speed;
+                else if(direction[0] == "right") worldX += speed;
+
+                distanceTraveled += speed;
+                
+                abilityCollisionIndex = monsterCollision();
+                if(abilityCollision) actionOnHit();
+                rangeAbility();
             }
-            else if(direction[0] == "up") worldY -= speed;
-            else if(direction[0] == "down") worldY += speed;
-            else if(direction[0] == "left") worldX -= speed;
-            else if(direction[0] == "right") worldX += speed;
-            
-            abilityCollisionIndex = monsterCollision();
-            if(abilityCollision){
-                gp.monster.get(abilityCollisionIndex).receiveDmg(damage);
-            }
-            rangeAbility();
-            
         }
+
+    }
+    
+    public void actionWhileActive() {}
+
+    public void actionOnHit() {
+        gp.monster.get(abilityCollisionIndex).receiveDmg(damage);
     }
              
     public int monsterCollision() {
 
+        solidArea.x += worldX;
+        solidArea.y += worldY;
+        
         int i = 0;
         for(Monster iterMonster : gp.monster){
             abilityCollision = false;
             if (iterMonster != null){
 
-                solidArea.x += worldX;
-                solidArea.y += worldY;
                 iterMonster.solidArea.x += iterMonster.worldX;
                 iterMonster.solidArea.y += iterMonster.worldY;
 
@@ -73,28 +112,21 @@ public class Ability extends Entity{
                     return i;
                 }
 
-                solidArea.x = solidAreaDefaultX;
-                solidArea.y = solidAreaDefaultY;
                 iterMonster.solidArea.x = iterMonster.solidAreaDefaultX;
                 iterMonster.solidArea.y = iterMonster.solidAreaDefaultY;
             }
 
             i++;
         }
+
+        solidArea.x = solidAreaDefaultX;
+        solidArea.y = solidAreaDefaultY;
+        
         return 999;
     }
 
     public void rangeAbility(){
         if(gp.ability != null){
-            
-            if(direction[0] == "up" || direction[0] == "down"){
-                distanceTraveled = Math.abs(worldY - gp.player.positionYActivityOn);
-                rangeChecked = 1;
-            }
-            else if(direction[0] == "left" || direction[0] == "right"){
-                distanceTraveled = Math.abs(worldX - gp.player.positionXActivityOn);
-                rangeChecked = 1;
-            }
             if(distanceTraveled >= range*tileSize){
                 gp.player.ballOn = 0;
                 direction[0] = null;

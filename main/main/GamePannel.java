@@ -6,25 +6,18 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import entity.NPC;
-import entity.NPC_1;
 import entity.Player;
 import entity.Monsters.Monster;
-import entity.Monsters.NormalMonsters.Orc;
-import entity.Monsters.NormalMonsters.BlueOrc;
-import entity.Monsters.NormalMonsters.RedOrc;
-import entity.Monsters.BossMonster.Torero;
 import entity.Abilities.Ability;
-import entity.Abilities.ElectroBall.ElectroBall;
-import entity.Abilities.FireBall.FireBall;
+import entity.Abilities.MagicBalls.ElectroBall;
+import entity.Abilities.MagicBalls.FireBall;
 import object.SuperObject;
 import object.OBJ_LifeHeart;
 import object.OBJ_healPotion;
 import object.OBJ_manaPotion;
-import object.OBJ_Door;
 import object.OBJ_Key;
 //CodeMana
 // import object.OBJ_manaPotion;
@@ -54,7 +47,7 @@ public class GamePannel extends JPanel implements Runnable {
 
     Thread  gameThread;
 
-    //INITIAT AUTHER OBJECT
+    //INITIATE AUTHER OBJECT
     public TileManager tileM = new TileManager(this);
     public KeyHandler keyHandler = new KeyHandler(this);
     public CollisionChecker collisionChecker = new CollisionChecker(this);
@@ -67,15 +60,17 @@ public class GamePannel extends JPanel implements Runnable {
     public SuperObject heart = new OBJ_LifeHeart(this);
     public Vector<SuperObject> item = new Vector<SuperObject>();
     public Vector<NPC> npc = new Vector<NPC>();
+    public NPC interactingNPC = null;
     public Vector<Monster> monster = new Vector<Monster>();
-    public Vector<Monster> monsterToSpown = new Vector<Monster>();
-    //public Ability ability[] = new Ability[10];
+    //public Vector<Monster> monsterToSpown = new Vector<Monster>();
+    
     public Ability ability = new Ability(this);
     public FireBall fireBall = new FireBall(this);
     public ElectroBall electroBall = new ElectroBall(this);
-    //public List<FireBall> fireBall = new ArrayList<>();
+    
     public UI ui = UI.getInstance(this);
     public SoundManager soundManger = new SoundManager(this);
+
     //GAME STATE
     public int gameState;
     public int startState = 0;
@@ -111,8 +106,9 @@ public class GamePannel extends JPanel implements Runnable {
     public void clear(){
         item.clear();
         npc.clear();
+        interactingNPC = null;
         monster.clear();
-        monsterToSpown.clear();
+        //monsterToSpown.clear();
     }
 
     public void restartheGame(){
@@ -120,6 +116,7 @@ public class GamePannel extends JPanel implements Runnable {
         setUpObject();
         tileM.reloadMap();
         player.restart();
+        player.isDead = false;
         gameState = playState; 
     }
 
@@ -158,34 +155,43 @@ public class GamePannel extends JPanel implements Runnable {
         
         if(gameState == playState){
             player.update();
-            for(NPC iterNPC : npc){
-                if(iterNPC != null) iterNPC.update();
+            for(int i = 0; i < npc.size(); i++){
+                NPC iterNPC = npc.get(i);
+                if(iterNPC != null){
+                    if(iterNPC.isDead){
+                        iterNPC.onDeath();
+                        npc.remove(i);
+                    }
+                    else iterNPC.update();
+                }
             }
             for(int i = 0; i < monster.size(); i++){
                 Monster iterMonster = monster.get(i);
                 if(iterMonster != null){
-                    if(iterMonster.life <= 0){
-                        iterMonster.DropObject();
+                    if(iterMonster.isDead){
+                        iterMonster.onDeath();
                         monster.remove(i);
-                        player.xp += iterMonster.xp;
                     }
                     else iterMonster.update();
                 }
             }
-            for(int i = 0; i < monsterToSpown.size(); i++){
-                Monster iterMonster = monsterToSpown.get(i);
-                if(iterMonster != null){
-                    if(iterMonster.life <= 0){
-                        iterMonster.DropObject();
-                        monsterToSpown.remove(i);
-                        player.xp += iterMonster.xp;
-                    }
-                    else iterMonster.update();
-                }
-            }
+            // for(int i = 0; i < monsterToSpown.size(); i++){
+            //     Monster iterMonster = monsterToSpown.get(i);
+            //     if(iterMonster != null){
+            //         if(iterMonster.life <= 0){
+            //             iterMonster.DropObject();
+            //             monsterToSpown.remove(i);
+            //             player.xp += iterMonster.xp;
+            //         }
+            //         else iterMonster.update();
+            //     }
+            // }
             if(ability != null) ability.update();
             //objSetter.MonsterSpawner(28, 27, 20);
+
+            if(player.isDead) gameState = gameOverState;
         }
+        if(gameState != dialogueState) interactingNPC = null;
 
     }
 
@@ -221,14 +227,14 @@ public class GamePannel extends JPanel implements Runnable {
                 }
             }
         }
-        synchronized (monsterToSpown) {
-            for(Monster iterMonster : monsterToSpown){
-                if(iterMonster != null){
-                    iterMonster.draw(g2);
-                    iterMonster.paintComponent(g2);
-                }
-            }
-        }
+        // synchronized (monsterToSpown) {
+        //     for(Monster iterMonster : monsterToSpown){
+        //         if(iterMonster != null){
+        //             iterMonster.draw(g2);
+        //             iterMonster.paintComponent(g2);
+        //         }
+        //     }
+        // }
 
         //ABILITY
         if(ability != null) ability.draw(g2);

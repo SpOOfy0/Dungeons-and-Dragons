@@ -24,7 +24,7 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/Maps/map.txt");
+        loadMap("/Maps/map2.txt");
     }
 
     public void getTileImage(){
@@ -44,14 +44,20 @@ public class TileManager {
             tile[3] = new Tile();
             tile[3].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Gate/UpGate.png"));
             tile[3].collision = true;
+            tile[3].opaque = true;
 
             tile[4] = new Tile();
             tile[4].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Gate/DownGate.png"));
             tile[4].collision = true;
+            tile[4].opaque = true;
 
             tile[5] = new Tile();
             tile[5].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Gate/LeftGate.png"));
             tile[5].collision = true;
+            tile[5].opaque = true;
+
+            tile[6] = new Tile();
+            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Earth.jpg"));
 
         }catch(Exception e){
             System.out.println("Error loading image");
@@ -151,7 +157,7 @@ public class TileManager {
     }
 
     public void reloadMap(){
-        loadMap("/Maps/map.txt");
+        loadMap("/Maps/map2.txt");
     }
 
     public void changeTile(int coordX, int coordY, int tileNum){

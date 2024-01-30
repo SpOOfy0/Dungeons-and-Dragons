@@ -1,4 +1,4 @@
-package entity.Abilities.ElectroBall;
+package entity.Abilities.MagicBalls;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -35,10 +35,7 @@ public class ElectroBall extends Ability implements AbilityInterface {
         range = 5;
         mana = 9;
 
-        attackSpeed = 50;
-        attackDelay = attackSpeed;
-
-        direction[0] = null;
+        initiateMagicSpeed(50);
 
         frameCount = 0;
     }
@@ -49,11 +46,11 @@ public class ElectroBall extends Ability implements AbilityInterface {
         if(frameCount >= 8) frameCount = 0;
     }
 
-    // public void actionOnHit() {
-    //     Monster victim = gp.monster.get(abilityCollisionIndex);
-    //     victim.receiveDmg(damage);
-    //     victim.giveBlockMovement(35);
-    // }
+    public void actionOnHit() {
+        Monster victim = gp.monster.get(abilityCollisionIndex);
+        victim.receiveDmg(damage);
+        victim.giveBlockMovement(35, false);
+    }
 
 
     public void draw(Graphics2D g2) {

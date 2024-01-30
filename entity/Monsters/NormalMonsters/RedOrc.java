@@ -31,10 +31,13 @@ public class RedOrc extends Monster implements MonsterInterface {
         noticeRange = 4;
         aggroRange = 9;
         initSpeed(1);
-        maxLife = 5;
+        maxLife = 17;
         life = maxLife;
         damage = 2;
         xp = 700;
+
+        noKnockback = true;
+        
         objToDrop[0] = "key";
         objToDrop[1] = "healPotion";
     }

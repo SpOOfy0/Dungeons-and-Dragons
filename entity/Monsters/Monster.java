@@ -6,6 +6,9 @@ import java.awt.Graphics2D;
 import entity.Entity;
 import entity.Player;
 import main.GamePannel;
+import object.OBJ_Key;
+import object.OBJ_healPotion;
+import object.OBJ_manaPotion;
 
 public class Monster extends Entity{
     
@@ -164,48 +167,162 @@ public class Monster extends Entity{
 
         if(direction[0] == null){
 
-            int posTilePlayer;
-            int posMonster;
+            // normal coordonates
+            int posMonster1, posMonster2;
+            int resDistanceMini, distanceMini;
+
+            // tile coordonates
+            int tilePlayer1, tilePlayer2;
+            int resTileDistancePlayer, tileDistancePlayer;
+            int tileMonster1, tileMonster2;
+            int minGapSize;
+            int distanceAllowed;
+            int fixCoord = 0;
+            int limit1, limit2;
+            int numberOfFreeSpaces;
+            int tileDestination;
+            
+            boolean resIsLeftOrUp, isLeftOrUp = true;
 
             // to follow the player when can't be followed with the previous functions (like in gaps)
             switch(bufferDirection) {
                 case "down":
+                    fixCoord = ((worldY + solidAreaDefaultY + solidArea.height)/tileSize) + 1;
                 case "up":
-                    posTilePlayer = player.getLeftTileBorder();
-                    posMonster = worldX + solidAreaDefaultX;
+                    if(bufferDirection == "up") fixCoord = ((worldY + solidAreaDefaultY)/tileSize) - 1;
+                    
+                    tilePlayer1 = (player.worldX + player.solidAreaDefaultX)/tileSize;
+                    tilePlayer2 = ((player.worldX + player.solidAreaDefaultX + player.solidArea.width)/tileSize) + 1;
 
-                    if (posMonster < posTilePlayer){
-                        decideLetGo("right");
-                        if(!stopDirections[3]){
-                            direction[0] = "right";
-                            if (posMonster + solidArea.width > player.worldX + player.solidAreaDefaultX + 1 && speed > 1) speed--;
-                        }
-                    } else if (posTilePlayer < posMonster){
-                        decideLetGo("left");
-                        if(!stopDirections[2]){
-                            direction[0] = "left";
-                            if (player.worldX + player.solidAreaDefaultX + player.solidArea.width > posMonster + 1 && speed > 1) speed--;
-                        }
+                    posMonster1 = worldX + solidAreaDefaultX;
+                    posMonster2 = posMonster1 + solidArea.width;
+                    minGapSize = ((solidArea.width+1)/tileSize)+1;
+                    
+                    tileMonster1 = posMonster1/tileSize;
+                    tileMonster2 = (posMonster2/tileSize) + 1;
+                    distanceAllowed = Math.max(minGapSize, aggroRange);
+                    limit1 = Math.max(tileMonster1 - distanceAllowed, 0);
+                    limit2 = Math.min(tileMonster2 + distanceAllowed, gp.maxWorldCol - 1);
+                    
+                    numberOfFreeSpaces = 0;
+                    distanceMini = 2*distanceAllowed*tileSize;
+                    tileDistancePlayer = 2*minGapSize;
+                    for(int i = limit1; i <= limit2; i++){
+
+                        if(!gp.tileM.isCollision(i, fixCoord)){
+
+                            numberOfFreeSpaces++;
+                            if(numberOfFreeSpaces >= minGapSize){
+
+                                tileDestination = i+1;
+                                resDistanceMini = posMonster2 - (tileDestination*tileSize);
+                                resTileDistancePlayer = Math.abs(tileDestination - tilePlayer2);
+                                resIsLeftOrUp = true;
+                                if(resDistanceMini < 0){
+                                    tileDestination -= minGapSize;
+                                    resDistanceMini = (tileDestination*tileSize) - posMonster1;
+                                    resTileDistancePlayer = Math.abs(tilePlayer1 - tileDestination);
+                                    resIsLeftOrUp = false;
+                                }
+
+                                if((resDistanceMini < distanceMini && resDistanceMini >= 0) || (resDistanceMini == distanceMini && resTileDistancePlayer < tileDistancePlayer)){
+
+                                    distanceMini = resDistanceMini;
+                                    isLeftOrUp = resIsLeftOrUp;
+                                    tileDistancePlayer = resTileDistancePlayer;
+                                }
+                            }
+                        } else numberOfFreeSpaces = 0;
+
                     }
+
+                    if(distanceMini < distanceAllowed*tileSize){
+
+                        if(isLeftOrUp){
+                            decideLetGo("left");
+                            if(!stopDirections[2]){
+                                direction[0] = "left";
+                                if (distanceMini < speed*2 && speed > 1) speed--;
+                            }
+                        } else {
+                            decideLetGo("right");
+                            if(!stopDirections[3]){
+                                direction[0] = "right";
+                                if (distanceMini < speed*2 && speed > 1) speed--;
+                            }
+                        }
+
+                    } else direction[0] = bufferDirection;
+        
                     break;
                 case "right":
+                    fixCoord = ((worldX + solidAreaDefaultX + solidArea.width)/tileSize) + 1;
                 case "left":
-                    posTilePlayer = player.getUpperTileBorder();
-                    posMonster = worldY + solidAreaDefaultY;
+                    if(bufferDirection == "left") fixCoord = ((worldX + solidAreaDefaultX)/tileSize) - 1;
+                        
+                    tilePlayer1 = (player.worldY + player.solidAreaDefaultY)/tileSize;
+                    tilePlayer2 = ((player.worldY + player.solidAreaDefaultY + player.solidArea.height)/tileSize) + 1;
 
-                    if (posMonster < posTilePlayer){
-                        decideLetGo("down");
-                        if(!stopDirections[1]){
-                            direction[0] = "down";
-                            if (posMonster + solidArea.height > player.worldY + player.solidAreaDefaultY + 1 && speed > 1) speed--;
-                        }
-                    } else if (posTilePlayer < posMonster ){
-                        decideLetGo("up");
-                        if(!stopDirections[0]){
-                            direction[0] = "up";
-                            if (player.worldY + player.solidAreaDefaultY + player.solidArea.height > posMonster + 1 && speed > 1) speed--;
-                        }
+                    posMonster1 = worldY + solidAreaDefaultY;
+                    posMonster2 = posMonster1 + solidArea.height;
+                    minGapSize = ((solidArea.height+1)/tileSize)+1;
+                    
+                    tileMonster1 = posMonster1/tileSize;
+                    tileMonster2 = (posMonster2/tileSize) + 1;
+                    distanceAllowed = Math.max(minGapSize, aggroRange);
+                    limit1 = Math.max(tileMonster1 - distanceAllowed, 0);
+                    limit2 = Math.min(tileMonster2 + distanceAllowed, gp.maxWorldRow - 1);
+
+                    numberOfFreeSpaces = 0;
+                    distanceMini = 2*distanceAllowed*tileSize;
+                    tileDistancePlayer = 2*minGapSize;
+                    for(int i = limit1; i <= limit2; i++){
+
+                        if(!gp.tileM.isCollision(fixCoord, i)){
+
+                            numberOfFreeSpaces++;
+                            if(numberOfFreeSpaces >= minGapSize){
+
+                                tileDestination = i+1;
+                                resDistanceMini = posMonster2 - (tileDestination)*tileSize;
+                                resTileDistancePlayer = Math.abs(tileDestination - tilePlayer2);
+                                resIsLeftOrUp = true;
+                                if(resDistanceMini < 0){
+                                    tileDestination -= minGapSize;
+                                    resDistanceMini = (tileDestination*tileSize) - posMonster1;
+                                    resTileDistancePlayer = Math.abs(tilePlayer1 - tileDestination);
+                                    resIsLeftOrUp = false;
+                                }
+
+                                if((resDistanceMini < distanceMini && resDistanceMini >= 0) || (resDistanceMini == distanceMini && resTileDistancePlayer < tileDistancePlayer)){
+
+                                    distanceMini = resDistanceMini;
+                                    isLeftOrUp = resIsLeftOrUp;
+                                    tileDistancePlayer = resTileDistancePlayer;
+                                }
+                            }
+                        } else numberOfFreeSpaces = 0;
+
                     }
+
+                    if(distanceMini < distanceAllowed*tileSize){
+
+                        if(isLeftOrUp){
+                            decideLetGo("up");
+                            if(!stopDirections[0]){
+                                direction[0] = "up";
+                                if (distanceMini < speed*2 && speed > 1) speed--;
+                            }
+                        } else {
+                            decideLetGo("down");
+                            if(!stopDirections[1]){
+                                direction[0] = "down";
+                                if (distanceMini < speed*2 && speed > 1) speed--;
+                            }
+                        }
+
+                    } else direction[0] = bufferDirection;
+
                     break;
             }
         }
@@ -224,26 +341,31 @@ public class Monster extends Entity{
     public void receiveDmg(int dmg) {
         life -= dmg;
         aggravated = true;
-        
+        if(life <= 0) isDead = true;
+    }
+
+    public void onDeath(){
+        gp.player.xp += xp;
+        DropObject();
     }
 
     public void DropObject(){
+
+        int posItemX = worldX/tileSize;
+        if(worldX % tileSize >= tileSize/2) posItemX++;
+        int posItemY = worldY/tileSize;
+        if(worldY % tileSize >= tileSize/2) posItemY++;
+
         for(String obj : objToDrop){
             switch (obj){
                 case "key":
-                    gp.key.worldX = worldX;
-                    gp.key.worldY = worldY;
-                    gp.objSetter.setItem(gp.key);
+                    gp.objSetter.setItem(new OBJ_Key(gp, posItemX, posItemY));
                     break;
                 case "healPotion":
-                    gp.healPotion.worldX = worldX;
-                    gp.healPotion.worldY = worldY;
-                    gp.objSetter.setItem(gp.healPotion);
+                    gp.objSetter.setItem(new OBJ_healPotion(gp, posItemX, posItemY));
                     break;
                 case "manaPotion":
-                    gp.manaPotion.worldX = worldX;
-                    gp.manaPotion.worldY = worldY;
-                    gp.objSetter.setItem(gp.manaPotion);
+                    gp.objSetter.setItem(new OBJ_manaPotion(gp, posItemX, posItemY));
                     break;
             }
         }

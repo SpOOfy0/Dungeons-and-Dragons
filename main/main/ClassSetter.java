@@ -5,7 +5,6 @@ import entity.NPC_1;
 import entity.Monsters.Monster;
 import entity.Monsters.BossMonster.Torero;
 import entity.Monsters.NormalMonsters.BlueOrc;
-import object.OBJ_Door;
 import object.OBJ_healPotion;
 import object.OBJ_manaPotion;
 import object.SuperObject;
@@ -52,37 +51,37 @@ public class ClassSetter {
         gp.monster.add(element);
     }
 
-    public void setMonsterToSpown(Monster element) {
-        gp.monsterToSpown.add(element);
-    }
+    // public void setMonsterToSpown(Monster element) {
+    //     gp.monsterToSpown.add(element);
+    // }
     
-    public void setMonsterWorld(int worldX, int worldY, Monster element){
-        element.worldX = worldX;
-        element.worldY = worldY;
-    }
+    // public void setMonsterWorld(int worldX, int worldY, Monster element){
+    //     element.worldX = worldX;
+    //     element.worldY = worldY;
+    // }
     
     
-    public void MonsterSpawner(int worldX, int worldY ,int numberOfMonsterToSpawn){
-        if (numberOfMonsterToSpawn / 3 > monsterIndex) {
+    // public void MonsterSpawner(int worldX, int worldY ,int numberOfMonsterToSpawn){
+    //     if (numberOfMonsterToSpawn / 3 > monsterIndex) {
             
-            System.out.println(monsterIndex);
-            if(counter == 30) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][0]);
-                setMonster(monsterMatrix[monsterIndex][0]);
-            }
-            else if (counter == 60) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][1]);
-                setMonster(monsterMatrix[monsterIndex][1]);
-            }
-            else if (counter == 90) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][2]);
-                setMonster(monsterMatrix[monsterIndex][2]);
-                monsterIndex++;
-                counter = 0;
-            }
-        }
-        counter++;
-    }
+    //         System.out.println(monsterIndex);
+    //         if(counter == 30) {
+    //             setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][0]);
+    //             setMonster(monsterMatrix[monsterIndex][0]);
+    //         }
+    //         else if (counter == 60) {
+    //             setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][1]);
+    //             setMonster(monsterMatrix[monsterIndex][1]);
+    //         }
+    //         else if (counter == 90) {
+    //             setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][2]);
+    //             setMonster(monsterMatrix[monsterIndex][2]);
+    //             monsterIndex++;
+    //             counter = 0;
+    //         }
+    //     }
+    //     counter++;
+    // }
 
     public void setItems(){
         setItem(new OBJ_healPotion(gp, 26, 25));
@@ -101,13 +100,22 @@ public class ClassSetter {
     }
 
     public void setMonsters(){
+        // upper row
         setMonster(new BlueOrc(gp, "right", 9, 8));
-        setMonster(new RedOrc(gp, "down", 28, 8));
-        setMonster(new BlueOrc(gp, "left", 52, 8));
-        setMonster(new RedOrc(gp, "up", 9, 32));
-        setMonster(new RedOrc(gp, "up", 52, 32));
-        setMonster(new BlueOrc(gp, "right", 9, 51));
-        setMonster(new RedOrc(gp, "up", 33, 51));
+        setMonster(new Orc(gp, "down", 28, 8));
+        setMonster(new Orc(gp, "up", 28, 8));
+        setMonster(new RedOrc(gp, "left", 52, 8));
+
+        // middle row
+        setMonster(new Orc(gp, "up", 9, 32));
+        setMonster(new Orc(gp, "down", 9, 32));
+        setMonster(new Orc(gp, "up", 52, 32));
+        setMonster(new Orc(gp, "down", 52, 32));
+
+        // lower row
+        setMonster(new RedOrc(gp, "right", 9, 51));
+        setMonster(new Orc(gp, "up", 33, 51));
+        setMonster(new Orc(gp, "down", 33, 51));
         setMonster(new BlueOrc(gp, "left", 52, 51));
 
         //setMonster(new Torero(gp, "down", 27, 25));

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.sound.sampled.Clip;
 
-import entity.Abilities.FireBall.FireBall;
 import entity.Monsters.Monster;
 import main.GamePannel;
 import main.KeyHandler;
@@ -33,8 +32,8 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
-    //PLAYER'S TYPE OF MAGIC
-    public String typeOfMagic;
+    // PLAYER'S TYPE OF MAGIC
+    // public String typeOfMagic;
 
     //PLAYER'S OBJECT
     public int healPotion = 0;
@@ -49,9 +48,6 @@ public class Player extends Entity {
 
     public boolean heroAttack;
     public boolean isPreviousStateMove;
-
-    public int positionXActivityOn;
-    public int positionYActivityOn;
 
     //PLAYER INVENTORY
     // public ArrayList<BufferedImage> inventoryImage = new ArrayList<BufferedImage>();
@@ -111,7 +107,7 @@ public class Player extends Entity {
         attackSpeed = 30;
         damage = 1;
 
-        typeOfMagic = "fire";
+        //typeOfMagic = "fire";
 
         //CodeExp
         level = 1;
@@ -209,15 +205,17 @@ public class Player extends Entity {
             else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
         }
 
-        levelUp();
+        if(gp.ability != null) magicAttack();
 
         //openDoor(dialogueIndex);
-
         openGate();
 
+
+        levelUp();
         playerDeath();
 
-        verifyMovement(direction);
+
+        didWantedMovement = verifyMovement(direction);
 
         applyForcedMovement();
 
@@ -226,65 +224,48 @@ public class Player extends Entity {
 
         // s'occuper des intéractions entre le joueur et son environnement
         pickUpObject(objIndexes);
-        // for(int i = 0; i < objIndexes.size(); i++)
-        //     pickUpObject(objIndexes.get(i));
 
         npcIndex = gp.interactionChecker.interactPossible(this, gp.npc);
         if(npcIndex != 999) interactNPC(npcIndex);
 
-        if(gp.ability != null){
-            magicAttack(getTheTypeOfMgicAttack());
-        }
+        for(int i = 0; i < monsterIndexes.size(); i++)
+            interactMonster(monsterIndexes.get(i));
 
-        if (monsterIndexes.isEmpty()){
-            interactMonster(999);
-        }
-        else{
-            for(int i = 0; i < monsterIndexes.size(); i++){
-            interactMonster(monsterIndexes.get(i));}
-        }
-
-        // fonction pour décider la direction dans laquelle le joueur regardera
-        if(direction[0] != null || direction[1] != null){
-            if(direction[0] == null) facing = direction[1];
-            else if(direction[1] == null) facing = direction[0];
-            else if(facing != direction[0] && facing != direction[1]) facing = direction[0];
-        }
     
         if(direction[0] != null || direction[1] != null){
-                if(!isPreviousStateMove){
-                    spriteCounter = 0;
-                    spriteNum = 1;
-                }
-                if(spriteCounter < 23) spriteCounter++;
-                else spriteCounter = 0;
-                // à ce stade, spriteCounter a une valeur entière entre 0 et 23, donnant 24 possible états
-    
-                if (facing == "up" || facing == "down") spriteNum = (spriteCounter/6) + 1;
-                else spriteNum = (spriteCounter/4) + 1;
+            if(!isPreviousStateMove){
+                spriteCounter = 0;
+                spriteNum = 1;
+            }
+            if(spriteCounter < 23) spriteCounter++;
+            else spriteCounter = 0;
+            // à ce stade, spriteCounter a une valeur entière entre 0 et 23, donnant 24 possible états
+
+            if (facing == "up" || facing == "down") spriteNum = (spriteCounter/6) + 1;
+            else spriteNum = (spriteCounter/4) + 1;
     
         } else if (heroAttack){
     
-                if (spriteCounter < 6){
-                    spriteCounter++;
-                    if(spriteCounter <= 1 && spriteNum != 1) spriteNum = 1;
-                    else if(spriteNum != 2) spriteNum = 2;
-                } else {
-                    spriteCounter = 0;
-                    spriteNum = 1;
-                    heroAttack = false;
-                }
+            if (spriteCounter < 6){
+                spriteCounter++;
+                if(spriteCounter <= 1 && spriteNum != 1) spriteNum = 1;
+                else if(spriteNum != 2) spriteNum = 2;
+            } else {
+                spriteCounter = 0;
+                spriteNum = 1;
+                heroAttack = false;
+            }
         } else {
-                if(isPreviousStateMove){
-                    spriteCounter = 0;
-                    spriteNum = 1;
-                }
-                if(spriteCounter < 30) spriteCounter++;
-                else {
-                    if (spriteNum == 1) spriteNum = 2;
-                    else spriteNum = 1;
-                    spriteCounter = 0;
-                }
+            if(isPreviousStateMove){
+                spriteCounter = 0;
+                spriteNum = 1;
+            }
+            if(spriteCounter < 30) spriteCounter++;
+            else {
+                if (spriteNum == 1) spriteNum = 2;
+                else spriteNum = 1;
+                spriteCounter = 0;
+            }
         }
     }
 
@@ -305,7 +286,9 @@ public class Player extends Entity {
 
     // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
     // aussi étudie les collisions entre le joueur et son environnement
-    public void verifyMovement(String direction){
+    public boolean verifyMovement(String direction){
+
+        boolean didMovement = false;
 
         // Initialization des variables
         isBlocked = false;
@@ -324,16 +307,28 @@ public class Player extends Entity {
         if(direction != null){
             switch(direction){
                 case "up":
-                    if(!blockedUp) worldY += storeMovement[1];
+                    if(!blockedUp){
+                        worldY += storeMovement[1];
+                        didMovement = true;
+                    }
                     break;
                 case "down":
-                    if(!blockedDown) worldY += storeMovement[1];
+                    if(!blockedDown){
+                        worldY += storeMovement[1];
+                        didMovement = true;
+                    }
                     break;
                 case "left":
-                    if(!blockedLeft) worldX += storeMovement[0];
+                    if(!blockedLeft){
+                        worldX += storeMovement[0];
+                        didMovement = true;
+                    }
                     break;
                 case "right":
-                    if(!blockedRight) worldX += storeMovement[0];
+                    if(!blockedRight){
+                        worldX += storeMovement[0];
+                        didMovement = true;
+                    }
                     break;
             }
         }
@@ -341,11 +336,15 @@ public class Player extends Entity {
         // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
+
+        return didMovement;
     }
 
     // vérifie et applique les mouvements dans "storeMovement" dans les directions entrées comme variable
     // aussi étudie les collisions entre le joueur et son environnement
-    public void verifyMovement(String[] direction){
+    public boolean verifyMovement(String[] direction){
+
+        boolean didMovement = false;
 
         // Initialization des variables
         isBlocked = false;
@@ -365,16 +364,28 @@ public class Player extends Entity {
             if(direction[i] != null){
                 switch(direction[i]){
                     case "up":
-                        if(!blockedUp) worldY += storeMovement[1];
+                        if(!blockedUp){
+                            worldY += storeMovement[1];
+                            didMovement = true;
+                        }
                         break;
                     case "down":
-                        if(!blockedDown) worldY += storeMovement[1];
+                        if(!blockedDown){
+                            worldY += storeMovement[1];
+                            didMovement = true;
+                        }
                         break;
                     case "left":
-                        if(!blockedLeft) worldX += storeMovement[0];
+                        if(!blockedLeft){
+                            worldX += storeMovement[0];
+                            didMovement = true;
+                        }
                         break;
                     case "right":
-                        if(!blockedRight) worldX += storeMovement[0];
+                        if(!blockedRight){
+                            worldX += storeMovement[0];
+                            didMovement = true;
+                        }
                         break;
                 }
             }
@@ -383,6 +394,8 @@ public class Player extends Entity {
         // Réinitialisation des variables de mouvements
         storeMovement[0] = 0;
         storeMovement[1] = 0;
+
+        return didMovement;
     }
 
     public void pickUpObject(ArrayList<Integer> objIndexes){
@@ -394,25 +407,32 @@ public class Player extends Entity {
             if(objIndex != 999){
                 
                 String objName = gp.item.get(objIndex).name;
+
+                boolean foundName = false;
                 
                 switch(objName){
                     case "healPotion":
                         gp.ui.showMessage("You got a heal potion!");
+                        foundName = true;
                         break;
                     case "manaPotion":
                         gp.ui.showMessage("You got a mana potion!");
+                        foundName = true;
                         break;
                     case "key":
                         gp.ui.showMessage("You got a key!");
+                        foundName = true;
                         break;
                 }
 
-                if (inventory.containsKey(objName)) {
-                    //Existing object
-                    inventory.put(objName, inventory.get(objName) + 1);
-                } else {
-                    //New object
-                    inventory.put(objName, 1);
+                if(foundName){
+                    if (inventory.containsKey(objName)) {
+                        //Existing object
+                        inventory.put(objName, inventory.get(objName) + 1);
+                    } else {
+                        //New object
+                        inventory.put(objName, 1);
+                    }
                 }
 
                 gp.item.remove(objIndex);            
@@ -530,54 +550,32 @@ public class Player extends Entity {
         gp.keyHandler.xPressed = false;
     }
 
-    public String getTheTypeOfMgicAttack(){
-        String typeOfAttack = "none";
-        if(gp.keyHandler.dPressed == true){typeOfAttack = "fire";}
-        else if(gp.keyHandler.fPressed == true){typeOfAttack = "electro";}
-        return typeOfAttack;
-    }
+    
 
     //method to load the magic attack
-    public void magicAttack(String typeOfAttack){
+    public void magicAttack(){
 
-        if (ballOn == 0 && attackDelay >= attackSpeed){
-            switch(typeOfAttack){
-                case "fire":
-                    if(gp.ability.mana <= mana){
-                        //gp.fireBall = new FireBall(gp);
-                        gp.ability = gp.fireBall;
-                        gp.keyHandler.dPressed = false;
-                        attackDelay = 0;
-                        positionXActivityOn = worldX;
-                        positionYActivityOn = worldY;
-                        gp.ability.manaCost();
-                        ballOn = 1;
-                    }   
-                    break;
-                case "electro":
-                    System.out.println("ddd");
-                    if(gp.ability.mana <= mana){
-                        gp.ability = gp.electroBall;
-                        gp.keyHandler.fPressed = false;
-                        attackDelay = 0;
-                        positionXActivityOn = worldX;
-                        positionYActivityOn = worldY;
-                        gp.ability.manaCost();
-                        ballOn = 1;
-                    }   
-                break;
-                //Add other type of magic attack
+        boolean doingMagicAtk = false;
+
+        if(ballOn == 0){
+            if (gp.keyHandler.dPressed){
+                doingMagicAtk = true;
+                gp.keyHandler.dPressed = false;
+                gp.ability = gp.fireBall;
+            }
+            else if (gp.keyHandler.fPressed){
+                doingMagicAtk = true;
+                gp.keyHandler.fPressed = false;
+                gp.ability = gp.electroBall;
+            }
+            //Add other type of magic attack
+
+            if (doingMagicAtk && gp.ability.canUseMagic() && gp.ability.mana <= mana){
+                gp.ability.startMagicDelay();
+                gp.ability.manaCost();
+                ballOn = 1;
             }
         }
-    }
-
-    public int abilityDommage(int monsterIndex){
-
-        if(monsterIndex != 999 && ballOn == 1){
-            gp.monster.get(monsterIndex).life -= 1;
-            ballOn = 0;
-        }
-        return ballOn;
     }
     
 
@@ -587,42 +585,27 @@ public class Player extends Entity {
 
             Monster monster = gp.monster.get(monsterIndex);
 
-            if (heroAttack){
-                monster.receiveDmg(damage);
-                monster.giveForcedMovement(gp.interactionChecker.awayFromPlayer(gp.monster.get(monsterIndex)), 2, 30);
-                //baseAttack(monsterIndex);
+            if (heroAttack && !monster.noKnockback){
+                monster.giveForcedMovement(gp.interactionChecker.awayFromPlayer(monster), monster.speed, 15);
             }
     
             if(monster.isWithPlayer && monster.attackDelay >= monster.attackSpeed){
-                    monster.attackPlayer();
-                    monster.attackDelay = 0;
+                monster.attackPlayer();
             }
-            
-            if(gp.ability != null){
-                // magicAttack(monsterIndex, getTheTypeOfMgicAttack());
-                abilityDommage(gp.ability.abilityCollisionIndex);
-            }
-    
         }
-
-       
     }
 
     public void baseAttack(/*int monsterIndex*/){
 
-        
         if(gp.keyHandler.sPressed && attackDelay >= attackSpeed){
-            // gp.monster.get(monsterIndex).receiveDmg(damage);
-            // gp.monster.get(monsterIndex).giveForcedMovement(gp.interactionChecker.awayFromPlayer(gp.monster.get(monsterIndex)), 2, 30);
             heroAttack = true;
-            gp.keyHandler.sPressed = false;
             attackDelay = 0;
+
             gp.interactionChecker.meleeHitMonsters(this);
-            //add the image of the player attacking with the sword
+            
+            //to reset sprite Counter
             spriteCounter = 0;
         }
-        
-
     }
 
     //This creative mode will be used after to allow the player to create his own map "if we have some extra time of course :)" 
@@ -648,7 +631,7 @@ public class Player extends Entity {
 
 
     public void playerDeath(){
-        if(life <= 0) gp.gameState = gp.gameOverState;
+        if(life <= 0) isDead = true;
     }
     
     
