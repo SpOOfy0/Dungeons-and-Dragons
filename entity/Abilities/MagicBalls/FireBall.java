@@ -1,7 +1,6 @@
 package entity.Abilities.MagicBalls;
 
-import entity.Abilities.Ability;
-import entity.Abilities.AbilityInterface;
+import entity.Abilities.*;
 import main.GamePannel;
 
 public class FireBall extends Ability implements AbilityInterface {

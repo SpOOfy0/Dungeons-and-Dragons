@@ -3,8 +3,7 @@ package entity.Abilities.MagicBalls;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import entity.Abilities.Ability;
-import entity.Abilities.AbilityInterface;
+import entity.Abilities.*;
 import entity.Monsters.Monster;
 import main.GamePannel;
 

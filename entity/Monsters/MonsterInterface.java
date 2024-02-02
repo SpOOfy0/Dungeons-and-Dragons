@@ -6,6 +6,4 @@ public interface MonsterInterface {
 
     public void MonsterSetting();
         
-    public void setAction();
-        
 }

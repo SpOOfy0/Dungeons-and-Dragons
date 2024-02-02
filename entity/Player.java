@@ -171,6 +171,7 @@ public class Player extends Entity {
 
 
     public void update(){
+
         isPreviousStateMove = (direction[0] != null || direction[1] != null);
     
         direction[0] = null;

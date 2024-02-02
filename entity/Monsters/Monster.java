@@ -12,8 +12,11 @@ import object.OBJ_manaPotion;
 
 public class Monster extends Entity{
     
-    public boolean noKnockback = false;
     public int monsterSize;
+
+    public boolean noKnockback = false;
+
+    public boolean stopForSpAction = false;
     
     
     public Monster(GamePannel gp, String inputedDirection, int coordX, int coordY) {
@@ -36,104 +39,115 @@ public class Monster extends Entity{
     public String[] objToDrop = new String[2];
     
 
-
+    // À modifier si on veut implémenter des actions supplémentaires
+    public boolean executeSpActions(){
+        return false;
+    }
     
     // ici, seulement quand le monstre poursuit le joueur, "bufferDirection" enregistre la direction auquel le monstre veut se déplaceer pour aller
     // vers le joueur seulement quand il est bloqué dans cette direction, en sorte de lui redonner cette direction après débloquage de cette direction
     // exemple: Le monstre veut aller à droite pour aller vers le joueur et se trouve face à un mur.
     //          "bufferDirection" enregistre "Right", et après fait en sorte que le monstre ne peut plus se déplacer vers la droite, pour qu'il prenne une autre direction.
     //          Seulement quand le monstre pourra se déplacer vers la droite que "bufferDirection" redonnera la direction
-     public void setAction() {
+     public boolean setAction() {
 
-        if(attackDelay < attackSpeed) attackDelay++;
+        stopForSpAction = executeSpActions();
 
-        if(!aggravated){
-            gp.interactionChecker.noticePlayer(this);
-            // si l'entité vient de changer de la non-traque à la traque, tous les blocages de choix de direction sont retirés
-            if(aggravated){
-                bufferDirection = null;
-                forceLetGoAll();
-                if(speed != baseSpeed) speed = baseSpeed;
-            }
-        }
+        if(!stopForSpAction){
 
-        if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*tileSize)) {
 
-            
-            if (!isWithPlayer){
+            if(attackDelay < attackSpeed) attackDelay++;
 
-                // si l'entité est bloquée dans son mouvement mais qu'elle n'est pas bloquée contre le joueur,
-                // on récupère les dernières directions prises, enregistre ces directions dans "bufferFirection",
-                // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
-                if (isBlocked){
+            if(!aggravated){
+                gp.interactionChecker.noticePlayer(this);
+                // si l'entité vient de changer de la non-traque à la traque, tous les blocages de choix de direction sont retirés
+                if(aggravated){
                     bufferDirection = null;
-                    for (int i = 0; i < direction.length; i++){
-                        if (direction[i] != null){
-                            bufferDirection = direction[i];
-                            direction[i] = null;
-                            decideRestrain(bufferDirection);
+                    forceLetGoAll();
+                    if(speed != baseSpeed) speed = baseSpeed;
+                }
+            }
+
+            if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*tileSize)) {
+
+                
+                if (!isWithPlayer){
+
+                    // si l'entité est bloquée dans son mouvement mais qu'elle n'est pas bloquée contre le joueur,
+                    // on récupère les dernières directions prises, enregistre ces directions dans "bufferFirection",
+                    // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
+                    if (isBlocked){
+                        bufferDirection = null;
+                        for (int i = 0; i < direction.length; i++){
+                            if (direction[i] != null){
+                                bufferDirection = direction[i];
+                                direction[i] = null;
+                                decideRestrain(bufferDirection);
+                            }
+                        }
+
+                    // si l'entité n'est bloquée dans son mouvement et non bloquée contre le joueur,
+                    // on redonne le choix de prendre la direction que "bufferDirection" a enregistré,
+                    // et on effectue de même pour les dernières directions prises par l'entité sur l'image précédente
+                    } else {
+                        if (bufferDirection != null) decideLetGo(bufferDirection);
+                        for (int i = 0; i < direction.length; i++){
+                            if (direction[i] != null){
+                                decideLetGo(direction[i]);
+                            }
                         }
                     }
-
-                // si l'entité n'est bloquée dans son mouvement et non bloquée contre le joueur,
-                // on redonne le choix de prendre la direction que "bufferDirection" a enregistré,
-                // et on effectue de même pour les dernières directions prises par l'entité sur l'image précédente
+                    
+                    GoToPlayer(gp.player);
+                    
+                // si l'entité est bloquée contre le joueur, elle ira en sa direction
                 } else {
-                    if (bufferDirection != null) decideLetGo(bufferDirection);
-                    for (int i = 0; i < direction.length; i++){
-                        if (direction[i] != null){
-                            decideLetGo(direction[i]);
-                        }
+                    bufferDirection = null;
+                    direction[0] = gp.interactionChecker.towardsPlayer(this);
+                }
+
+            } else {
+
+                // si l'entité vient de changer de la traque à la non-traque, tous les blocages de choix de direction sont retirés
+                if(aggravated){
+                    forceLetGoAll();
+                    bufferDirection = null;
+                    if(speed != baseSpeed) speed = baseSpeed;
+                    aggravated = false;
+                }
+
+                actionCounter++;
+
+                // si l'entité est bloquée dans son mouvement, on récupère les dernières directions prises,
+                // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
+                // de plus, on incrémente la variable d'impatience
+                if(isBlocked){
+                    for(int i = 0; i < direction.length; i++){
+                        if(direction[i] != null) decideRestrain(direction[i]);
                     }
+                    impatience++;
+
+                // si l'entité n'est pas bloquée dans son mouvement, on redonne le choix de prendre les directions précédemment bloquées
+                // du moment que l'entité n'est pas bloquée dans les directions correspondantes
+                // de plus, on réinitialise la variable d'impatience
+                } else {
+                    decideLetGoAll();
+                    impatience = 0;
                 }
-                
-                GoToPlayer(gp.player);
-                
-            // si l'entité est bloquée contre le joueur, elle ira en sa direction
-            } else {
-                bufferDirection = null;
-                direction[0] = gp.interactionChecker.towardsPlayer(this);
-            }
 
-        } else {
-
-            // si l'entité vient de changer de la traque à la non-traque, tous les blocages de choix de direction sont retirés
-            if(aggravated){
-                forceLetGoAll();
-                bufferDirection = null;
-                if(speed != baseSpeed) speed = baseSpeed;
-                aggravated = false;
-            }
-
-            actionCounter++;
-
-            // si l'entité est bloquée dans son mouvement, on récupère les dernières directions prises,
-            // et on enlève individuellement le choix de prendre ces directions si l'entité est bloquée dans les directions correspondantes
-            // de plus, on incrémente la variable d'impatience
-            if(isBlocked){
-                for(int i = 0; i < direction.length; i++){
-                    if(direction[i] != null) decideRestrain(direction[i]);
+                // l'entité change de direction quand son compteur associée est a atteint la limite ou si elle est restée sans bouger trop longtemps
+                if(actionCounter >= actionTimer || impatience >= impatienceTolerance){
+                    
+                    wander();
+                    actionCounter = 0;
+                    impatience = 0;
+                    if(speed != baseSpeed) speed = baseSpeed;
                 }
-                impatience++;
-
-            // si l'entité n'est pas bloquée dans son mouvement, on redonne le choix de prendre les directions précédemment bloquées
-            // du moment que l'entité n'est pas bloquée dans les directions correspondantes
-            // de plus, on réinitialise la variable d'impatience
-            } else {
-                decideLetGoAll();
-                impatience = 0;
             }
 
-            // l'entité change de direction quand son compteur associée est a atteint la limite ou si elle est restée sans bouger trop longtemps
-            if(actionCounter >= actionTimer || impatience >= impatienceTolerance){
-                
-                wander();
-                actionCounter = 0;
-                impatience = 0;
-                if(speed != baseSpeed) speed = baseSpeed;
-            }
-            
         }
+
+        return stopForSpAction;
 
     }
 

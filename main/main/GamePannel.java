@@ -12,15 +12,12 @@ import entity.NPC;
 import entity.Player;
 import entity.Monsters.Monster;
 import entity.Abilities.Ability;
-import entity.Abilities.MagicBalls.ElectroBall;
-import entity.Abilities.MagicBalls.FireBall;
+import entity.Abilities.MagicBalls.*;
 import object.SuperObject;
 import object.OBJ_LifeHeart;
 import object.OBJ_healPotion;
 import object.OBJ_manaPotion;
 import object.OBJ_Key;
-//CodeMana
-// import object.OBJ_manaPotion;
 import tile.TileManager;
 
 
@@ -62,7 +59,6 @@ public class GamePannel extends JPanel implements Runnable {
     public Vector<NPC> npc = new Vector<NPC>();
     public NPC interactingNPC = null;
     public Vector<Monster> monster = new Vector<Monster>();
-    //public Vector<Monster> monsterToSpown = new Vector<Monster>();
     
     public Ability ability = new Ability(this);
     public FireBall fireBall = new FireBall(this);
@@ -175,19 +171,7 @@ public class GamePannel extends JPanel implements Runnable {
                     else iterMonster.update();
                 }
             }
-            // for(int i = 0; i < monsterToSpown.size(); i++){
-            //     Monster iterMonster = monsterToSpown.get(i);
-            //     if(iterMonster != null){
-            //         if(iterMonster.life <= 0){
-            //             iterMonster.DropObject();
-            //             monsterToSpown.remove(i);
-            //             player.xp += iterMonster.xp;
-            //         }
-            //         else iterMonster.update();
-            //     }
-            // }
             if(ability != null) ability.update();
-            //objSetter.MonsterSpawner(28, 27, 20);
 
             if(player.isDead) gameState = gameOverState;
         }
@@ -227,14 +211,6 @@ public class GamePannel extends JPanel implements Runnable {
                 }
             }
         }
-        // synchronized (monsterToSpown) {
-        //     for(Monster iterMonster : monsterToSpown){
-        //         if(iterMonster != null){
-        //             iterMonster.draw(g2);
-        //             iterMonster.paintComponent(g2);
-        //         }
-        //     }
-        // }
 
         //ABILITY
         if(ability != null) ability.draw(g2);

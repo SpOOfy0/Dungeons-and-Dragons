@@ -56,6 +56,7 @@ public class Entity {
     public int actionTimer = 120;
     public int impatience = 0;
     public int impatienceTolerance = 30;
+    public boolean stopMvmentForSpAction = false;
 
     public ArrayList<String> dialogues = new ArrayList<String>();
     int dialogueIndex = 0;
@@ -282,36 +283,40 @@ public class Entity {
         tileSize = gp.tileSize;
     }
 
-
-    public void setAction(){} 
+    // À modifier si on veut rajouter des actions supplémentaires
+    public boolean setAction(){
+        return false;
+    } 
 
     public void speak(){}
 
     public void update(){
         
-        setAction();
+        stopMvmentForSpAction = setAction();
 
-        // pour les non-joueurs, "direction[0]" ne doit pas avoir de valeur "null" vu qu'ils se déplacent constamment
-        if(direction[0] == null) direction[0] = bufferDirection;
+        if(!stopMvmentForSpAction){
+            // pour les non-joueurs, "direction[0]" ne doit pas avoir de valeur "null" vu qu'ils se déplacent constamment
+            if(direction[0] == null) direction[0] = bufferDirection;
 
-        switch(direction[0]){
-            case "up":
-                storeMovement[1] -= speed;
-                break;
-            case "down":
-                storeMovement[1] += speed;
-                break;
-            case "left":
-                storeMovement[0] -= speed;
-                break;
-            case "right":
-                storeMovement[0] += speed;
-                break;
+            switch(direction[0]){
+                case "up":
+                    storeMovement[1] -= speed;
+                    break;
+                case "down":
+                    storeMovement[1] += speed;
+                    break;
+                case "left":
+                    storeMovement[0] -= speed;
+                    break;
+                case "right":
+                    storeMovement[0] += speed;
+                    break;
+            }
+            
+            // les non-joueurs feront toujours face à la direction où ils veulent aller (sauf exception comme lors d'une "discussion" avec le joueur)
+            facing = direction[0];
         }
 
-        // les non-joueurs feront toujours face à la direction où ils veulent aller (sauf exception comme lors d'une "discussion" avec le joueur)
-        facing = direction[0];
-            
         didWantedMovement = verifyMovement(direction);
 
         applyForcedMovement(); 

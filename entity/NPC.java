@@ -31,7 +31,7 @@ public class NPC extends Entity{
 
 
     // ici, "bufferDirection" enregistre la direction auquel le NPC fait face avant de "discuter" avec le joueur en sorte de lui redonner cette direction après discussion
-    public void setAction(){
+    public boolean setAction(){
 
         actionCounter++;
 
@@ -64,6 +64,8 @@ public class NPC extends Entity{
             actionCounter = 0;
             impatience = 0;
         }
+
+        return false;
     }
 
 

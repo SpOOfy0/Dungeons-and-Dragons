@@ -344,8 +344,8 @@ public class UI {
                 "XP: " , "" + gp.player.xp + "/" + gp.player.maxXp,
                 "Life: " , "" + gp.player.life + "/" + gp.player.maxLife,
                 "Strengh: " , "" + gp.player.damage,
-                "Mana" , "" + gp.player.mana + "/" + gp.player.maxMana,
-                "Speed Attack: " , "" + gp.player.attackSpeed,
+                "Mana:" , "" + gp.player.mana + "/" + gp.player.maxMana,
+                "Attack Speed: " , "" + gp.player.attackSpeed,
                 // Add other lines of text
             };
 
