@@ -157,6 +157,20 @@ public class KeyHandler implements ActionListener, KeyListener{
                     break;
             }
         }
+
+        else if(gp.gameState == gp.playerTypeState){
+            switch (keyCode) {
+                case KeyEvent.VK_DOWN:
+                    downPressed = true;
+                    break;
+                case KeyEvent.VK_UP:
+                    upPressed = true;
+                    break;
+                case KeyEvent.VK_ENTER:
+                    enterPressed = true;
+                    break;
+            }
+        }
     }
 
     @Override

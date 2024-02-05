@@ -56,6 +56,8 @@ public class Player extends Entity {
 
     public int index = 0;
 
+    public boolean oneTimeSetup = true;
+
     Clip clip;
 
 
@@ -72,7 +74,7 @@ public class Player extends Entity {
         solidArea = new Rectangle(15, 24, 16, 12);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-        setDefaultValues();
+        setAllRoundedValues();
         getPlayerImage();
         
         int[] newCoords = gp.tileM.verifyAndCorrectPlacement(worldX/tileSize, worldY/tileSize);
@@ -90,9 +92,7 @@ public class Player extends Entity {
         return instance;
     }
 
-
-    public void setDefaultValues(){
-
+    public void setCommmunValues(){
         noticeRange = 0;
 
         //PLAYER WORLD POSITION
@@ -101,27 +101,72 @@ public class Player extends Entity {
         initSpeed(4);
         facing = "down";
 
+        //CodeExp
+        level = 1;
+        maxXp = 1000;
+        xp = 0;
+    }
+
+    public void setAllRoundedValues(){
+
+        setCommmunValues();
+
         //PLAYER STATUS
         maxLife = 8;
         life = maxLife;
         attackSpeed = 30;
-        damage = 1;
-
-        //typeOfMagic = "fire";
-
-        //CodeExp
-        level = 1;
-        maxXp = 1000;
+        damage = 2;
 
         //CodeMana
         maxMana = 100;
         mana = maxMana;
+    }
 
-        //Sounds
+    public void setMagicienValue(){
+        setCommmunValues();
+
+        //PLAYER STATUS
+        maxLife = 6;
+        life = maxLife;
+        attackSpeed = 30;
+        damage = 1;
+
+        //CodeMana
+        maxMana = 150;
+        mana = maxMana;
+    }
+
+    public void setFighterValue(){
+        setCommmunValues();
+
+        //PLAYER STATUS
+        maxLife = 10;
+        life = maxLife;
+        attackSpeed = 30;
+        damage = 3;
+
+        //CodeMana
+        maxMana = 50;
+        mana = maxMana;
+    }
+
+    public void getValues(String type){
+        System.out.println("Type: " + type);
+        switch(type){
+            case "Mage":
+                setMagicienValue();
+                break;
+            case "Fighter":
+                setFighterValue();
+                break;
+            case "AllRounded":
+                setAllRoundedValues();
+                break;
+        }
     }
 
     public void restart(){
-        setDefaultValues();
+        getValues(gp.ui.playerType);
         inventory.clear();
     }
 
@@ -171,6 +216,12 @@ public class Player extends Entity {
 
 
     public void update(){
+
+        if(oneTimeSetup){
+            oneTimeSetup = false;
+            getValues(gp.ui.playerType);
+        }
+        updateAbilities();
 
         isPreviousStateMove = (direction[0] != null || direction[1] != null);
     
@@ -276,13 +327,58 @@ public class Player extends Entity {
             gp.ui.showMessage("     You leveled up!");
             xp = xp - maxXp;
             maxXp += 250;
+            
             return true;
         }
         return false;
     }
 
+    public void MageLevelUp(){
+        maxMana += 25;
+        mana = maxMana;
+        gp.fireBall.damage += 1;
+
+        if(level % 2 == 0){
+            maxLife += 1;
+            gp.electroBall.damage += 1;
+            life = maxLife;
+        }
+    }
+
+    public void FighterLevelUp(){
+        maxLife += 1;
+        life = maxLife;
+        damage += 1;
+
+    }
+
+    public void AllRoundedLevelUp(){
+        maxLife += 1;
+        maxMana += 10;
+        mana = maxMana;
+
+        if(level % 2 == 0){
+            gp.fireBall.damage += 1;
+        }
+
+        if(level % 3 == 0){
+            damage += 1;
+        }
+
+    }
+
     public void updateAbilities(){
-        if(levelUp()){}
+        if(levelUp()){
+            if(gp.ui.playerType == "Mage"){
+                MageLevelUp();
+            }
+            if(gp.ui.playerType == "Figher"){
+                FighterLevelUp();
+            }
+            if(gp.ui.playerType == "AllRounded"){
+                AllRoundedLevelUp();
+            }
+        }
     }
 
     // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
@@ -635,8 +731,6 @@ public class Player extends Entity {
         if(life <= 0) isDead = true;
     }
     
-    
-
     public void draw(Graphics2D g2){
 
         BufferedImage image = null;

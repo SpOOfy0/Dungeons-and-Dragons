@@ -50,11 +50,13 @@ public class GamePannel extends JPanel implements Runnable {
     public CollisionChecker collisionChecker = new CollisionChecker(this);
     public InteractionChecker interactionChecker = new InteractionChecker(this);
     public ClassSetter objSetter = new ClassSetter(this);
-    public Player player = Player.getInstance(this, keyHandler);
+    
     public SuperObject healPotion = new OBJ_healPotion(this);
     public SuperObject manaPotion = new OBJ_manaPotion(this);
     public SuperObject key = new OBJ_Key(this);
     public SuperObject heart = new OBJ_LifeHeart(this);
+    public UI ui = UI.getInstance(this);
+    public Player player = Player.getInstance(this, keyHandler);
     public Vector<SuperObject> item = new Vector<SuperObject>();
     public Vector<NPC> npc = new Vector<NPC>();
     public NPC interactingNPC = null;
@@ -64,17 +66,19 @@ public class GamePannel extends JPanel implements Runnable {
     public FireBall fireBall = new FireBall(this);
     public ElectroBall electroBall = new ElectroBall(this);
     
-    public UI ui = UI.getInstance(this);
+    
     public SoundManager soundManger = new SoundManager(this);
 
     //GAME STATE
-    public int gameState;
+    public int gameState = 6;
     public int startState = 0;
     public int playState = 1;
     public int pauseState = 2;
     public int dialogueState = 3;
     public int inventoryState = 4;
     public int gameOverState = 5;
+    public int winState = 6;
+    public int playerTypeState = 7;
     Clip clip = soundManger.loadAudio("Sounds/WalkSound.wav");
 
 
@@ -104,7 +108,6 @@ public class GamePannel extends JPanel implements Runnable {
         npc.clear();
         interactingNPC = null;
         monster.clear();
-        //monsterToSpown.clear();
     }
 
     public void restartheGame(){
@@ -181,7 +184,6 @@ public class GamePannel extends JPanel implements Runnable {
 
 
     public void paint(Graphics g){
-
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         //TILE

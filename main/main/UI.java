@@ -5,7 +5,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.text.DecimalFormat;
+
+import javax.imageio.ImageIO;
 
 
 public class UI {
@@ -16,6 +19,7 @@ public class UI {
     Font arial_40;
     BufferedImage fullHeart, halfHeart, emptyHeart; 
     BufferedImage HealPotionImage, ManaPotionImage;
+    BufferedImage chooseCharacter , gameOver, theEnd, title, arrow, exit, start, quit, retry, mage, fighter, allRounded;
     
     public int tileSize;
 
@@ -24,6 +28,7 @@ public class UI {
     public int messageCounter = 0;
 
     public String currentDialogue = "";
+    public String playerType = "";
 
     double timer = 0;
     DecimalFormat df = new DecimalFormat("#0.00");
@@ -48,6 +53,8 @@ public class UI {
         fullHeart = gp.heart.image;
         halfHeart = gp.heart.image2;
         emptyHeart = gp.heart.image3;
+
+        getThisUiImage();
     }
 
     public static UI getInstance(GamePannel gp) {
@@ -61,6 +68,34 @@ public class UI {
 
     
     
+    public BufferedImage getImage(String ImagePath){
+
+        BufferedImage image = null;
+
+        try{
+            image = ImageIO.read(getClass().getResourceAsStream(ImagePath));
+        }catch(IOException e){
+            System.out.println(e + " -> Error loading image (" + ImagePath + ")");
+        }
+
+        return image;
+ 
+    }
+
+    public void getThisUiImage() {
+        chooseCharacter = getImage("/Objects/GameUI/ChooseYourCharacter.png");
+        theEnd = getImage("/Objects/GameUI/TheEnd.png");
+        gameOver = getImage("/Objects/GameUI/GameOver.png");
+        title = getImage("/Objects/GameUI/Title.png");
+        arrow = getImage("/Objects/GameUI/Command/Arrow.png");
+        exit = getImage("/Objects/GameUI/Command/Exit.png");
+        start = getImage("/Objects/GameUI/Command/Start.png");
+        quit = getImage("/Objects/GameUI/Command/Quit.png");
+        retry = getImage("/Objects/GameUI/Command/Retry.png");
+        mage = getImage("/Objects/GameUI/Characters/Mage.png");
+        fighter = getImage("/Objects/GameUI/Characters/Fighter.png");
+        allRounded = getImage("/Objects/GameUI/Characters/All_Rounded.png");
+    }
 
     public double setTimer(double time){
 
@@ -371,7 +406,12 @@ public class UI {
         return gamePanel.screenWidth / 2 - length / 2;
     }
 
-    public int selectedCommand(int commandNumber){
+    public static int getXForCenterOfImage(BufferedImage image, GamePannel gamePanel) {
+        int imageWidth = image.getWidth();
+        return gamePanel.screenWidth / 2 - imageWidth / 2;
+    }
+
+    public int selectedCommand(int commandNumber ,int maxCommandNumber){
         if(gp.keyHandler.downPressed){
             commandNumber++;
             gp.keyHandler.downPressed = false;
@@ -382,114 +422,177 @@ public class UI {
         }
         if(gp.keyHandler.enterPressed){
             gp.keyHandler.enterPressed = false;
+
             if(commandNumber == 0){
                 if(gp.gameState == gp.startState){
+                    gp.gameState = gp.playerTypeState;
+                }
+                else if(gp.gameState == gp.playerTypeState){
+                    playerType = "Fighter";
                     gp.gameState = gp.playState;
                 }
-                if(gp.gameState == gp.gameOverState){
+                else if(gp.gameState == gp.gameOverState){
                     gp.restartheGame();
                 }
             }
+
             if(commandNumber == 1){
-                System.exit(0);
+                if(gp.gameState == gp.startState || gp.gameState == gp.gameOverState){
+                    System.exit(0);
+                }
+                if(gp.gameState == gp.playerTypeState){
+                    playerType = "Mage";
+                    gp.gameState = gp.playState;
+                }
+            }
+            
+            if(commandNumber == 2){
+                if(gp.gameState == gp.playerTypeState){
+                    playerType = "AllRounded";
+                    gp.gameState = gp.playState;
+                }
             }
         }
-        return commandNumber = Math.abs(commandNumber) % 2;
+
+        if (commandNumber < 0) {
+            commandNumber = (maxCommandNumber - Math.abs(commandNumber % maxCommandNumber)) % maxCommandNumber;
+        } 
+        else {
+            commandNumber = commandNumber % maxCommandNumber;
+        }
+        return commandNumber;
     }
 
     public void drawGameStartScreen(){
-        gameStartCommand = selectedCommand(gameStartCommand);
+        gameStartCommand = selectedCommand(gameStartCommand, 2);
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-
+    
         int textX;
         int textY;
-        String text;
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 70f));
-
-        // TITLE TEXT
-        text = "Dungeon & Dragons";
-        // Shadow
+        BufferedImage image;
+    
+        // Title Image
+        image = title; 
         g2.setColor(Color.black);
-        textX = getXForCenterOfText(text, gp, g2);
-        textY = tileSize * 4;
-        g2.drawString(text, textX, textY);
-
-        // Text
-        g2.setColor(Color.WHITE);
-        g2.drawString(text, textX - 4, textY - 4);
-
+        textX = getXForCenterOfImage(image, gp);
+        textY = tileSize / 3;
+        g2.drawImage(image, textX, textY, null);
+    
         // START
-        g2.setFont(g2.getFont().deriveFont(50f));
-        text = "Start";
-        textX = getXForCenterOfText(text, gp, g2);
-        textY += tileSize * 4;
-        g2.drawString(text, textX, textY);
+        image = start; 
+        textX = getXForCenterOfImage(image, gp);
+        textY += tileSize * 6 + 20;
+        g2.drawImage(image, textX, textY, null);
         if (gameStartCommand == 0) {
-            g2.drawString(">", textX - 40, textY);
-            
+            g2.drawImage(arrow, textX - (tileSize *  3), textY, null);
         }
-
+    
         // QUIT
-        text = "Exit";
-        textX = getXForCenterOfText(text, gp, g2);
-        textY += 55;
-        g2.drawString(text, textX, textY);
+        image = exit;  
+        textY += tileSize * 2;
+        g2.drawImage(image, textX, textY, null);
         if (gameStartCommand == 1) {
-            g2.drawString(">", textX - 40, textY);
-            
+            g2.drawImage(arrow, textX - (tileSize *  3), textY, null);
         }
     }
+
+    public void selectPlayer() {
+        gameStartCommand = selectedCommand(gameStartCommand, 3);
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+    
+        int textX;
+        int textY;
+        BufferedImage image;
+    
+        // Choose Character Pannel
+        image = chooseCharacter;
+        // Shadow
+        g2.setColor(Color.black);
+        textX = getXForCenterOfImage(image, gp);
+        textY = 0;
+        g2.drawImage(image, textX, textY, null);
+    
+        // Fighter
+        image = fighter;
+        textX = getXForCenterOfImage(image, gp);
+        textY += tileSize * 5;
+        g2.drawImage(image, textX + 15, textY, null);
+        if (gameStartCommand == 0) {
+            g2.drawImage(arrow, textX - (tileSize *  2), textY, null);
+        }
+    
+        // Mage
+        image = mage;
+        textX = getXForCenterOfImage(image, gp);
+        textY += tileSize * 2;
+        g2.drawImage(image, textX + 15, textY, null);
+        if (gameStartCommand == 1) {
+            g2.drawImage(arrow, textX - (tileSize *  2) , textY, null);
+        }
+
+        // AllRounded
+        image = allRounded;  
+        textX = getXForCenterOfImage(image, gp);
+        textY += tileSize * 2 - 15;
+        g2.drawImage(image, textX + 15, textY, null);
+        if (gameStartCommand == 2) {
+            g2.drawImage(arrow, textX - (tileSize *  2) + 10, textY, null);
+        }
+    }
+    
 
     private void drawGameOverScreen() {
-        gameOverCommand = selectedCommand(gameOverCommand);
+        gameStartCommand = selectedCommand(gameStartCommand, 2);
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-
+    
         int textX;
         int textY;
-        String text;
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 110f));
-
-        // TITLE TEXT
-        text = "Game Over";
-
+        BufferedImage image;
+    
+        // GameOver Image
+        image = gameOver;
         // Shadow
         g2.setColor(Color.black);
-        textX = getXForCenterOfText(text, gp, g2);
-        textY = tileSize * 4;
-        g2.drawString(text, textX, textY);
-
-        // Text
-        g2.setColor(Color.WHITE);
-        g2.drawString(text, textX - 4, textY - 4);
-
+        textX = getXForCenterOfImage(image, gp);
+        textY = tileSize / 3;
+        g2.drawImage(image, textX, textY, null);
+    
         // RETRY
-        g2.setFont(g2.getFont().deriveFont(50f));
-        text = "Retry";
-        textX = getXForCenterOfText(text, gp, g2);
-        textY += tileSize * 4;
-        g2.drawString(text, textX, textY);
-        
-        if (gameOverCommand == 0) {
-            g2.drawString(">", textX - 40, textY);
-            
+        image = retry; 
+        textX = getXForCenterOfImage(image, gp);
+        textY += tileSize * 6 + 20;
+        g2.drawImage(image, textX, textY, null);
+        if (gameStartCommand == 0) {
+            g2.drawImage(arrow, textX - (tileSize *  3), textY, null);
         }
-
-        // BACK TO TITLE
-        text = "Quit";
-        textX = getXForCenterOfText(text, gp, g2);
-        textY += 55;
-        g2.drawString(text, textX, textY);
-        if (gameOverCommand == 1) {
-            g2.drawString(">", textX - 40, textY);
-            
+    
+        // Exit
+        image = exit; 
+        textY += tileSize * 2;
+        g2.drawImage(image, textX, textY, null);
+        if (gameStartCommand == 1) {
+            g2.drawImage(arrow, textX - (tileSize *  3), textY, null);
         }
-
-        // gp.setEnterPressed(false);
     }
 
+    public void drawTheEndScreen(){
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        
+        int textX;
+        int textY;
+        BufferedImage image;
 
+        // TheEnd Image
+        image = theEnd;
+        g2.setColor(Color.black);
+        textX = getXForCenterOfImage(image, gp);
+        textY = tileSize / 3;
+        g2.drawImage(image, textX, textY, null);
+    }
 
     public void colorBorder(int x ,int y, int width, int height){
         g2.setColor(Color.BLACK);
@@ -510,6 +613,11 @@ public class UI {
             drawGameStartScreen();
         }
 
+        //PLAYER TYPE STATE
+        if (gp.gameState == gp.playerTypeState) {
+            selectPlayer();
+        }
+
         // PLAY STATE
         if (gp.gameState == gp.playState) {
             drawPlayerLife();
@@ -521,6 +629,11 @@ public class UI {
 
         if (gp.gameState == gp.gameOverState){
             drawGameOverScreen();
+        }
+
+        // WIN STATE
+        if (gp.gameState == gp.winState) {
+            drawTheEndScreen();
         }
 
         // PAUSE STATE

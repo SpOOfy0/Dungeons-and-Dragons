@@ -64,7 +64,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        slotForSlam = new ImpatiantBehavior(this, 120, new SlamAttack(null));
+        slotForSlam = new ImpatiantBehavior(120);
     }
 
 
