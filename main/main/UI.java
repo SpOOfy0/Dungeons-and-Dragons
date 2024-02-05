@@ -485,7 +485,7 @@ public class UI {
         textY += tileSize * 6 + 20;
         g2.drawImage(image, textX, textY, null);
         if (gameStartCommand == 0) {
-            g2.drawImage(arrow, textX - (tileSize *  3), textY, null);
+            g2.drawImage(arrow, textX - (tileSize *  3), textY + 15, null);
         }
     
         // QUIT
@@ -493,7 +493,7 @@ public class UI {
         textY += tileSize * 2;
         g2.drawImage(image, textX, textY, null);
         if (gameStartCommand == 1) {
-            g2.drawImage(arrow, textX - (tileSize *  3), textY, null);
+            g2.drawImage(arrow, textX - (tileSize *  3), textY + 15, null);
         }
     }
 
@@ -520,7 +520,7 @@ public class UI {
         textY += tileSize * 5;
         g2.drawImage(image, textX + 15, textY, null);
         if (gameStartCommand == 0) {
-            g2.drawImage(arrow, textX - (tileSize *  2), textY, null);
+            g2.drawImage(arrow, textX - (tileSize *  2), textY + 20, null);
         }
     
         // Mage
@@ -529,7 +529,7 @@ public class UI {
         textY += tileSize * 2;
         g2.drawImage(image, textX + 15, textY, null);
         if (gameStartCommand == 1) {
-            g2.drawImage(arrow, textX - (tileSize *  2) , textY, null);
+            g2.drawImage(arrow, textX - (tileSize *  2) , textY + 15, null);
         }
 
         // AllRounded
@@ -538,7 +538,7 @@ public class UI {
         textY += tileSize * 2 - 15;
         g2.drawImage(image, textX + 15, textY, null);
         if (gameStartCommand == 2) {
-            g2.drawImage(arrow, textX - (tileSize *  2) + 10, textY, null);
+            g2.drawImage(arrow, textX - (tileSize *  2) + 10, textY + 20, null);
         }
     }
     
