@@ -64,7 +64,7 @@ public class SlamAttack extends ExtraAction {
                             iterMonster.solidArea.y += iterMonster.worldY;
                             if(iterMonster.solidArea.intersects(hitbox)){
                                 iterMonster.receiveDmg(damage);
-                                if(!iterMonster.noKnockback) iterMonster.giveForcedMovement(gp.interactionChecker.awayFromPlayer(iterMonster), 8, 25);
+                                if(!iterMonster.noKnockback) iterMonster.giveForcedMovement(gp.interactionChecker.goingAwayFrom(iterMonster, executor), 8, 25);
                             }
                             iterMonster.solidArea.x = iterMonster.solidAreaDefaultX;
                             iterMonster.solidArea.y = iterMonster.solidAreaDefaultY;
@@ -75,7 +75,7 @@ public class SlamAttack extends ExtraAction {
                     gp.player.solidArea.y += gp.player.worldY;
                     if(gp.player.solidArea.intersects(hitbox)){
                         gp.player.receiveDmg(damage);
-                        gp.player.giveForcedMovement(gp.interactionChecker.towardsPlayer(executor), 8, 25);
+                        gp.player.giveForcedMovement(gp.interactionChecker.goingAwayFrom(gp.player, executor), 8, 25);
                     }
                     gp.player.solidArea.x = gp.player.solidAreaDefaultX;
                     gp.player.solidArea.y = gp.player.solidAreaDefaultY;

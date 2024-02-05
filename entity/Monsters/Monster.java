@@ -104,7 +104,7 @@ public class Monster extends Entity{
                 // si l'entité est bloquée contre le joueur, elle ira en sa direction
                 } else {
                     bufferDirection = null;
-                    direction[0] = gp.interactionChecker.towardsPlayer(this);
+                    direction[0] = gp.interactionChecker.goingTowards(this, gp.player);
                 }
 
             } else {
@@ -171,6 +171,7 @@ public class Monster extends Entity{
         
         // System.out.println("before 0 direction: " + direction[0]);
 
+        // to follow the player
         if ((leftM/tileSize <= leftP/tileSize && rightP/tileSize <= rightM/tileSize) || (leftP/tileSize <= leftM/tileSize && rightM/tileSize <= rightP/tileSize)) {
             int iterLeft = Math.min(leftM/tileSize, leftP/tileSize);
             int iterHori;
@@ -193,7 +194,7 @@ public class Monster extends Entity{
 
             if(!condition){
                 forceLetGoVertical();
-                direction[0] = gp.interactionChecker.towardsPlayer(this);
+                direction[0] = gp.interactionChecker.goingTowards(this, player);
             }
 
         } else if ((upM/tileSize <= upP/tileSize && downP/tileSize <= downM/tileSize) || (upP/tileSize <= upM/tileSize && downM/tileSize <= downP/tileSize)){
@@ -219,14 +220,15 @@ public class Monster extends Entity{
             if(!condition){
                 
                 forceLetGoHorizontal();
-                direction[0] = gp.interactionChecker.towardsPlayer(this);
+                direction[0] = gp.interactionChecker.goingTowards(this, player);
             }
         }
         
+
         // System.out.println("before 1 direction: " + direction[0]);
 
 
-        // to follow the player
+        // to follow the player 2
         if(rightM <= leftP + 1){
             if(!stopDirections[3]){
                 direction[0] = "right";
@@ -249,8 +251,8 @@ public class Monster extends Entity{
             }
         }
         
-        //System.out.println("before 2 direction: " + direction[0]);
 
+        //System.out.println("before 2 direction: " + direction[0]);
 
 
         if(direction[0] == null){
@@ -421,8 +423,10 @@ public class Monster extends Entity{
         
         // System.out.println("before 3 direction: " + direction[0]);
 
+
         if(direction[0] == null) direction[0] = bufferDirection;
 
+        
         // System.out.println("after direction: " + direction[0]);
         // System.out.println("stopDirections  up: " + stopDirections[0] + "  down: " + stopDirections[1] + "  left: " + stopDirections[2] + "  right: " + stopDirections[3]);
         // System.out.println(" ");

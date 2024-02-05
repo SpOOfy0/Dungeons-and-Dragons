@@ -20,70 +20,43 @@ public class InteractionChecker {
 
 
 
-    public String towardsPlayer(Entity entity){
-        
-        entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
-        entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
+    public String goingTowards(Entity entity, Entity target){
 
-        gp.player.solidArea.x = gp.player.worldX + gp.player.solidArea.x;
-        gp.player.solidArea.y = gp.player.worldY + gp.player.solidArea.y;
-
-        int entityMiddleX = entity.solidArea.x + entity.solidArea.width/2;
-        int entityMiddleY = entity.solidArea.y + entity.solidArea.height/2;
-        int playerMiddleX = gp.player.solidArea.x + gp.player.solidArea.width/2;
-        int playerMiddleY = gp.player.solidArea.y + gp.player.solidArea.height/2;
+        int entityMiddleX = entity.worldX + entity.solidArea.x + entity.solidArea.width/2;
+        int entityMiddleY = entity.worldY + entity.solidArea.y + entity.solidArea.height/2;
+        int targetMiddleX = target.worldX + target.solidArea.x + target.solidArea.width/2;
+        int targetMiddleY = target.worldY + target.solidArea.y + target.solidArea.height/2;
 
         String valueToReturn = null;
 
-        if (entityMiddleX < playerMiddleX) valueToReturn = "right";
-        else if (playerMiddleX < entityMiddleX) valueToReturn = "left";
+        if (entityMiddleX < targetMiddleX) valueToReturn = "right";
+        else if (targetMiddleX < entityMiddleX) valueToReturn = "left";
         
-        if(Math.abs(entityMiddleX - playerMiddleX) <= Math.abs(entityMiddleY - playerMiddleY)){
-            if (entityMiddleY < playerMiddleY) valueToReturn = "down";
-            else if (playerMiddleY < entityMiddleY) valueToReturn = "up";
+        if(Math.abs(entityMiddleX - targetMiddleX) <= Math.abs(entityMiddleY - targetMiddleY)){
+            if (entityMiddleY < targetMiddleY) valueToReturn = "down";
+            else if (targetMiddleY < entityMiddleY) valueToReturn = "up";
         }
-
-        //Reset entity's solid area position
-        entity.solidArea.x = entity.solidAreaDefaultX;
-        entity.solidArea.y = entity.solidAreaDefaultY;
-        //Reset object's solid area position
-        gp.player.solidArea.x = gp.player.solidAreaDefaultX;
-        gp.player.solidArea.y = gp.player.solidAreaDefaultY;
 
         return valueToReturn;
     }
     
     
-    public String awayFromPlayer(Entity entity){
-        
-        entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
-        entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
+    public String goingAwayFrom(Entity entity, Entity target){
 
-        gp.player.solidArea.x = gp.player.worldX + gp.player.solidArea.x;
-        gp.player.solidArea.y = gp.player.worldY + gp.player.solidArea.y;
-
-        int entityMiddleX = entity.solidArea.x + entity.solidArea.width/2;
-        int entityMiddleY = entity.solidArea.y + entity.solidArea.height/2;
-        int playerMiddleX = gp.player.solidArea.x + gp.player.solidArea.width/2;
-        int playerMiddleY = gp.player.solidArea.y + gp.player.solidArea.height/2;
+        int entityMiddleX = entity.worldX + entity.solidArea.x + entity.solidArea.width/2;
+        int entityMiddleY = entity.worldY + entity.solidArea.y + entity.solidArea.height/2;
+        int targetMiddleX = target.worldX + target.solidArea.x + target.solidArea.width/2;
+        int targetMiddleY = target.worldY + target.solidArea.y + target.solidArea.height/2;
 
         String valueToReturn = null;
 
-        if (entityMiddleX < playerMiddleX) valueToReturn = "left";
-        else if (playerMiddleX < entityMiddleX) valueToReturn = "right";
+        if (entityMiddleX < targetMiddleX) valueToReturn = "left";
+        else if (targetMiddleX < entityMiddleX) valueToReturn = "right";
         
-        if(Math.abs(entityMiddleX - playerMiddleX) <= Math.abs(entityMiddleY - playerMiddleY)){
-            if (entityMiddleY < playerMiddleY) valueToReturn = "up";
-            else if (playerMiddleY < entityMiddleY) valueToReturn = "down";
+        if(Math.abs(entityMiddleX - targetMiddleX) <= Math.abs(entityMiddleY - targetMiddleY)){
+            if (entityMiddleY < targetMiddleY) valueToReturn = "up";
+            else if (targetMiddleY < entityMiddleY) valueToReturn = "down";
         }
-
-        //Reset entity's solid area position
-        entity.solidArea.x = entity.solidAreaDefaultX;
-        entity.solidArea.y = entity.solidAreaDefaultY;
-        //Reset object's solid area position
-        gp.player.solidArea.x = gp.player.solidAreaDefaultX;
-        gp.player.solidArea.y = gp.player.solidAreaDefaultY;
-        
 
         return valueToReturn;
     }
@@ -402,7 +375,7 @@ public class InteractionChecker {
 
                 if (zoneDetect.intersects(studiedMonster.solidArea)){
                     studiedMonster.receiveDmg(player.damage);
-                    if(!studiedMonster.noKnockback) studiedMonster.giveForcedMovement(awayFromPlayer(studiedMonster), 2 + (player.damage/2), 15);
+                    if(!studiedMonster.noKnockback) studiedMonster.giveForcedMovement(goingAwayFrom(studiedMonster, player), 2 + (player.damage/4), 15);
                 }
                 
                 //Reset object's solid area position

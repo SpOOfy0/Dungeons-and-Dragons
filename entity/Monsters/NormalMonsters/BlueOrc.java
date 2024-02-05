@@ -30,7 +30,7 @@ public class BlueOrc extends Monster implements MonsterInterface {
         noticeRange = 3;
         aggroRange = 7;
         initSpeed(2);
-        maxLife = 11;
+        maxLife = 22;
         life = maxLife;
         damage = 1;
         xp = 700;

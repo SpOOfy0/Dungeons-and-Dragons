@@ -30,7 +30,7 @@ public class Orc extends Monster implements MonsterInterface {
         noticeRange = 3;
         aggroRange = 5;
         initSpeed(1);
-        maxLife = 8;
+        maxLife = 16;
         life = maxLife;
         damage = 1;
         xp = 700;

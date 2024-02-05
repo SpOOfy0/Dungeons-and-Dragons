@@ -361,7 +361,7 @@ public class Entity {
         gp.collisionChecker.checkPlayer(this);
 
         // Mouvement effectué si la direction est non bloqué
-        if(direction != null){
+        if((storeMovement[0] != 0 || storeMovement[1] != 0) && direction != null){
             switch(direction){
                 case "up":
                     if(!blockedUp){
@@ -416,35 +416,37 @@ public class Entity {
         gp.collisionChecker.checkPlayer(this);
 
         // Mouvements effectués individuellement si les directions sont non bloqués
-        for(int i = 0; i < direction.length; i++){
-            if(direction[i] != null){
-                switch(direction[i]){
-                    case "up":
-                        if(!blockedUp){
-                            worldY += storeMovement[1];
-                            didMovement = true;
-                        }
-                        break;
-                    case "down":
-                        if(!blockedDown){
-                            worldY += storeMovement[1];
-                            didMovement = true;
-                        }
-                        break;
-                    case "left":
-                        if(!blockedLeft){
-                            worldX += storeMovement[0];
-                            didMovement = true;
-                        }
-                        break;
-                    case "right":
-                        if(!blockedRight){
-                            worldX += storeMovement[0];
-                            didMovement = true;
-                        }
-                        break;
+        if(storeMovement[0] != 0 || storeMovement[1] != 0){
+            for(int i = 0; i < direction.length; i++){
+                if(direction[i] != null){
+                    switch(direction[i]){
+                        case "up":
+                            if(!blockedUp){
+                                worldY += storeMovement[1];
+                                didMovement = true;
+                            }
+                            break;
+                        case "down":
+                            if(!blockedDown){
+                                worldY += storeMovement[1];
+                                didMovement = true;
+                            }
+                            break;
+                        case "left":
+                            if(!blockedLeft){
+                                worldX += storeMovement[0];
+                                didMovement = true;
+                            }
+                            break;
+                        case "right":
+                            if(!blockedRight){
+                                worldX += storeMovement[0];
+                                didMovement = true;
+                            }
+                            break;
+                    }
                 }
-            }
+            }   
         }
 
         // Réinitialisation des variables de mouvements
@@ -701,7 +703,7 @@ public class Entity {
                 }
             
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
-            g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            //g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
             
         }
     }

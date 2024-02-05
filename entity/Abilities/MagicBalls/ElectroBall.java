@@ -29,10 +29,10 @@ public class ElectroBall extends Ability implements AbilityInterface {
 
      @Override
     public void AbilitySetting() {
-        damage = 3;
+        damage = 6;
         initSpeed(2);
         range = 5;
-        mana = 9;
+        mana = 18;
 
         initiateMagicSpeed(50);
 

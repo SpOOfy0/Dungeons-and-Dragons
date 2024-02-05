@@ -118,13 +118,6 @@ public class Player extends Entity {
         attackSpeed = 30;
         damage = 2;
 
-        // attackSpeed = 10;
-        // damage = 1;
-
-        //CodeExp
-        // level = 1;
-        // maxXp = 1000;
-
         //CodeMana
         maxMana = 100;
         mana = maxMana;
@@ -136,6 +129,7 @@ public class Player extends Entity {
         //PLAYER STATUS
         maxLife = 6;
         life = maxLife;
+
         attackSpeed = 30;
         damage = 1;
 
@@ -150,6 +144,7 @@ public class Player extends Entity {
         //PLAYER STATUS
         maxLife = 10;
         life = maxLife;
+
         attackSpeed = 30;
         damage = 3;
 
@@ -229,6 +224,7 @@ public class Player extends Entity {
             oneTimeSetup = false;
             getValues(gp.ui.playerType);
         }
+        
         updateAbilities();
 
         isPreviousStateMove = (direction[0] != null || direction[1] != null);
@@ -346,6 +342,22 @@ public class Player extends Entity {
         return false;
     }
 
+    public void AllRoundedLevelUp(){
+        maxLife += 1;
+        life = maxLife;
+        maxMana += 10;
+        mana = maxMana;
+
+        if(level % 2 == 0){
+            damage += 1;
+            gp.fireBall.damage += 1;
+        }
+
+        if(level % 3 == 0){
+            gp.electroBall.damage += 1;
+        }
+    }
+
     public void MageLevelUp(){
         maxMana += 25;
         mana = maxMana;
@@ -353,8 +365,8 @@ public class Player extends Entity {
 
         if(level % 2 == 0){
             maxLife += 1;
-            gp.electroBall.damage += 1;
             life = maxLife;
+            gp.electroBall.damage += 1;
         }
     }
 
@@ -362,30 +374,16 @@ public class Player extends Entity {
         maxLife += 1;
         life = maxLife;
         damage += 1;
-
     }
 
-    public void AllRoundedLevelUp(){
-        maxLife += 1;
-        maxMana += 10;
-        mana = maxMana;
-
-        if(level % 2 == 0){
-            gp.fireBall.damage += 1;
-        }
-
-        if(level % 3 == 0){
-            damage += 1;
-        }
-
-    }
+    
 
     public void updateAbilities(){
         if(levelUp()){
             if(gp.ui.playerType == "Mage"){
                 MageLevelUp();
             }
-            if(gp.ui.playerType == "Figher"){
+            if(gp.ui.playerType == "Fighter"){
                 FighterLevelUp();
             }
             if(gp.ui.playerType == "AllRounded"){
@@ -416,7 +414,7 @@ public class Player extends Entity {
         monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
 
         // Mouvement effectué si la direction est non bloqué
-        if(direction != null){
+        if((storeMovement[0] != 0 || storeMovement[1] != 0) && direction != null){
             switch(direction){
                 case "up":
                     if(!blockedUp){
@@ -472,33 +470,35 @@ public class Player extends Entity {
         monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
 
         // Mouvements effectués individuellement si les directions sont non bloqués
-        for(int i = 0; i < direction.length; i++){
-            if(direction[i] != null){
-                switch(direction[i]){
-                    case "up":
-                        if(!blockedUp){
-                            worldY += storeMovement[1];
-                            didMovement = true;
-                        }
-                        break;
-                    case "down":
-                        if(!blockedDown){
-                            worldY += storeMovement[1];
-                            didMovement = true;
-                        }
-                        break;
-                    case "left":
-                        if(!blockedLeft){
-                            worldX += storeMovement[0];
-                            didMovement = true;
-                        }
-                        break;
-                    case "right":
-                        if(!blockedRight){
-                            worldX += storeMovement[0];
-                            didMovement = true;
-                        }
-                        break;
+        if(storeMovement[0] != 0 || storeMovement[1] != 0){
+            for(int i = 0; i < direction.length; i++){
+                if(direction[i] != null){
+                    switch(direction[i]){
+                        case "up":
+                            if(!blockedUp){
+                                worldY += storeMovement[1];
+                                didMovement = true;
+                            }
+                            break;
+                        case "down":
+                            if(!blockedDown){
+                                worldY += storeMovement[1];
+                                didMovement = true;
+                            }
+                            break;
+                        case "left":
+                            if(!blockedLeft){
+                                worldX += storeMovement[0];
+                                didMovement = true;
+                            }
+                            break;
+                        case "right":
+                            if(!blockedRight){
+                                worldX += storeMovement[0];
+                                didMovement = true;
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -509,6 +509,7 @@ public class Player extends Entity {
 
         return didMovement;
     }
+
 
     public void pickUpObject(ArrayList<Integer> objIndexes){
         
@@ -698,7 +699,7 @@ public class Player extends Entity {
             Monster monster = gp.monster.get(monsterIndex);
 
             if (heroAttack && !monster.noKnockback){
-                monster.giveForcedMovement(gp.interactionChecker.awayFromPlayer(monster), monster.speed, 15);
+                monster.giveForcedMovement(gp.interactionChecker.goingAwayFrom(monster, this), monster.speed, 15);
             }
     
             if(monster.isWithPlayer && monster.attackDelay >= monster.attackSpeed){
@@ -890,7 +891,7 @@ public class Player extends Entity {
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
         }
         
-        g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+        //g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
     }
     
 }

@@ -207,7 +207,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
             }
             
             g2.drawImage(image, screenX, screenY - tileSize + 7, tileSize*3, tileSize*9/2, null);
-            g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            //g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
 
             // System.out.println("leftLimit: " + leftLimit + "  rightLimit: " + rightLimit + "  upLimit: " + upLimit + "  downLimit: " + downLimit);
         }

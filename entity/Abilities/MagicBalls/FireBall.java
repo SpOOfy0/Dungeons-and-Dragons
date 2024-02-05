@@ -23,10 +23,10 @@ public class FireBall extends Ability implements AbilityInterface {
 
     @Override
     public void AbilitySetting() {
-        damage = 2;
+        damage = 4;
         initSpeed(5);
         range = 8;
-        mana = 4;
+        mana = 8;
         
         initiateMagicSpeed(40);
     }

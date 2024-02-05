@@ -120,7 +120,9 @@ public class GamePannel extends JPanel implements Runnable {
         tileM.reloadMap();
         player.restart();
         player.isDead = false;
-        gameState = playState; 
+        fireBall = new FireBall(this);
+        electroBall = new ElectroBall(this);
+        gameState = playState;
     }
 
     public void run(){
