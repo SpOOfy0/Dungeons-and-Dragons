@@ -5,10 +5,11 @@ import entity.Monsters.*;
 
 public class Orc extends Monster implements MonsterInterface {
     
-    public Orc (GamePannel gp, String inputedDirection, int coordX, int coordY) {
+    public Orc (GamePannel gp, String inputedDirection, int coordX, int coordY, boolean willDropItem) {
         super(gp, inputedDirection, coordX, coordY);
+
         getThisMonsterImage();
-        MonsterSetting();
+        MonsterSetting(willDropItem);
     }
 
     @Override
@@ -24,7 +25,7 @@ public class Orc extends Monster implements MonsterInterface {
     }
 
     @Override
-    public void MonsterSetting() {
+    public void MonsterSetting(boolean willDropItem) {
 
         noticeRange = 3;
         aggroRange = 5;
@@ -33,8 +34,10 @@ public class Orc extends Monster implements MonsterInterface {
         life = maxLife;
         damage = 1;
         xp = 700;
-        objToDrop[0] = "key";
-        objToDrop[1] = "manaPotion";
+        
+        if (willDropItem){
+            objToDrop.add("key");
+        }
     }
 
 }

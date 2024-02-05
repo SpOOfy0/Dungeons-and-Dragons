@@ -30,98 +30,139 @@ public class CollisionChecker {
         int entityBottomRow = entityBottomWorldY / tileSize;
         int entityRightCol = entityRightWorldX / tileSize;
 
-        boolean[] isGoingToDirection = {false, false, false, false};
+        boolean[] isGoingToDirection = {entity.storeMovement[1] < 0, entity.storeMovement[0] < 0, entity.storeMovement[1] > 0, entity.storeMovement[0] > 0};
 
         // 0=Up, 1=Left, 2=Bottom, 3=Right
 
-        for(int i = 0; i < entity.direction.length; i++){
-            if(entity.direction[i] != null){
-                switch(entity.direction[i]) {
-                    case "up":
-                        isGoingToDirection[0] = true;
-                        break;
-                    case "left":
-                        isGoingToDirection[1] = true;
-                        break;
-                    case "down":
-                        isGoingToDirection[2] = true;
-                        break;
-                    case "right":
-                        isGoingToDirection[3] = true;
-                        break;
-                }
-            }
-        }
-
         int iter;
         boolean blocker = false;
+        int newDistance = 0;
 
         for(int i = 0; i < 4; i++){
             switch(i){
                 case 0: //up
-                    entityTopRow = (entityTopWorldY - entity.speed*2) / tileSize;
+                    entityTopRow = (entityTopWorldY - entity.speed) / tileSize;
 
                     iter = entityLeftCol;
                     while(iter <= entityRightCol){
                         blocker = gp.tileM.isCollision(iter, entityTopRow);
                         if(blocker) iter += entityRightCol;
-                        else iter++;
+                        iter++;
                     }
-                    
+
+                    if(blocker){
+                        // S'il y a de la marge pour se déplacer, ça ne bloque pas mais ça change le déplacement pour aller jusqu'à l'endroit bloqué
+                        if(isGoingToDirection[i] && entityTopRow != entityTopWorldY / tileSize){
+                            newDistance = (entityTopRow+1)*tileSize - entityTopWorldY;
+                            if(newDistance < 0){
+                                if(entity.storeMovement[1] < newDistance)
+                                    entity.storeMovement[1] = newDistance;
+                            } else {
+                                entity.blockedUp = true;
+                                if(isGoingToDirection[i]) entity.isBlocked = true;
+                            }
+
+                        } else {
+                            entity.blockedUp = true;
+                            if(isGoingToDirection[i]) entity.isBlocked = true;
+                        }
+                    }
                     entityTopRow = entityTopWorldY / tileSize;
                     break;
+                    
+                    
                 case 1: //left
-                    entityLeftCol = (entityLeftWorldX - entity.speed*2) / tileSize;
+                    entityLeftCol = (entityLeftWorldX - entity.speed) / tileSize;
 
                     iter = entityTopRow;
                     while(iter <= entityBottomRow){
                         blocker = gp.tileM.isCollision(entityLeftCol, iter);
                         if(blocker) iter += entityBottomRow;
-                        else iter++;
+                        iter++;
                     }
 
+                    if(blocker){
+                        // S'il y a de la marge pour se déplacer, ça ne bloque pas mais ça change le déplacement pour aller jusqu'à l'endroit bloqué
+                        if(isGoingToDirection[i] && entityLeftCol != entityLeftWorldX / tileSize){
+                            newDistance = (entityLeftCol+1)*tileSize - entityLeftWorldX;
+                            if(newDistance < 0){
+                                if(entity.storeMovement[0] < newDistance)
+                                    entity.storeMovement[0] = newDistance;
+                            } else {
+                                entity.blockedLeft = true;
+                                if(isGoingToDirection[i]) entity.isBlocked = true;
+                            }
+
+                        } else {
+                            entity.blockedLeft = true;
+                            if(isGoingToDirection[i]) entity.isBlocked = true;
+                        }
+                    }
                     entityLeftCol = entityLeftWorldX / tileSize;
                     break;
+
+
                 case 2: //down
-                    entityBottomRow = (entityBottomWorldY + entity.speed*2) / tileSize;
+                    entityBottomRow = (entityBottomWorldY + entity.speed) / tileSize;
 
                     iter = entityLeftCol;
                     while(iter <= entityRightCol){
                         blocker = gp.tileM.isCollision(iter, entityBottomRow);
                         if(blocker) iter += entityRightCol;
-                        else iter++;
+                        iter++;
                     }
 
+                    if(blocker){
+                        // S'il y a de la marge pour se déplacer, ça ne bloque pas mais ça change le déplacement pour aller jusqu'à l'endroit bloqué
+                        if(isGoingToDirection[i] && entityBottomRow != entityBottomWorldY / tileSize){
+                            newDistance = entityBottomRow*tileSize - entityBottomWorldY - 1;
+                            if(0 < newDistance){
+                                if(newDistance < entity.storeMovement[1])
+                                    entity.storeMovement[1] = newDistance;
+                            } else {
+                                entity.blockedDown = true;
+                                if(isGoingToDirection[i]) entity.isBlocked = true;
+                            }
+                            
+                        } else {
+                            entity.blockedDown = true;
+                            if(isGoingToDirection[i]) entity.isBlocked = true;
+                        }
+                    }
                     entityBottomRow = entityBottomWorldY / tileSize;
                     break;
+
+
                 case 3: //right
-                    entityRightCol = (entityRightWorldX + entity.speed*2) / tileSize;
+                    entityRightCol = (entityRightWorldX + entity.speed) / tileSize;
 
                     iter = entityTopRow;
                     while(iter <= entityBottomRow){
                         blocker = gp.tileM.isCollision(entityRightCol, iter);
                         if(blocker) iter += entityBottomRow;
-                        else iter++;
+                        iter++;
+                    }
+
+                    if(blocker){
+                        // S'il y a de la marge pour se déplacer, ça ne bloque pas mais ça change le déplacement pour aller jusqu'à l'endroit bloqué
+                        // pour une raison non recherchée et faute de temps, il faut incrémenter entityRightWorldX de 3 pour que ça marche comme on veut (mettez des prints pour les "newDistance", ça ne va pas vérifier les collisions en continu)
+                        // à regarder plus en détail à l'avenir
+                        if(isGoingToDirection[i] && entityRightCol != (entityRightWorldX+3) / tileSize){
+                            newDistance = (entityRightCol)*tileSize - entityRightWorldX - 1;
+                            if(0 < newDistance){
+                                if(newDistance < entity.storeMovement[0])
+                                    entity.storeMovement[0] = newDistance;
+                            } else {
+                                entity.blockedDown = true;
+                                if(isGoingToDirection[i]) entity.isBlocked = true;
+                            }
+
+                        } else {
+                            entity.blockedRight = true;
+                            if(isGoingToDirection[i]) entity.isBlocked = true;
+                        }
                     }
                     break; 
-            }
-
-            if (blocker){
-                switch(i){
-                    case 0: //up
-                        entity.blockedUp = true;
-                        break;
-                    case 1: //left
-                        entity.blockedLeft = true;
-                        break;
-                    case 2: //down
-                        entity.blockedDown = true;
-                        break;
-                    case 3: //right
-                        entity.blockedRight = true;
-                        break;
-                }
-                if(isGoingToDirection[i]) entity.isBlocked = true;
             }
         }
     }
@@ -138,28 +179,11 @@ public class CollisionChecker {
 
             if (iter != null){
 
-                boolean[] isGoingToDirection = {false, false, false, false};
+                boolean[] isGoingToDirection = {entity.storeMovement[1] < 0, entity.storeMovement[0] < 0, entity.storeMovement[1] > 0, entity.storeMovement[0] > 0};
 
                 // 0=Up, 1=Left, 2=Bottom, 3=Right
 
-                for(int j = 0; j < entity.direction.length; j++){
-                    if(entity.direction[j] != null){
-                        switch(entity.direction[j]) {
-                            case "up":
-                                isGoingToDirection[0] = true;
-                                break;
-                            case "left":
-                                isGoingToDirection[1] = true;
-                                break;
-                            case "down":
-                                isGoingToDirection[2] = true;
-                                break;
-                            case "right":
-                                isGoingToDirection[3] = true;
-                                break;
-                        }
-                    }
-                }
+                int newDistance = 0;
 
                 //Get object's solid area position
                 iter.solidArea.x = iter.worldX + iter.solidArea.x;
@@ -190,19 +214,42 @@ public class CollisionChecker {
                         if (iter.collision){
                             switch(j){
                                 case 0: //up
-                                    entity.blockedUp = true;
+                                    newDistance = iter.solidArea.y + iter.solidArea.height - (entity.solidArea.y + entity.speed);
+                                    if(newDistance < 0 && entity.storeMovement[1] < newDistance)
+                                        entity.storeMovement[1] = newDistance;
+                                    else{
+                                        entity.blockedUp = true;
+                                        if(isGoingToDirection[j]) entity.isBlocked = true;
+                                    }
                                     break;
                                 case 1: //left
-                                    entity.blockedLeft = true;
+                                    newDistance = iter.solidArea.x + iter.solidArea.width - (entity.solidArea.x + entity.speed);
+                                    if(newDistance < 0 && entity.storeMovement[0] < newDistance)
+                                        entity.storeMovement[0] = newDistance;
+                                    else {
+                                        entity.blockedLeft = true;
+                                        if(isGoingToDirection[j]) entity.isBlocked = true;
+                                    }
                                     break;
                                 case 2: //down
-                                    entity.blockedDown = true;
+                                    newDistance = iter.solidArea.y - (entity.solidArea.y + entity.solidArea.height - entity.speed) - 1;
+                                    if(0 < newDistance && newDistance < entity.storeMovement[1])
+                                        entity.storeMovement[1] = newDistance;
+                                    else {
+                                        entity.blockedDown = true;
+                                        if(isGoingToDirection[j]) entity.isBlocked = true;
+                                    }
                                     break;
                                 case 3: //right
-                                    entity.blockedRight = true;
+                                    newDistance = iter.solidArea.x - (entity.solidArea.x + entity.solidArea.width - entity.speed) - 1;
+                                    if(0 < newDistance && newDistance < entity.storeMovement[0])
+                                        entity.storeMovement[0] = newDistance;
+                                    else {
+                                        entity.blockedRight = true;
+                                        if(isGoingToDirection[j]) entity.isBlocked = true;
+                                    }
                                     break;
                             }
-                            if(isGoingToDirection[j]) entity.isBlocked = true;
                         }
                         if(player && !index.contains(i)) index.add(i);
                     }
@@ -232,28 +279,9 @@ public class CollisionChecker {
 
             if (target.get(i) != null){
 
-                boolean[] isGoingToDirection = {false, false, false, false};
+                boolean[] isGoingToDirection = {entity.storeMovement[1] < 0, entity.storeMovement[0] < 0, entity.storeMovement[1] > 0, entity.storeMovement[0] > 0};
 
                 // 0=Up, 1=Left, 2=Bottom, 3=Right
-
-                for(int j = 0; j < entity.direction.length; j++){
-                    if(entity.direction[j] != null){
-                        switch(entity.direction[j]) {
-                            case "up":
-                                isGoingToDirection[0] = true;
-                                break;
-                            case "left":
-                                isGoingToDirection[1] = true;
-                                break;
-                            case "down":
-                                isGoingToDirection[2] = true;
-                                break;
-                            case "right":
-                                isGoingToDirection[3] = true;
-                                break;
-                        }
-                    }
-                }
 
                 //Get object's solid area position
                 studiedTarget.solidArea.x = studiedTarget.worldX + studiedTarget.solidArea.x;
@@ -262,6 +290,8 @@ public class CollisionChecker {
                 int pos1 = 0, pos2 = 1;
 
                 Rectangle intersection;
+
+                int newDistance = 0;
 
                 for(int j = 0; j < 4; j++){
 
@@ -297,17 +327,46 @@ public class CollisionChecker {
                             intersection = entity.solidArea.intersection(studiedTarget.solidArea);
                             if (j%2 == 0){
                                 if(intersection.height < intersection.width){
-                                    if(j == 0) entity.blockedUp = true;
-                                    else entity.blockedDown = true;
+                                    if(j == 0){
+                                        newDistance = studiedTarget.solidArea.y + studiedTarget.solidArea.height - (entity.solidArea.y + entity.speed);
+                                        if(newDistance < 0 && entity.storeMovement[1] < newDistance)
+                                            entity.storeMovement[1] = newDistance;
+                                        else {
+                                            entity.blockedUp = true;
+                                            if(isGoingToDirection[j]) entity.isBlocked = true;
+                                        }
+                                    } else {
+                                        newDistance = studiedTarget.solidArea.y - (entity.solidArea.y + entity.solidArea.height - entity.speed);
+                                        if(0 < newDistance && newDistance < entity.storeMovement[1])
+                                            entity.storeMovement[1] = newDistance;
+                                        else {
+                                            entity.blockedDown = true;
+                                            if(isGoingToDirection[j]) entity.isBlocked = true;
+                                        }
+                                    }
                                 }
                             } else {
                                 if(intersection.height > intersection.width){
-                                    if(j == 1) entity.blockedLeft = true;
-                                    else entity.blockedRight = true;
+                                    if(j == 1){
+                                        newDistance = studiedTarget.solidArea.x + studiedTarget.solidArea.width - (entity.solidArea.x + entity.speed);
+                                        if(newDistance < 0 && entity.storeMovement[0] < newDistance)
+                                            entity.storeMovement[0] = newDistance;
+                                        else {
+                                            entity.blockedLeft = true;
+                                            if(isGoingToDirection[j]) entity.isBlocked = true;
+                                        }
+                                    } else{
+                                        newDistance = studiedTarget.solidArea.x - (entity.solidArea.x + entity.solidArea.width - entity.speed);
+                                        if(0 < newDistance && newDistance < entity.storeMovement[0])
+                                            entity.storeMovement[0] = newDistance;
+                                        else {
+                                            entity.blockedRight = true;
+                                            if(isGoingToDirection[j]) entity.isBlocked = true;
+                                        }
+                                    }
                                 }
                             }
                         }
-                        if(isGoingToDirection[j]) entity.isBlocked = true;
                         if(!index.contains(i)) index.add(i);
                     }
                 }
@@ -332,28 +391,9 @@ public class CollisionChecker {
         
         entity.isWithPlayer = false;
 
-        boolean[] isGoingToDirection = {false, false, false, false};
+        boolean[] isGoingToDirection = {entity.storeMovement[1] < 0, entity.storeMovement[0] < 0, entity.storeMovement[1] > 0, entity.storeMovement[0] > 0};
 
         // 0=Up, 1=Left, 2=Bottom, 3=Right
-
-        for(int j = 0; j < entity.direction.length; j++){
-            if(entity.direction[j] != null){
-                switch(entity.direction[j]) {
-                    case "up":
-                        isGoingToDirection[0] = true;
-                        break;
-                    case "left":
-                        isGoingToDirection[1] = true;
-                        break;
-                    case "down":
-                        isGoingToDirection[2] = true;
-                        break;
-                    case "right":
-                        isGoingToDirection[3] = true;
-                        break;
-                }
-            }
-        }
         
         //Get object's solid area position
         gp.player.solidArea.x = gp.player.worldX + gp.player.solidArea.x;
@@ -362,6 +402,8 @@ public class CollisionChecker {
         int pos1 = 0, pos2 = 1;
 
         Rectangle intersection;
+
+        int newDistance = 0;
 
         for(int j = 0; j < 4; j++){
 
@@ -397,19 +439,57 @@ public class CollisionChecker {
                     intersection = entity.solidArea.intersection(gp.player.solidArea);
                     if (j%2 == 0){
                         if(intersection.height <= intersection.width){
-                            if(j == 0) entity.blockedUp = true;
-                            else entity.blockedDown = true;
+                            if(j == 0){
+                                newDistance = gp.player.solidArea.y + gp.player.solidArea.height - (entity.solidArea.y + entity.speed);
+                                if(newDistance < 0 && entity.storeMovement[1] < newDistance)
+                                    entity.storeMovement[1] = newDistance;
+                                else {
+                                    entity.blockedUp = true;
+                                    if(isGoingToDirection[j]){
+                                        entity.isBlocked = true;
+                                        if(entity != gp.player) entity.isWithPlayer = true;
+                                    }
+                                }
+                            } else {
+                                newDistance = gp.player.solidArea.y - (entity.solidArea.y + entity.solidArea.height - entity.speed);
+                                if(0 < newDistance && newDistance < entity.storeMovement[1])
+                                    entity.storeMovement[1] = newDistance;
+                                else {
+                                    entity.blockedDown = true;
+                                    if(isGoingToDirection[j]){
+                                        entity.isBlocked = true;
+                                        if(entity != gp.player) entity.isWithPlayer = true;
+                                    }
+                                }
+                            }
                         }
                     } else {
                         if(intersection.height >= intersection.width){
-                            if(j == 1) entity.blockedLeft = true;
-                            else entity.blockedRight = true;
+                            if(j == 1){
+                                newDistance = gp.player.solidArea.x + gp.player.solidArea.width - (entity.solidArea.x + entity.speed);
+                                if(newDistance < 0 && entity.storeMovement[0] < newDistance)
+                                    entity.storeMovement[0] = newDistance;
+                                else {
+                                    entity.blockedLeft = true;
+                                    if(isGoingToDirection[j]){
+                                        entity.isBlocked = true;
+                                        if(entity != gp.player) entity.isWithPlayer = true;
+                                    }
+                                }
+                            } else {
+                                newDistance = gp.player.solidArea.x - (entity.solidArea.x + entity.solidArea.width - entity.speed);
+                                if(0 < newDistance && newDistance < entity.storeMovement[0])
+                                    entity.storeMovement[0] = newDistance;
+                                else {
+                                    entity.blockedRight = true;
+                                    if(isGoingToDirection[j]){
+                                        entity.isBlocked = true;
+                                        if(entity != gp.player) entity.isWithPlayer = true;
+                                    }
+                                }
+                            }
                         }
                     }
-                }
-                if(isGoingToDirection[j]){
-                    entity.isBlocked = true;
-                    if(entity != gp.player) entity.isWithPlayer = true;
                 }
             }
         }

@@ -5,11 +5,11 @@ import entity.Monsters.*;
 
 public class RedOrc extends Monster implements MonsterInterface {
     
-    public RedOrc (GamePannel gp, String inputedDirection, int coordX, int coordY) {
+    public RedOrc (GamePannel gp, String inputedDirection, int coordX, int coordY, boolean willDropItem) {
         super(gp, inputedDirection, coordX, coordY);
 
         getThisMonsterImage();
-        MonsterSetting();
+        MonsterSetting(willDropItem);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class RedOrc extends Monster implements MonsterInterface {
     }
 
     @Override
-    public void MonsterSetting() {
+    public void MonsterSetting(boolean willDropItem) {
 
         noticeRange = 4;
         aggroRange = 9;
@@ -37,8 +37,9 @@ public class RedOrc extends Monster implements MonsterInterface {
 
         noKnockback = true;
         
-        objToDrop[0] = "key";
-        objToDrop[1] = "healPotion";
+        if (willDropItem){
+            objToDrop.add("healPotion");
+        }
     }
 
 }

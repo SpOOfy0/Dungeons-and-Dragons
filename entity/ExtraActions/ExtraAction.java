@@ -4,20 +4,36 @@ import java.util.Vector;
 
 import entity.Entity;
 import entity.ExtraActions.BehaviorForActions.BehaviorForAction;
+import main.GamePannel;
 
 public abstract class ExtraAction {
 
+    GamePannel gp;
+
     protected Entity executor; // Entity using the action
+    protected boolean isPlayer;
+
+    // number of frames the move is active
+    protected int minTimeFrame;
+    public int timeFrame;
+    public int chronology;
+
 
     // list of behaviors for when to use the action
-    protected Vector<BehaviorForAction> listBehaviors = new Vector<BehaviorForAction>();
+    private Vector<BehaviorForAction> listBehaviors = new Vector<BehaviorForAction>();
 
     public BehaviorForAction getCurrentBehavior(){
         return listBehaviors.get(0);
     }
 
     public void addPriorityBehavior(BehaviorForAction newBehavior){
+        newBehavior.correctExecutor(executor);
         listBehaviors.add(0, newBehavior);
+    }
+
+    public void addNotPriorityBehavior(BehaviorForAction newBehavior){
+        newBehavior.correctExecutor(executor);
+        listBehaviors.add(newBehavior);
     }
 
     public void nextBehavior(){
@@ -41,9 +57,23 @@ public abstract class ExtraAction {
 
     
     
-    public ExtraAction(Entity inputedEntity, BehaviorForAction firstBehavior){
+    public ExtraAction(Entity inputedEntity, int numberFramesActive, BehaviorForAction firstBehavior){
         executor = inputedEntity;
-        listBehaviors.add(firstBehavior);
+        gp = executor.gp;
+        isPlayer = (executor == gp.player);
+
+        setupTimeFrame(numberFramesActive);
+        addPriorityBehavior(firstBehavior);
+    }
+
+    public void setupTimeFrame(int numberFramesActive){
+        if(numberFramesActive <= minTimeFrame) timeFrame = minTimeFrame;
+        else timeFrame = numberFramesActive;
+        chronology = timeFrame;
+    }
+
+    public boolean isExecuting(){
+        return chronology < timeFrame;
     }
 
     // to define depending on the entity

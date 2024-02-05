@@ -81,12 +81,16 @@ public class GamePannel extends JPanel implements Runnable {
     public int playerTypeState = 7;
     Clip clip = soundManger.loadAudio("Sounds/WalkSound.wav");
 
+    public boolean isBossSummoned;
+
 
     public void setUpObject(){
         
         objSetter.setItems();
         objSetter.setNPCs();
         objSetter.setMonsters();
+
+        isBossSummoned = false;
     }
 
     public GamePannel(){
@@ -154,6 +158,8 @@ public class GamePannel extends JPanel implements Runnable {
         
         if(gameState == playState){
             player.update();
+            if(ability != null) ability.update();
+
             for(int i = 0; i < npc.size(); i++){
                 NPC iterNPC = npc.get(i);
                 if(iterNPC != null){
@@ -164,6 +170,7 @@ public class GamePannel extends JPanel implements Runnable {
                     else iterNPC.update();
                 }
             }
+            
             for(int i = 0; i < monster.size(); i++){
                 Monster iterMonster = monster.get(i);
                 if(iterMonster != null){
@@ -174,7 +181,11 @@ public class GamePannel extends JPanel implements Runnable {
                     else iterMonster.update();
                 }
             }
-            if(ability != null) ability.update();
+            if (monster.size() == 0 && !isBossSummoned){
+                isBossSummoned = true;
+                npc.clear();
+                objSetter.setBoss();
+            }
 
             if(player.isDead) gameState = gameOverState;
         }

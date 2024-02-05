@@ -8,8 +8,7 @@ import java.util.Random;
 
 import entity.Monsters.*;
 import entity.ExtraActions.SlamAttack;
-import entity.ExtraActions.BehaviorForActions.BasicBehavior;
-import entity.ExtraActions.BehaviorForActions.ImpatiantBehavior;
+import entity.ExtraActions.BehaviorForActions.BeCloseToPlayer;
 import main.GamePannel;
 
 
@@ -21,7 +20,13 @@ public class Torero extends SpecialMonster implements MonsterInterface {
                     attackLeft1, attackLeft2, attackLeft3,
                     attackRight1, attackRight2, attackRight3;
 
-    ImpatiantBehavior slotForSlam;
+    private int healing;
+    private int triggerHeal;
+
+    public SlamAttack slam;
+
+    public boolean isUsingSlam = false;
+    private boolean isPreviousWalk2;
     
     Random random = new Random();
 
@@ -29,7 +34,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         super(gp, inputedDirection, coordX, coordY);
 
         getThisMonsterImage();
-        MonsterSetting();
+        MonsterSetting(false);
     }
 
     @Override
@@ -43,49 +48,67 @@ public class Torero extends SpecialMonster implements MonsterInterface {
     }
 
     @Override
-    public void MonsterSetting() {
+    public void MonsterSetting(boolean willDropItem) {
 
         gp.objSetter.setMonsterMatrix();
 
         noticeRange = 3;
         aggroRange = 20;
         initSpeed(1);
-        maxLife = 100;
+        maxLife = 200;
         life = maxLife;
         damage = 2;
         noKnockback = true;
 
         xp = 0;
-        // objToDrop[0] = "key";
-        // objToDrop[1] = "manaPotion";
         monsterSize = 5 * gp.tileSize;
 
-        solidArea = new Rectangle(1,1, (tileSize*3) - 2, (tileSize*9/2) - 2);
+        solidArea = new Rectangle(1,1, (tileSize*3) - 2, (tileSize*7/2) - 2);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        slotForSlam = new ImpatiantBehavior(120);
+        isPreviousWalk2 = true;
+
+        slam = new SlamAttack(this, damage, 2, 90, new BeCloseToPlayer(this, 300, 2));
+        healing = 0;
+        triggerHeal = 60;
     }
 
 
     public boolean executeSpActions(){
         
         if(aggravated){
+
+            healing = 0;
+            triggerHeal = 300;
+
             ArmyCharge();
-            return slotForSlam.executeAction();
+            isUsingSlam = slam.execute();
+            return isUsingSlam;
         } else {
+
+            if(healing < triggerHeal) healing++;
+            else if(life < maxLife){
+                healing = 0;
+                triggerHeal = 90;
+                life++;
+            }
+            
             return false;
         }
+    }
+
+    public void triggerEvent() {
+        gp.monster.clear();
+        gp.gameState = gp.winState;
     }
 
     
 
     public void ArmyCharge(){
-        // int randomWorldX = random.nextInt(30) - 30 + solidAreaDefaultX + worldX;
-        // int randomWorldY = random.nextInt(30) - 30 + solidAreaDefaultY + worldY;
         int randomWorldX = random.nextInt(monsterSize) + worldX;
         int randomWorldY = random.nextInt(monsterSize) + worldY;
-        summonArmy(randomWorldX, randomWorldY, 20);
+        summonArmy(randomWorldX, randomWorldY, 3);
         
     }
 
@@ -94,38 +117,32 @@ public class Torero extends SpecialMonster implements MonsterInterface {
     }
 
 
-    // @Override
-    // public void update(){
-    //     super.update();
-    //     //setBossSolidArea();
-    // }
 
-    // public void setBossSolidArea(){
-    //     if(facing == "up") solidArea = new Rectangle(50, 50, 46 * 5, 46 * 5);
-    //     else if(facing == "down") solidArea = new Rectangle(50, 50, 46 * 5, 46 * 5);
-    //     else if(facing == "left") solidArea = new Rectangle(50, 50, 46 * 3, 46 * 5);
-    //     else if(facing == "right") solidArea = new Rectangle(50, 50, 46 * 3, 46 * 5);
-    // }
+    public void spriteCounting(){
 
-    // int minute = 0;
-    // int second = minute * 60;
+        if(isUsingSlam){
+            if(slam.chronology == 0) spriteNum = 1;
+            else if(slam.chronology < slam.timeFrame*3/5) spriteNum = 2;
+            else {
+                spriteNum = 3;
+                spriteCounter = 0;
+            }
+        } else {
+            spriteCounter++;
+            if(spriteCounter >= 24){
+                if(isPreviousWalk2){
+                    spriteNum = 1;
+                    isPreviousWalk2 = false;
+                } else {
+                    spriteNum = 2;
+                    isPreviousWalk2 = true;
+                }
+                spriteCounter = 0;
+            } else if(spriteCounter == 14) spriteNum = 3;
+        }
 
-    // public void ArmyCharge2(){
-    //     if (second == 30){
-   
-    //         if (life < maxLife / 2){
-    //             summonArmy(worldX, worldY, 10);
-    //         }
-    //         else{
-    //             System.out.println("summon");
-    //             summonArmy(worldX, worldY, 6);
-    //         }
-    //         second = 0;
-    //     }
-    //     second ++;
-         
-    // }
-
+        
+    }
 
 
     @Override
@@ -136,34 +153,63 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         int screenX = worldX - gp.player.worldX + gp.player.screenX ;
         int screenY = worldY - gp.player.worldY + gp.player.screenY ;
 
-        if( worldX + solidAreaDefaultX > gp.player.worldX - gp.player.screenX &&
-            worldX < gp.player.worldX + gp.player.screenX &&
-            worldY + solidAreaDefaultY > gp.player.worldY - gp.player.screenY &&
-            worldY < gp.player.worldY + gp.player.screenY) { 
+        if( worldX + tileSize*3 > gp.player.worldX - gp.player.screenX &&
+            worldX - tileSize < gp.player.worldX + gp.player.screenX &&
+            worldY + (tileSize*7/2) > gp.player.worldY - gp.player.screenY &&
+            worldY - tileSize - tileSize < gp.player.worldY + gp.player.screenY) {
             
+            if (isUsingSlam) {
+                switch(facing){
+                    case "up":
+                        if (spriteNum == 1) image = attackUp1;
+                        else if (spriteNum == 2) image = attackUp2;
+                        else image = attackUp3;
+                        break;
+                    case "down":
+                        if (spriteNum == 1) image = attackDown1;
+                        else if (spriteNum == 2) image = attackDown2;
+                        else image = attackDown3;
+                        break;
+                    case "left":
+                        if (spriteNum == 1) image = attackLeft1;
+                        else if (spriteNum == 2) image = attackLeft2;
+                        else image = attackLeft3;
+                        break;
+                    case "right":
+                        if (spriteNum == 1) image = attackRight1;
+                        else if (spriteNum == 2) image = attackRight2;
+                        else image = attackRight3;
+                        break;                              
+                }
+            } else {
                 switch(facing){
                     case "up":
                         if (spriteNum == 1) image = up1;
                         else if (spriteNum == 2) image = up2;
+                        else image = up3;
                         break;
                     case "down":
                         if (spriteNum == 1) image = down1;
                         else if (spriteNum == 2) image = down2;
+                        else image = down3;
                         break;
                     case "left":
                         if (spriteNum == 1) image = left1;
                         else if (spriteNum == 2) image = left2;
+                        else image = left3;
                         break;
                     case "right":
                         if (spriteNum == 1) image = right1;
                         else if (spriteNum == 2) image = right2;
+                        else image = right3;
                         break;                              
                 }
+            }
             
-            g2.drawImage(image, screenX, screenY, monsterSize, monsterSize, null);
+            g2.drawImage(image, screenX, screenY - tileSize + 7, tileSize*3, tileSize*9/2, null);
             g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
-            //System.out.println(direction[0] + " " + facing );
-            //System.out.println(solidArea.x + " " + solidArea.y + " " + solidArea.width + " " + solidArea.height);
+
+            // System.out.println("leftLimit: " + leftLimit + "  rightLimit: " + rightLimit + "  upLimit: " + upLimit + "  downLimit: " + downLimit);
         }
     }
 

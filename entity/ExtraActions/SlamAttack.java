@@ -1,22 +1,98 @@
 package entity.ExtraActions;
 
-//import java.awt.image.BufferedImage;
+import java.awt.Rectangle;
 
 import entity.Entity;
+import entity.Monsters.Monster;
 import entity.ExtraActions.BehaviorForActions.BehaviorForAction;
+import tile.TileManager;
 
 public class SlamAttack extends ExtraAction {
 
-    //BufferedImage[] listFrames = new BufferedImage[8]; // (0-1) up, (2-3) down, (4-5) left, (6-7) right  ;  (x%2 == 0) first frame, (x%2 == 1) second frame
-    
-    public SlamAttack(Entity inputedEntity, BehaviorForAction firstBehavior){
-        
-        super(inputedEntity, firstBehavior);
+    public int tileSize = executor.tileSize;
 
-        //listFrames = inputedFrames;
+    private int damage;
+    private int range;
+
+    private int leftLimit;
+    private int rightLimit;
+    private int upLimit;
+    private int downLimit;
+
+    public SlamAttack(Entity inputedEntity, int dmg, int inputedRange, int numberFramesActive, BehaviorForAction firstBehavior){
+        super(inputedEntity, numberFramesActive, firstBehavior);
+        damage = dmg;
+        range = inputedRange;
+    }
+
+    public void setupTimeFrame(int numberFramesActive){
+        minTimeFrame = 5;
+        super.setupTimeFrame(numberFramesActive);
     }
 
     public boolean execute(){
-        return false;
+
+        if(!isExecuting() && getCurrentBehavior().executeAction()) chronology = 0;
+
+        if(isExecuting()){
+            chronology++;
+
+            if(chronology == timeFrame*3/5){
+                // tile coordonates for hitbox
+                leftLimit = executor.getLeftTile() - range;
+                rightLimit = executor.getRightTile() + range;
+                upLimit = executor.getUpperTile() - range;
+                downLimit = executor.getLowerTile() + range;
+
+                TileManager tileM = gp.tileM;
+                for (int x = leftLimit ; x <= rightLimit ; x++){
+                    for (int y = upLimit ; y <= downLimit ; y++){
+                        tileM.changeTile(x, y, 6);
+                    }
+                }
+
+                int leftHitbox = leftLimit * tileSize;
+                int rightHitbox = (rightLimit + 1 - leftLimit) * tileSize;
+                int upHitbox = upLimit * tileSize;
+                int downHitbox = (downLimit + 1 - upLimit) * tileSize;
+                Rectangle hitbox = new Rectangle(leftHitbox, upHitbox, rightHitbox, downHitbox);
+
+                if(isPlayer){
+                    synchronized (gp.monster){
+                        for(Monster iterMonster : gp.monster){
+                            iterMonster.solidArea.x += iterMonster.worldX;
+                            iterMonster.solidArea.y += iterMonster.worldY;
+                            if(iterMonster.solidArea.intersects(hitbox)){
+                                iterMonster.receiveDmg(damage);
+                                if(!iterMonster.noKnockback) iterMonster.giveForcedMovement(gp.interactionChecker.awayFromPlayer(iterMonster), 8, 25);
+                            }
+                            iterMonster.solidArea.x = iterMonster.solidAreaDefaultX;
+                            iterMonster.solidArea.y = iterMonster.solidAreaDefaultY;
+                        }
+                    }
+                } else {
+                    gp.player.solidArea.x += gp.player.worldX;
+                    gp.player.solidArea.y += gp.player.worldY;
+                    if(gp.player.solidArea.intersects(hitbox)){
+                        gp.player.receiveDmg(damage);
+                        gp.player.giveForcedMovement(gp.interactionChecker.towardsPlayer(executor), 8, 25);
+                    }
+                    gp.player.solidArea.x = gp.player.solidAreaDefaultX;
+                    gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+                }
+            }
+
+            if(chronology == timeFrame){
+                TileManager tileM = gp.tileM;
+                for (int x = leftLimit ; x <= rightLimit ; x++){
+                    for (int y = upLimit ; y <= downLimit ; y++){
+                        tileM.changeTile(x, y, 7);
+                    }
+                }
+            }
+
+            return true;
+
+        } else return false;
     }
 }

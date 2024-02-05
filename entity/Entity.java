@@ -36,9 +36,10 @@ public class Entity {
     public int attackDelay = 0;
 
     public int[] storeMovement = {0, 0};  // "valeurs de déplacement {horizontal, vertical}"
+    public boolean isWantedMovement;
     public boolean didWantedMovement;
 
-    public Rectangle solidArea = new Rectangle(1, 1, 46, 46);   // Est utilisé pour la position et pour toute interaction "subie"
+    public Rectangle solidArea;   // Est utilisé pour la position et pour toute interaction "subie"
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;   // L'entité est affecté par les collisions ou pas?
     public boolean blockedUp;
@@ -76,6 +77,7 @@ public class Entity {
     public int mana;
     public int maxMana;
 
+    public int registeredDMG;
     public boolean isDead = false;
 
 
@@ -276,11 +278,12 @@ public class Entity {
 
     public Entity(GamePannel gp) {
         this.gp = gp;
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
         bufferDirection = null;
         isWithPlayer = false;
         tileSize = gp.tileSize;
+        solidArea = new Rectangle(1, 1, tileSize-2, tileSize-2);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
     }
 
     // À modifier si on veut rajouter des actions supplémentaires
@@ -317,10 +320,16 @@ public class Entity {
             facing = direction[0];
         }
 
+        isWantedMovement = true;
         didWantedMovement = verifyMovement(direction);
+        isWantedMovement = false;
 
-        applyForcedMovement(); 
+        applyForcedMovement();
 
+        spriteCounting();
+    }
+
+    public void spriteCounting(){
         spriteCounter++;
         if(spriteCounter >= 12){
             if(spriteNum == 1){
@@ -330,7 +339,7 @@ public class Entity {
                 spriteNum = 1;
             }
             spriteCounter = 0;
-        }   
+        }
     }
 
 
@@ -496,6 +505,16 @@ public class Entity {
         if(!blockedRight) stopDirections[3] = false;
     }
 
+    public void forceLetGoHorizontal(){
+        stopDirections[0] = false;
+        stopDirections[1] = false;
+    }
+
+    public void forceLetGoVertical(){
+        stopDirections[2] = false;
+        stopDirections[3] = false;
+    }
+
     public void forceLetGoAll(){
         stopDirections[0] = false;
         stopDirections[1] = false;
@@ -597,20 +616,38 @@ public class Entity {
     }
 
 
+    // the next 4 methods return tile coordonates
+    public int getLeftTile(){
+        return (worldX + solidAreaDefaultX)/tileSize;
+    }
+
+    public int getRightTile(){
+        return (worldX + solidAreaDefaultX + solidArea.width)/tileSize;
+    }
+
+    public int getUpperTile(){
+        return (worldY + solidAreaDefaultY)/tileSize;
+    }
+
+    public int getLowerTile(){
+        return (worldY + solidAreaDefaultY + solidArea.height)/tileSize;
+    }
+
+    // the next 4 methods return normal coordonates
     public int getLeftTileBorder(){
-        return ((worldX + solidAreaDefaultX)/tileSize)*tileSize;
+        return getLeftTile()*tileSize;
     }
 
     public int getRightTileBorder(){
-        return ( ((worldX + solidAreaDefaultX + solidArea.width)/tileSize) + 1)*tileSize;
+        return getRightTile()*tileSize;
     }
 
     public int getUpperTileBorder(){
-        return ((worldY + solidAreaDefaultY)/tileSize)*tileSize;
+        return getUpperTile()*tileSize;
     }
 
     public int getLowerTileBorder(){
-        return ( ((worldY + solidAreaDefaultY + solidArea.height)/tileSize) + 1)*tileSize;
+        return getLowerTile()*tileSize;
     }
 
 
@@ -664,7 +701,7 @@ public class Entity {
                 }
             
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
-            //g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
             
         }
     }

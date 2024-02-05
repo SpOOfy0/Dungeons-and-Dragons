@@ -33,18 +33,14 @@ public class ClassSetter {
     }
 
 
-    // c'est une bêtise, on doit laisser de la liberté sur les monstres qu'on peut spawn
-    int counter = 0;
-    int monsterIndex = 0;
+    public int counter = 0;
+    public int monsterNumber = 0;
 
-    Monster monsterMatrix[][] = new Monster[20][3];
+    Monster monsterMatrix[] = new Monster[3];
     public void setMonsterMatrix() {
-        for(int i = 0; i < 20; i++){
-            monsterMatrix[i][0] = new Orc(gp, "down", 27, 25);
-            monsterMatrix[i][1] = new RedOrc(gp, "left",  27, 25);
-            monsterMatrix[i][2] = new BlueOrc(gp, "Right",  27, 25);
-
-        }
+        monsterMatrix[0] = new Orc(gp, "down", 27, 25, false);
+        monsterMatrix[1] = new RedOrc(gp, "left",  27, 25, false);
+        monsterMatrix[2] = new BlueOrc(gp, "Right",  27, 25, false);
     }
 
     
@@ -54,22 +50,23 @@ public class ClassSetter {
     }
     
     
-    public void MonsterSpawner(int worldX, int worldY ,int numberOfMonsterToSpawn){
-        if (numberOfMonsterToSpawn / 3 > monsterIndex) {
+    public void MonsterSpawner(int worldX, int worldY, int numberOfMonsterToSpawn){
+        if (numberOfMonsterToSpawn > monsterNumber) {
             
-            System.out.println(monsterIndex);
-            if(counter == 30) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][0]);
-                setMonster(monsterMatrix[monsterIndex][0]);
+            if(counter == 180) {
+                setMonsterWorld(worldX, worldY, monsterMatrix[0]);
+                setMonster(monsterMatrix[0]);
+                monsterNumber++;
             }
-            else if (counter == 60) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][1]);
-                setMonster(monsterMatrix[monsterIndex][1]);
+            else if (counter == 360) {
+                setMonsterWorld(worldX, worldY, monsterMatrix[1]);
+                setMonster(monsterMatrix[1]);
+                monsterNumber++;
             }
-            else if (counter == 90) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[monsterIndex][2]);
-                setMonster(monsterMatrix[monsterIndex][2]);
-                monsterIndex++;
+            else if (counter == 540) {
+                setMonsterWorld(worldX, worldY, monsterMatrix[2]);
+                setMonster(monsterMatrix[2]);
+                monsterNumber++;
                 counter = 0;
             }
         }
@@ -95,25 +92,28 @@ public class ClassSetter {
 
     public void setMonsters(){
         // upper row
-        setMonster(new BlueOrc(gp, "right", 9, 8));
-        setMonster(new Orc(gp, "down", 28, 8));
-        setMonster(new Orc(gp, "up", 28, 8));
-        setMonster(new RedOrc(gp, "left", 52, 8));
+        setMonster(new BlueOrc(gp, "right", 9, 8, true));
+        setMonster(new Orc(gp, "down", 28, 8, true));
+        setMonster(new Orc(gp, "up", 28, 8, true));
+        setMonster(new RedOrc(gp, "left", 52, 8, true));
 
         // middle row
-        setMonster(new Orc(gp, "up", 9, 32));
-        setMonster(new Orc(gp, "down", 9, 32));
-        setMonster(new Orc(gp, "up", 52, 32));
-        setMonster(new Orc(gp, "down", 52, 32));
+        setMonster(new Orc(gp, "up", 9, 32, true));
+        setMonster(new Orc(gp, "down", 9, 32, true));
+        setMonster(new Orc(gp, "up", 52, 32, true));
+        setMonster(new Orc(gp, "down", 52, 32, true));
 
         // lower row
-        setMonster(new RedOrc(gp, "right", 9, 51));
-        setMonster(new Orc(gp, "up", 33, 51));
-        setMonster(new Orc(gp, "down", 33, 51));
-        setMonster(new BlueOrc(gp, "left", 52, 51));
-
-        //setMonster(new Torero(gp, "down", 27, 25));
+        setMonster(new RedOrc(gp, "right", 9, 51, true));
+        setMonster(new Orc(gp, "up", 33, 51, true));
+        setMonster(new Orc(gp, "down", 33, 51, true));
+        setMonster(new BlueOrc(gp, "left", 52, 51, true));
     }
+
+    public void setBoss(){
+        setMonster(new Torero(gp, "down", 25, 24));
+    }
+
 }
 
 

@@ -57,7 +57,10 @@ public class TileManager {
             tile[5].opaque = true;
 
             tile[6] = new Tile();
-            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Earth.jpg"));
+            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/Maps/AridEarth.jpg"));
+
+            tile[7] = new Tile();
+            tile[7].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Earth.jpg"));
 
         }catch(Exception e){
             System.out.println("Error loading image");

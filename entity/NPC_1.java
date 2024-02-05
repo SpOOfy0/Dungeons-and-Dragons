@@ -27,11 +27,11 @@ public class NPC_1 extends NPC{
 
     @Override
     public void setDialogues() {
-        dialogues.add("Hello and welcome to this magic island");
-        dialogues.add("To get out of here, you need to defeat all \n the monsters");
-        dialogues.add("Then you will fight the Torero, the strongest \n monster of all");
-        dialogues.add("Beat them all and you will get the one piece");
-        dialogues.add("Nice outfit by the way");
+        dialogues.add("Hello!\nAnd welcome to the magic dungeon island!");
+        dialogues.add("To get out of here, you need to defeat all\nthe monsters.");
+        dialogues.add("Then you will fight the Torero,\nthe strongest monster of all.");
+        dialogues.add("Beat them all and you will get the one piece.");
+        dialogues.add("Nice outfit by the way.");
     }
     
 }

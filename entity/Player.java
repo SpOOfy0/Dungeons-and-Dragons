@@ -114,8 +114,16 @@ public class Player extends Entity {
         //PLAYER STATUS
         maxLife = 8;
         life = maxLife;
+
         attackSpeed = 30;
         damage = 2;
+
+        // attackSpeed = 10;
+        // damage = 1;
+
+        //CodeExp
+        // level = 1;
+        // maxXp = 1000;
 
         //CodeMana
         maxMana = 100;
@@ -267,12 +275,11 @@ public class Player extends Entity {
         playerDeath();
 
 
+        isWantedMovement = true;
         didWantedMovement = verifyMovement(direction);
+        isWantedMovement = false;
 
         applyForcedMovement();
-
-        // boolean m = gp.tileM.detectDoor();
-        // System.out.println(m);
 
         // s'occuper des intéractions entre le joueur et son environnement
         pickUpObject(objIndexes);
@@ -283,7 +290,11 @@ public class Player extends Entity {
         for(int i = 0; i < monsterIndexes.size(); i++)
             interactMonster(monsterIndexes.get(i));
 
-    
+        spriteCounting();
+        
+    }
+
+    public void spriteCounting(){
         if(direction[0] != null || direction[1] != null){
             if(!isPreviousStateMove){
                 spriteCounter = 0;
@@ -320,6 +331,8 @@ public class Player extends Entity {
             }
         }
     }
+    
+
 
     public boolean levelUp(){
         if( xp >= maxXp){
@@ -380,6 +393,8 @@ public class Player extends Entity {
             }
         }
     }
+
+    
 
     // vérifie et applique le mouvement dans "storeMovement" seulement dans la direction entrée comme variable
     // aussi étudie les collisions entre le joueur et son environnement
@@ -726,6 +741,11 @@ public class Player extends Entity {
         }
     }
 
+    public void receiveDmg(int dmg) {
+        registeredDMG = dmg;
+        life -= registeredDMG;
+        if(life <= 0) isDead = true;
+    }
 
     public void playerDeath(){
         if(life <= 0) isDead = true;
@@ -869,6 +889,8 @@ public class Player extends Entity {
 
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
         }
+        
+        g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
     }
     
 }

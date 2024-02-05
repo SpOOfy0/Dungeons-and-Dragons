@@ -2,6 +2,7 @@ package entity.Monsters;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Vector;
 
 import entity.Entity;
 import entity.Player;
@@ -17,6 +18,8 @@ public class Monster extends Entity{
     public boolean noKnockback = false;
 
     public boolean stopForSpAction = false;
+
+    public Vector<String> objToDrop = new Vector<String>();
     
     
     public Monster(GamePannel gp, String inputedDirection, int coordX, int coordY) {
@@ -35,8 +38,6 @@ public class Monster extends Entity{
         direction[1] = null;
         facing = direction[0];
     }
-
-    public String[] objToDrop = new String[2];
     
 
     // À modifier si on veut implémenter des actions supplémentaires
@@ -147,6 +148,8 @@ public class Monster extends Entity{
 
         }
 
+        registeredDMG = 0;
+
         return stopForSpAction;
 
     }
@@ -155,34 +158,104 @@ public class Monster extends Entity{
 
     public void GoToPlayer(Player player) {
 
+        int leftM = worldX + solidAreaDefaultX;
+        int rightM = leftM + solidArea.width;
+        int upM = worldY + solidAreaDefaultY;
+        int downM = upM + solidArea.height;
+
+        int leftP = player.worldX + player.solidAreaDefaultX;
+        int rightP = leftP + player.solidArea.width;
+        int upP = player.worldY + player.solidAreaDefaultY;
+        int downP = upP + player.solidArea.height;
+
+        
+        // System.out.println("before 0 direction: " + direction[0]);
+
+        if ((leftM/tileSize <= leftP/tileSize && rightP/tileSize <= rightM/tileSize) || (leftP/tileSize <= leftM/tileSize && rightM/tileSize <= rightP/tileSize)) {
+            int iterLeft = Math.min(leftM/tileSize, leftP/tileSize);
+            int iterHori;
+            int iterRight = Math.max(rightM/tileSize, rightP/tileSize);
+            int iterVert = Math.min(upM/tileSize, upP/tileSize);
+            int iterDown = Math.max(downM/tileSize, downP/tileSize);
+            boolean condition = true;
+            while(iterVert <= iterDown){
+                iterHori = iterLeft;
+                while(iterHori <= iterRight){
+                    condition = gp.tileM.isCollision(iterHori, iterVert);
+                    if(condition){
+                        iterVert += iterDown;
+                        iterHori += iterRight;
+                    }
+                    iterHori++;
+                }
+                iterVert++;
+            }
+
+            if(!condition){
+                forceLetGoVertical();
+                direction[0] = gp.interactionChecker.towardsPlayer(this);
+            }
+
+        } else if ((upM/tileSize <= upP/tileSize && downP/tileSize <= downM/tileSize) || (upP/tileSize <= upM/tileSize && downM/tileSize <= downP/tileSize)){
+            int iterHori = Math.min(leftM/tileSize, leftP/tileSize);
+            int iterRight = Math.max(rightM/tileSize, rightP/tileSize);
+            int iterUp = Math.min(upM/tileSize, upP/tileSize);
+            int iterVert;
+            int iterDown = Math.max(downM/tileSize, downP/tileSize);
+            boolean condition = true;
+            while(iterHori <= iterRight){
+                iterVert = iterUp;
+                while(iterVert <= iterDown){
+                    condition = gp.tileM.isCollision(iterHori, iterVert);
+                    if(condition){
+                        iterVert += iterDown;
+                        iterHori += iterRight;
+                    }
+                    iterVert++;
+                }
+                iterHori++;
+            }
+
+            if(!condition){
+                
+                forceLetGoHorizontal();
+                direction[0] = gp.interactionChecker.towardsPlayer(this);
+            }
+        }
+        
+        // System.out.println("before 1 direction: " + direction[0]);
+
+
         // to follow the player
-        if(worldX + solidAreaDefaultX + solidArea.width <= player.worldX + player.solidAreaDefaultX + 1){
+        if(rightM <= leftP + 1){
             if(!stopDirections[3]){
                 direction[0] = "right";
                 if(speed != baseSpeed) speed = baseSpeed;
             }
-        } else if(player.worldX + player.solidAreaDefaultX + player.solidArea.width <= worldX + solidAreaDefaultX + 1){
+        } else if(rightP <= leftM + 1){
             if(!stopDirections[2]){
                 direction[0] = "left";
                 if(speed != baseSpeed) speed = baseSpeed;
             }
-        } else if(worldY + solidAreaDefaultY + solidArea.height <= player.worldY + player.solidAreaDefaultY + 1){
+        } else if(downM <= upP + 1){
             if(!stopDirections[1]){
                 direction[0] = "down";
                 if(speed != baseSpeed) speed = baseSpeed;
             }
-        } else if(player.worldY + player.solidAreaDefaultY + player.solidArea.height <= worldY + solidAreaDefaultY + 1){
+        } else if(downP <= upM + 1){
             if(!stopDirections[0]){
                 direction[0] = "up";
                 if(speed != baseSpeed) speed = baseSpeed;
             }
         }
+        
+        //System.out.println("before 2 direction: " + direction[0]);
+
 
 
         if(direction[0] == null){
 
             // normal coordonates
-            int posMonster1, posMonster2;
             int resDistanceMini, distanceMini;
 
             // tile coordonates
@@ -201,19 +274,17 @@ public class Monster extends Entity{
             // to follow the player when can't be followed with the previous functions (like in gaps)
             switch(bufferDirection) {
                 case "down":
-                    fixCoord = ((worldY + solidAreaDefaultY + solidArea.height)/tileSize) + 1;
+                    fixCoord = (downM/tileSize) + 1;
                 case "up":
-                    if(bufferDirection == "up") fixCoord = ((worldY + solidAreaDefaultY)/tileSize) - 1;
+                    if(bufferDirection == "up") fixCoord = (upM/tileSize) - 1;
                     
-                    tilePlayer1 = (player.worldX + player.solidAreaDefaultX)/tileSize;
-                    tilePlayer2 = ((player.worldX + player.solidAreaDefaultX + player.solidArea.width)/tileSize) + 1;
+                    tilePlayer1 = leftP/tileSize;
+                    tilePlayer2 = (rightP/tileSize) + 1;
+                    
+                    tileMonster1 = leftM/tileSize;
+                    tileMonster2 = (rightM/tileSize) + 1;
 
-                    posMonster1 = worldX + solidAreaDefaultX;
-                    posMonster2 = posMonster1 + solidArea.width;
                     minGapSize = ((solidArea.width+1)/tileSize)+1;
-                    
-                    tileMonster1 = posMonster1/tileSize;
-                    tileMonster2 = (posMonster2/tileSize) + 1;
                     distanceAllowed = Math.max(minGapSize, aggroRange);
                     limit1 = Math.max(tileMonster1 - distanceAllowed, 0);
                     limit2 = Math.min(tileMonster2 + distanceAllowed, gp.maxWorldCol - 1);
@@ -229,17 +300,19 @@ public class Monster extends Entity{
                             if(numberOfFreeSpaces >= minGapSize){
 
                                 tileDestination = i+1;
-                                resDistanceMini = posMonster2 - (tileDestination*tileSize);
+                                resDistanceMini = rightM - (tileDestination*tileSize);
                                 resTileDistancePlayer = Math.abs(tileDestination - tilePlayer2);
                                 resIsLeftOrUp = true;
                                 if(resDistanceMini < 0){
                                     tileDestination -= minGapSize;
-                                    resDistanceMini = (tileDestination*tileSize) - posMonster1;
+                                    resDistanceMini = (tileDestination*tileSize) - leftM;
                                     resTileDistancePlayer = Math.abs(tilePlayer1 - tileDestination);
                                     resIsLeftOrUp = false;
                                 }
 
                                 if((resDistanceMini < distanceMini && resDistanceMini >= 0) || (resDistanceMini == distanceMini && resTileDistancePlayer < tileDistancePlayer)){
+
+                                    //System.out.println("vert distanceMini: " + resDistanceMini + "  isLeftOrUp: " + resIsLeftOrUp + "  tileDistancePlayer: " + resTileDistancePlayer);
 
                                     distanceMini = resDistanceMini;
                                     isLeftOrUp = resIsLeftOrUp;
@@ -256,33 +329,33 @@ public class Monster extends Entity{
                             decideLetGo("left");
                             if(!stopDirections[2]){
                                 direction[0] = "left";
-                                if (distanceMini < speed*2 && speed > 1) speed--;
+                                speed = baseSpeed;
+                                if (distanceMini < speed*2 && speed > 1) speed = 1;
                             }
                         } else {
                             decideLetGo("right");
                             if(!stopDirections[3]){
                                 direction[0] = "right";
-                                if (distanceMini < speed*2 && speed > 1) speed--;
+                                speed = baseSpeed;
+                                if (distanceMini < speed*2 && speed > 1) speed = 1;
                             }
                         }
 
-                    } else direction[0] = bufferDirection;
+                    }
         
                     break;
                 case "right":
-                    fixCoord = ((worldX + solidAreaDefaultX + solidArea.width)/tileSize) + 1;
+                    fixCoord = (rightM/tileSize) + 1;
                 case "left":
-                    if(bufferDirection == "left") fixCoord = ((worldX + solidAreaDefaultX)/tileSize) - 1;
+                    if(bufferDirection == "left") fixCoord = (leftM/tileSize) - 1;
                         
-                    tilePlayer1 = (player.worldY + player.solidAreaDefaultY)/tileSize;
-                    tilePlayer2 = ((player.worldY + player.solidAreaDefaultY + player.solidArea.height)/tileSize) + 1;
+                    tilePlayer1 = upP/tileSize;
+                    tilePlayer2 = (downP/tileSize) + 1;
 
-                    posMonster1 = worldY + solidAreaDefaultY;
-                    posMonster2 = posMonster1 + solidArea.height;
+                    tileMonster1 = upM/tileSize;
+                    tileMonster2 = (downM/tileSize) + 1;
+
                     minGapSize = ((solidArea.height+1)/tileSize)+1;
-                    
-                    tileMonster1 = posMonster1/tileSize;
-                    tileMonster2 = (posMonster2/tileSize) + 1;
                     distanceAllowed = Math.max(minGapSize, aggroRange);
                     limit1 = Math.max(tileMonster1 - distanceAllowed, 0);
                     limit2 = Math.min(tileMonster2 + distanceAllowed, gp.maxWorldRow - 1);
@@ -298,12 +371,12 @@ public class Monster extends Entity{
                             if(numberOfFreeSpaces >= minGapSize){
 
                                 tileDestination = i+1;
-                                resDistanceMini = posMonster2 - (tileDestination)*tileSize;
+                                resDistanceMini = downM - (tileDestination)*tileSize;
                                 resTileDistancePlayer = Math.abs(tileDestination - tilePlayer2);
                                 resIsLeftOrUp = true;
                                 if(resDistanceMini < 0){
                                     tileDestination -= minGapSize;
-                                    resDistanceMini = (tileDestination*tileSize) - posMonster1;
+                                    resDistanceMini = (tileDestination*tileSize) - upM;
                                     resTileDistancePlayer = Math.abs(tilePlayer1 - tileDestination);
                                     resIsLeftOrUp = false;
                                 }
@@ -321,45 +394,57 @@ public class Monster extends Entity{
 
                     if(distanceMini < distanceAllowed*tileSize){
 
+                        //System.out.println("hori distanceMini: " + distanceMini + "  isLeftOrUp: " + isLeftOrUp + "  tileDistancePlayer: " + tileDistancePlayer);
+
                         if(isLeftOrUp){
                             decideLetGo("up");
                             if(!stopDirections[0]){
                                 direction[0] = "up";
-                                if (distanceMini < speed*2 && speed > 1) speed--;
+                                speed = baseSpeed;
+                                if (distanceMini < speed*2 && speed > 1) speed = 1;
                             }
                         } else {
                             decideLetGo("down");
                             if(!stopDirections[1]){
                                 direction[0] = "down";
-                                if (distanceMini < speed*2 && speed > 1) speed--;
+                                speed = baseSpeed;
+                                if (distanceMini < speed*2 && speed > 1) speed = 1;
                             }
                         }
 
-                    } else direction[0] = bufferDirection;
+                    }
 
                     break;
             }
         }
 
+        
+        // System.out.println("before 3 direction: " + direction[0]);
+
+        if(direction[0] == null) direction[0] = bufferDirection;
+
+        // System.out.println("after direction: " + direction[0]);
+        // System.out.println("stopDirections  up: " + stopDirections[0] + "  down: " + stopDirections[1] + "  left: " + stopDirections[2] + "  right: " + stopDirections[3]);
+        // System.out.println(" ");
     }
     
 
 
     public void attackPlayer() {
-        if(gp.player.life > 0) {
-        gp.player.life -= damage;
-        }
+        if(gp.player.life > 0) gp.player.receiveDmg(damage);
         attackDelay = 0;
     }
 
     public void receiveDmg(int dmg) {
-        life -= dmg;
         aggravated = true;
+        registeredDMG = dmg;
+        life -= registeredDMG;
         if(life <= 0) isDead = true;
     }
 
     public void onDeath(){
         gp.player.xp += xp;
+        if(gp.objSetter.monsterNumber > 0) gp.objSetter.monsterNumber--;
         DropObject();
     }
 
