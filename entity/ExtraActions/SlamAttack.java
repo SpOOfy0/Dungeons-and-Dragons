@@ -47,7 +47,7 @@ public class SlamAttack extends ExtraAction {
                 TileManager tileM = gp.tileM;
                 for (int x = leftLimit ; x <= rightLimit ; x++){
                     for (int y = upLimit ; y <= downLimit ; y++){
-                        tileM.changeTile(x, y, 6);
+                        tileM.changeTile(x, y, 4);
                     }
                 }
 
@@ -86,7 +86,7 @@ public class SlamAttack extends ExtraAction {
                 TileManager tileM = gp.tileM;
                 for (int x = leftLimit ; x <= rightLimit ; x++){
                     for (int y = upLimit ; y <= downLimit ; y++){
-                        tileM.changeTile(x, y, 7);
+                        tileM.changeTile(x, y, 5);
                     }
                 }
             }

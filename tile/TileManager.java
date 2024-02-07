@@ -47,20 +47,29 @@ public class TileManager {
             tile[3].opaque = true;
 
             tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Gate/DownGate.png"));
-            tile[4].collision = true;
-            tile[4].opaque = true;
+            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/Maps/AridEarth.jpg"));
 
             tile[5] = new Tile();
-            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Gate/LeftGate.png"));
-            tile[5].collision = true;
-            tile[5].opaque = true;
-
+            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Earth.jpg"));
+            
             tile[6] = new Tile();
-            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/Maps/AridEarth.jpg"));
-
+            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Steel.png"));
+            tile[6].collision = true;
+            tile[6].opaque = true;
+            tile[6].changeable = false;
+            
             tile[7] = new Tile();
-            tile[7].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Earth.jpg"));
+            tile[7].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Grass.png"));
+            tile[7].changeable = false;
+            
+            tile[8] = new Tile();
+            tile[8].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Earth.jpg"));
+            tile[8].changeable = false;
+
+            tile[9] = new Tile();
+            tile[9].image = ImageIO.read(getClass().getResourceAsStream("/Maps/Steel.png"));
+            tile[9].collision = true;
+            tile[9].opaque = true;
 
         }catch(Exception e){
             System.out.println("Error loading image");
@@ -140,7 +149,7 @@ public class TileManager {
 
             int col = 0;  
             int row = 0; 
-            while(col < gp.maxWorldCol && row < gp.maxWorldRow){
+            while(row < gp.maxWorldRow){
                 String line = br.readLine(); //Lire la ligne
                 while(col < gp.maxWorldCol){
                     String numbers[] = line.split(" "); //numbers[] = {0,0,0,0,0,0,0,0,0,0}
@@ -148,7 +157,7 @@ public class TileManager {
                     mapTileNum[col][row] = num;
                     col++;
                 }
-                if (col == gp.maxWorldCol){
+                if (col >= gp.maxWorldCol){
                     col = 0;
                     row++;
                 }
@@ -163,8 +172,12 @@ public class TileManager {
         loadMap("/Maps/map2.txt");
     }
 
+    public boolean isChangeable(int coordX, int coordY){
+        return tile[mapTileNum[coordX][coordY]].changeable;
+    }
+
     public void changeTile(int coordX, int coordY, int tileNum){
-        mapTileNum[coordX][coordY] = tileNum;
+        if(isChangeable(coordX, coordY)) mapTileNum[coordX][coordY] = tileNum;
     }
 
     public boolean closeToGate(int tileWorldX, int tileWorldY){

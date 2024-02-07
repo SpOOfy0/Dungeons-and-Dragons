@@ -96,8 +96,8 @@ public class Player extends Entity {
         noticeRange = 0;
 
         //PLAYER WORLD POSITION
-        worldX = tileSize * 31; 
-        worldY = tileSize * 30; 
+        worldX = tileSize * 32; 
+        worldY = tileSize * 31; 
         initSpeed(4);
         facing = "down";
 
@@ -346,7 +346,8 @@ public class Player extends Entity {
         maxLife += 1;
         life = maxLife;
         maxMana += 10;
-        mana = maxMana;
+        mana += 40;
+        if(mana > maxMana) mana = maxMana;
 
         if(level % 2 == 0){
             damage += 1;
@@ -368,12 +369,23 @@ public class Player extends Entity {
             life = maxLife;
             gp.electroBall.damage += 1;
         }
+
+        if(level % 8 == 0){
+            damage += 1;
+        }
     }
 
     public void FighterLevelUp(){
         maxLife += 1;
         life = maxLife;
         damage += 1;
+        mana += 9;
+        if(mana > maxMana) mana = maxMana;
+
+        if(level % 8 == 0){
+            gp.fireBall.damage += 1;
+            gp.electroBall.damage += 1;
+        }
     }
 
     
@@ -556,36 +568,36 @@ public class Player extends Entity {
     public void openGate(){
         if (inventory.containsKey("key") && gp.keyHandler.aPressed){
 
-            if(gp.tileM.closeToGate(50,34)){
-                openDoor(50,34, 0);
+            if(gp.tileM.closeToGate(22,11)){
+                openDoor(22,11, 0);
             }
 
-            else if(gp.tileM.closeToGate(50,14)){
-                openDoor(50,14, 0);
+            else if(gp.tileM.closeToGate(41,11)){
+               openDoor(41,11, 0);
             }
 
-            else if(gp.tileM.closeToGate(11,25)){
-                openDoor(11,25, 0);
-            }
-
-            else if(gp.tileM.closeToGate(15,10)){
-                openDoor(15,10, 0);
+            else if(gp.tileM.closeToGate(12,21)){
+                openDoor(12,21, 0);
             }
             
-            else if(gp.tileM.closeToGate(11,45)){
-                openDoor(11,45, 0);
+            else if(gp.tileM.closeToGate(12,40)){
+                openDoor(12,40, 0);
             }
 
-            else if(gp.tileM.closeToGate(35,10)){
-               openDoor(35,10, 0);
+            else if(gp.tileM.closeToGate(51,21)){
+                openDoor(51,21, 0);
             }
 
-            else if(gp.tileM.closeToGate(26,49)){
-                openDoor(26,49, 0);
+            else if(gp.tileM.closeToGate(51,40)){
+                openDoor(51,40, 0);
             }
 
-            else if(gp.tileM.closeToGate(46,49)){
-                openDoor(46,49, 0); 
+            else if(gp.tileM.closeToGate(22,50)){
+                openDoor(22,50, 0);
+            }
+
+            else if(gp.tileM.closeToGate(41,50)){
+                openDoor(41,50, 0); 
             }
             gp.keyHandler.aPressed = false;
         }

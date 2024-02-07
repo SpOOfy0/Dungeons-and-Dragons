@@ -380,6 +380,8 @@ public class UI {
                 "Life: " , "" + gp.player.life + "/" + gp.player.maxLife,
                 "Strengh: " , "" + gp.player.damage,
                 "Mana:" , "" + gp.player.mana + "/" + gp.player.maxMana,
+                "Fireball Power: " , "" + gp.fireBall.damage,
+                "Electroball Power: " , "" + gp.electroBall.damage,
                 "Attack Speed: " , "" + gp.player.attackSpeed,
                 // Add other lines of text
             };

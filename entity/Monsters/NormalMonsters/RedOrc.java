@@ -12,6 +12,14 @@ public class RedOrc extends Monster implements MonsterInterface {
         MonsterSetting(willDropItem);
     }
 
+    public RedOrc (GamePannel gp, String inputedDirection, int coordX, int coordY, boolean willDropItem, boolean startAggro) {
+        super(gp, inputedDirection, coordX, coordY);
+
+        aggravated = startAggro;
+        getThisMonsterImage();
+        MonsterSetting(willDropItem);
+    }
+
     @Override
     public void getThisMonsterImage() {
         up1 = getImage("/Player/Monster/RedOrc/up1.png");

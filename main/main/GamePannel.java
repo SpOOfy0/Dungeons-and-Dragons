@@ -34,8 +34,8 @@ public class GamePannel extends JPanel implements Runnable {
     public final int screenHeight = tileSize * maxScreenRow; //576 pixels
 
     //WORLD SETTINGS
-    public final int maxWorldCol = 62;
-    public final int maxWorldRow = 60;
+    public final int maxWorldCol = 64;
+    public final int maxWorldRow = 62;
     public final int worldWidth = tileSize * maxWorldCol; //800 pixels
     public final int worldHeight = tileSize * maxWorldRow; //800 pixels
 
@@ -187,6 +187,7 @@ public class GamePannel extends JPanel implements Runnable {
                 isBossSummoned = true;
                 npc.clear();
                 objSetter.setBoss();
+                objSetter.secret();
             }
 
             if(player.isDead) gameState = gameOverState;

@@ -34,84 +34,72 @@ public class ClassSetter {
 
 
     public int counter = 0;
-    public int monsterNumber = 0;
-
-    Monster monsterMatrix[] = new Monster[3];
-    public void setMonsterMatrix() {
-        monsterMatrix[0] = new Orc(gp, "down", 27, 25, false);
-        monsterMatrix[1] = new RedOrc(gp, "left",  27, 25, false);
-        monsterMatrix[2] = new BlueOrc(gp, "Right",  27, 25, false);
-    }
-
-    
-    public void setMonsterWorld(int worldX, int worldY, Monster element){
-        element.worldX = worldX;
-        element.worldY = worldY;
-    }
-    
+    public int monsterNumber = 0;    
     
     public void MonsterSpawner(int worldX, int worldY, int numberOfMonsterToSpawn){
         if (numberOfMonsterToSpawn > monsterNumber) {
             
             if(counter == 180) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[0]);
-                setMonster(monsterMatrix[0]);
+                setMonster(new BlueOrc(gp, "down", worldX, worldY, false, true));
                 monsterNumber++;
             }
             else if (counter == 360) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[1]);
-                setMonster(monsterMatrix[1]);
+                setMonster(new Orc(gp, "down", worldX, worldY, false, true));
                 monsterNumber++;
             }
             else if (counter == 540) {
-                setMonsterWorld(worldX, worldY, monsterMatrix[2]);
-                setMonster(monsterMatrix[2]);
+                setMonster(new RedOrc(gp, "down", worldX, worldY, false, true));
                 monsterNumber++;
                 counter = 0;
             }
+            counter++;
         }
-        counter++;
     }
 
 
     public void setItems(){
-        setItem(new OBJ_healPotion(gp, 26, 25));
-        setItem(new OBJ_healPotion(gp, 26, 34));
-        setItem(new OBJ_healPotion(gp, 35, 25));
-        setItem(new OBJ_healPotion(gp, 35, 34));
+        setItem(new OBJ_healPotion(gp, 27, 26));
+        setItem(new OBJ_healPotion(gp, 27, 35));
+        setItem(new OBJ_healPotion(gp, 36, 26));
+        setItem(new OBJ_healPotion(gp, 36, 35));
 
-        setItem(new OBJ_manaPotion(gp, 26, 27));
-        setItem(new OBJ_manaPotion(gp, 26, 32));
-        setItem(new OBJ_manaPotion(gp, 35, 27));
-        setItem(new OBJ_manaPotion(gp, 35, 32));
+        setItem(new OBJ_manaPotion(gp, 27, 28));
+        setItem(new OBJ_manaPotion(gp, 27, 33));
+        setItem(new OBJ_manaPotion(gp, 36, 28));
+        setItem(new OBJ_manaPotion(gp, 36, 33));
+    }
+
+    public void secret(){
+        setMonster(new Orc(gp, "down", 3, 1, false, false));
+        gp.monster.get(gp.monster.size()-1).xp = 70000;
     }
 
     public void setNPCs(){
-        setNPC(new NPC_1(gp, "down", 28, 27));
+        setNPC(new NPC_1(gp, "down", 29, 28));
     }
 
     public void setMonsters(){
         // upper row
-        setMonster(new BlueOrc(gp, "right", 9, 8, true));
-        setMonster(new Orc(gp, "down", 28, 8, true));
-        setMonster(new Orc(gp, "up", 28, 8, true));
-        setMonster(new RedOrc(gp, "left", 52, 8, true));
+        setMonster(new BlueOrc(gp, "right", 10, 9, true));
+        setMonster(new Orc(gp, "down", 29, 9, true));
+        setMonster(new Orc(gp, "up", 29, 9, true));
+        setMonster(new RedOrc(gp, "left", 53, 9, true));
 
         // middle row
-        setMonster(new Orc(gp, "up", 9, 32, true));
-        setMonster(new Orc(gp, "down", 9, 32, true));
-        setMonster(new Orc(gp, "up", 52, 32, true));
-        setMonster(new Orc(gp, "down", 52, 32, true));
+        setMonster(new Orc(gp, "up", 10, 33, true));
+        setMonster(new Orc(gp, "down", 10, 33, true));
+        setMonster(new Orc(gp, "up", 53, 33, true));
+        setMonster(new Orc(gp, "down", 53, 33, true));
 
         // lower row
-        setMonster(new RedOrc(gp, "right", 9, 51, true));
-        setMonster(new Orc(gp, "up", 33, 51, true));
-        setMonster(new Orc(gp, "down", 33, 51, true));
-        setMonster(new BlueOrc(gp, "left", 52, 51, true));
+        setMonster(new RedOrc(gp, "right", 10, 52, true));
+        setMonster(new Orc(gp, "up", 34, 52, true));
+        setMonster(new Orc(gp, "down", 34, 52, true));
+        setMonster(new BlueOrc(gp, "left", 53, 52, true));
     }
 
     public void setBoss(){
-        setMonster(new Torero(gp, "down", 25, 24));
+        setMonster(new Torero(gp, "down", 26, 25));
     }
 
 }

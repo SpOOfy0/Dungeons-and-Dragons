@@ -50,8 +50,6 @@ public class Torero extends SpecialMonster implements MonsterInterface {
     @Override
     public void MonsterSetting(boolean willDropItem) {
 
-        gp.objSetter.setMonsterMatrix();
-
         noticeRange = 3;
         aggroRange = 20;
         initSpeed(1);
@@ -106,8 +104,12 @@ public class Torero extends SpecialMonster implements MonsterInterface {
     
 
     public void ArmyCharge(){
-        int randomWorldX = random.nextInt(monsterSize) + worldX;
-        int randomWorldY = random.nextInt(monsterSize) + worldY;
+        int randomWorldX = random.nextInt(monsterSize) + worldX + solidAreaDefaultX + solidArea.width - monsterSize/2/tileSize;
+        if(randomWorldX < 7) randomWorldX = 7;
+        else if(56 < randomWorldX) randomWorldX = 56;
+        int randomWorldY = (random.nextInt(monsterSize) + worldY + solidAreaDefaultY + solidArea.height - monsterSize/2)/tileSize;
+        if(randomWorldY < 6) randomWorldX = 6;
+        else if(55 < randomWorldY) randomWorldX = 55;
         summonArmy(randomWorldX, randomWorldY, 3);
         
     }
