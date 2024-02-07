@@ -167,7 +167,7 @@ public class GamePannel extends JPanel implements Runnable {
                 if(iterNPC != null){
                     if(iterNPC.isDead){
                         iterNPC.onDeath();
-                        npc.remove(i);
+                        if(!npc.isEmpty()) npc.remove(i);
                     }
                     else iterNPC.update();
                 }
@@ -178,7 +178,7 @@ public class GamePannel extends JPanel implements Runnable {
                 if(iterMonster != null){
                     if(iterMonster.isDead){
                         iterMonster.onDeath();
-                        monster.remove(i);
+                        if(!monster.isEmpty()) monster.remove(i);
                     }
                     else iterMonster.update();
                 }
