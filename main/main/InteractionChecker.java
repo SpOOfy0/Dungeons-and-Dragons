@@ -22,10 +22,10 @@ public class InteractionChecker {
 
     public String goingTowards(Entity entity, Entity target){
 
-        int entityMiddleX = entity.worldX + entity.solidArea.x + entity.solidArea.width/2;
-        int entityMiddleY = entity.worldY + entity.solidArea.y + entity.solidArea.height/2;
-        int targetMiddleX = target.worldX + target.solidArea.x + target.solidArea.width/2;
-        int targetMiddleY = target.worldY + target.solidArea.y + target.solidArea.height/2;
+        int entityMiddleX = entity.worldX + entity.solidAreaDefaultX + entity.solidArea.width/2;
+        int entityMiddleY = entity.worldY + entity.solidAreaDefaultY + entity.solidArea.height/2;
+        int targetMiddleX = target.worldX + target.solidAreaDefaultX + target.solidArea.width/2;
+        int targetMiddleY = target.worldY + target.solidAreaDefaultY + target.solidArea.height/2;
 
         String valueToReturn = null;
 
@@ -43,14 +43,14 @@ public class InteractionChecker {
     
     public String goingAwayFrom(Entity entity, Entity target){
 
-        int entityMiddleX = entity.worldX + entity.solidArea.x + entity.solidArea.width/2;
-        int entityMiddleY = entity.worldY + entity.solidArea.y + entity.solidArea.height/2;
-        int targetMiddleX = target.worldX + target.solidArea.x + target.solidArea.width/2;
-        int targetMiddleY = target.worldY + target.solidArea.y + target.solidArea.height/2;
+        int entityMiddleX = entity.worldX + entity.solidAreaDefaultX + entity.solidArea.width/2;
+        int entityMiddleY = entity.worldY + entity.solidAreaDefaultY + entity.solidArea.height/2;
+        int targetMiddleX = target.worldX + target.solidAreaDefaultX + target.solidArea.width/2;
+        int targetMiddleY = target.worldY + target.solidAreaDefaultY + target.solidArea.height/2;
 
         String valueToReturn = null;
 
-        if (entityMiddleX < targetMiddleX) valueToReturn = "left";
+        if(entityMiddleX < targetMiddleX) valueToReturn = "left";
         else if (targetMiddleX < entityMiddleX) valueToReturn = "right";
         
         if(Math.abs(entityMiddleX - targetMiddleX) <= Math.abs(entityMiddleY - targetMiddleY)){
@@ -375,6 +375,7 @@ public class InteractionChecker {
 
                 if (zoneDetect.intersects(studiedMonster.solidArea)){
                     studiedMonster.receiveDmg(player.damage);
+                    //System.out.println(goingAwayFrom(studiedMonster, player));
                     if(!studiedMonster.noKnockback) studiedMonster.giveForcedMovement(goingAwayFrom(studiedMonster, player), 2 + (player.damage/4), 15);
                 }
                 
