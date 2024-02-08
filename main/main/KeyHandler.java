@@ -130,7 +130,7 @@ public class KeyHandler implements ActionListener, KeyListener{
             }
         }
 
-        else if(gp.gameState == gp.gameOverState){
+        else if(gp.gameState == gp.winState){
             switch (keyCode) {
                 case KeyEvent.VK_DOWN:
                     downPressed = true;
@@ -142,6 +142,20 @@ public class KeyHandler implements ActionListener, KeyListener{
                     enterPressed = true;
                     break;
             }
+        }
+
+        else if(gp.gameState == gp.gameOverState){
+            switch (keyCode) {
+                case KeyEvent.VK_DOWN:
+                    downPressed = true;
+                    break;
+                case KeyEvent.VK_UP:
+                    upPressed = true;
+                    break;
+                case KeyEvent.VK_ENTER:
+                    enterPressed = true;
+                    break;
+                }
         }
 
         else if(gp.gameState == gp.startState){

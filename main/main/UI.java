@@ -433,13 +433,13 @@ public class UI {
                     playerType = "Fighter";
                     gp.gameState = gp.playState;
                 }
-                else if(gp.gameState == gp.gameOverState){
+                else if(gp.gameState == gp.gameOverState || gp.gameState == gp.winState){
                     gp.restartheGame();
                 }
             }
 
             if(commandNumber == 1){
-                if(gp.gameState == gp.startState || gp.gameState == gp.gameOverState){
+                if(gp.gameState == gp.startState || gp.gameState == gp.gameOverState || gp.gameState == gp.winState){
                     System.exit(0);
                 }
                 if(gp.gameState == gp.playerTypeState){
@@ -581,19 +581,37 @@ public class UI {
     }
 
     public void drawTheEndScreen(){
+        gameStartCommand = selectedCommand(gameStartCommand, 2);
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-        
+    
         int textX;
         int textY;
         BufferedImage image;
-
+    
         // TheEnd Image
         image = theEnd;
         g2.setColor(Color.black);
         textX = getXForCenterOfImage(image, gp);
         textY = tileSize / 3;
         g2.drawImage(image, textX, textY, null);
+    
+        // RETRY
+        image = retry; 
+        textX = getXForCenterOfImage(image, gp);
+        textY += tileSize * 6 + 20;
+        g2.drawImage(image, textX, textY, null);
+        if (gameStartCommand == 0) {
+            g2.drawImage(arrow, textX - (tileSize *  2), textY + 15, null);
+        }
+    
+        // Exit
+        image = exit; 
+        textY += tileSize * 2;
+        g2.drawImage(image, textX, textY, null);
+        if (gameStartCommand == 1) {
+            g2.drawImage(arrow, textX - (tileSize *  2), textY + 15, null);
+        }
     }
 
     public void colorBorder(int x ,int y, int width, int height){
