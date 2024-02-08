@@ -332,7 +332,7 @@ public class Player extends Entity {
 
     public boolean levelUp(){
         if( xp >= maxXp){
-            level ++;
+            level++;
             gp.ui.showMessage("     You leveled up!");
             xp = xp - maxXp;
             maxXp += 250;
@@ -360,7 +360,7 @@ public class Player extends Entity {
     }
 
     public void MageLevelUp(){
-        maxMana += 25;
+        maxMana += 20;
         mana = maxMana;
         gp.fireBall.damage += 1;
 
@@ -379,7 +379,8 @@ public class Player extends Entity {
         maxLife += 1;
         life = maxLife;
         damage += 1;
-        mana += 9;
+        maxMana += 5;
+        mana += 10;
         if(mana > maxMana) mana = maxMana;
 
         if(level % 8 == 0){

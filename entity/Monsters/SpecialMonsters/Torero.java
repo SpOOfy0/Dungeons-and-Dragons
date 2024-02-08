@@ -61,7 +61,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         xp = 0;
         monsterSize = 5 * gp.tileSize;
 
-        solidArea = new Rectangle(1,1, (tileSize*3) - 2, (tileSize*7/2) - 2);
+        solidArea = new Rectangle(1,1, (tileSize*2) - 2, (tileSize*7/2) - 2);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
@@ -155,8 +155,8 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         int screenX = worldX - gp.player.worldX + gp.player.screenX ;
         int screenY = worldY - gp.player.worldY + gp.player.screenY ;
 
-        if( worldX + tileSize*3 > gp.player.worldX - gp.player.screenX &&
-            worldX - tileSize < gp.player.worldX + gp.player.screenX &&
+        if( worldX + tileSize*5/2 > gp.player.worldX - gp.player.screenX &&
+            worldX - tileSize/2 - tileSize < gp.player.worldX + gp.player.screenX &&
             worldY + (tileSize*7/2) > gp.player.worldY - gp.player.screenY &&
             worldY - tileSize - tileSize < gp.player.worldY + gp.player.screenY) {
             
@@ -208,7 +208,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
                 }
             }
             
-            g2.drawImage(image, screenX, screenY - tileSize + 7, tileSize*3, tileSize*9/2, null);
+            g2.drawImage(image, screenX - tileSize/2, screenY - tileSize + 7, tileSize*3, tileSize*9/2, null);
             //g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
 
             // System.out.println("leftLimit: " + leftLimit + "  rightLimit: " + rightLimit + "  upLimit: " + upLimit + "  downLimit: " + downLimit);

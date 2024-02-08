@@ -72,6 +72,7 @@ public class ClassSetter {
     public void secret(){
         setMonster(new Orc(gp, "down", 3, 1, false, false));
         gp.monster.get(gp.monster.size()-1).xp = 70000;
+        setItem(new OBJ_manaPotion(gp, 3, 3));
     }
 
     public void setNPCs(){
