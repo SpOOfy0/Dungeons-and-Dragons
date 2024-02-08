@@ -15,14 +15,14 @@ public class NPC_1 extends NPC{
 
     @Override
     public void getThisNPCImage(){
-        up1 = getImage("/Player/up1.png");
-        up2 = getImage("/Player/up2.png");
-        down1 = getImage("/Player/down1.png");
-        down2 = getImage("/Player/down2.png");
-        left1 = getImage("/Player/left1.png");
-        left2 = getImage("/Player/left2.png");
-        right1 = getImage("/Player/right1.png");
-        right2 = getImage("/Player/right2.png");
+        up1 = getImage("/Player/oldman_up_1.png");
+        up2 = getImage("/Player/oldman_up_2.png");
+        down1 = getImage("/Player/oldman_down_1.png");
+        down2 = getImage("/Player/oldman_down_2.png");
+        left1 = getImage("/Player/oldman_left_1.png");
+        left2 = getImage("/Player/oldman_left_2.png");
+        right1 = getImage("/Player/oldman_right_1.png");
+        right2 = getImage("/Player/oldman_right_2.png");
     }
 
     @Override
