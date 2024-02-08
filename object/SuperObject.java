@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 import main.GamePannel;
 
 
-public class SuperObject {
+public abstract class SuperObject {
     
     public BufferedImage image, image2, image3;
     public String name;

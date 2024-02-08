@@ -2,7 +2,7 @@ package entity;
 
 import main.GamePannel;
 
-public class NPC extends Entity{
+public abstract class NPC extends Entity{
 
     public NPC(GamePannel gp, String inputedDirection, int coordX, int coordY){
 

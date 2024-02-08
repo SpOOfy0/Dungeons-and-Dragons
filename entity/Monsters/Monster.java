@@ -11,7 +11,7 @@ import object.OBJ_Key;
 import object.OBJ_healPotion;
 import object.OBJ_manaPotion;
 
-public class Monster extends Entity{
+public abstract class Monster extends Entity{
     
     public int monsterSize;
 
