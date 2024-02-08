@@ -10,7 +10,7 @@ public abstract class SpecialMonster extends Monster{
     }
 
     public void onDeath() {
-        gp.player.xp += xp;
+        player.xp += xp;
         triggerEvent();
     }
 

@@ -3,10 +3,12 @@ package entity.ExtraActions.BehaviorForActions;
 import java.awt.Rectangle;
 
 import entity.Entity;
+import entity.Player;
 
 public class BeCloseToPlayer extends BehaviorForAction {
     
     public int tileSize = executor.tileSize;
+    Player player;
     public int impatienceIncrement;
 
     //must be tile coordonates
@@ -16,6 +18,7 @@ public class BeCloseToPlayer extends BehaviorForAction {
         super(inputedEntity, inputedAtkSpeed);
         distanceDetect = inputedDistanceDetect;
         impatienceIncrement = 1;
+        player = Player.getInstance(gp, gp.keyHandler);
     }
     
     
@@ -53,13 +56,13 @@ public class BeCloseToPlayer extends BehaviorForAction {
 
                 Rectangle triggerbox = new Rectangle(leftLimit, upLimit, rightLimit, downLimit);
 
-                gp.player.solidArea.x += gp.player.worldX;
-                gp.player.solidArea.y += gp.player.worldY;
+                player.solidArea.x += player.worldX;
+                player.solidArea.y += player.worldY;
                 
-                condition = triggerbox.contains(gp.player.solidArea);
+                condition = triggerbox.contains(player.solidArea);
                 
-                gp.player.solidArea.x = gp.player.solidAreaDefaultX;
-                gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+                player.solidArea.x = player.solidAreaDefaultX;
+                player.solidArea.y = player.solidAreaDefaultY;
             }
         }
 

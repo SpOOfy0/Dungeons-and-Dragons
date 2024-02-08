@@ -9,7 +9,8 @@ import tile.TileManager;
 
 public class SlamAttack extends ExtraAction {
 
-    public int tileSize = executor.tileSize;
+    public int tileSize;
+    public TileManager tileM;
 
     private int damage;
     private int range;
@@ -21,6 +22,8 @@ public class SlamAttack extends ExtraAction {
 
     public SlamAttack(Entity inputedEntity, int dmg, int inputedRange, int numberFramesActive, BehaviorForAction firstBehavior){
         super(inputedEntity, numberFramesActive, firstBehavior);
+        tileSize = executor.tileSize;
+        tileM = gp.tileM;
         damage = dmg;
         range = inputedRange;
     }
@@ -44,7 +47,6 @@ public class SlamAttack extends ExtraAction {
                 upLimit = executor.getUpperTile() - range;
                 downLimit = executor.getLowerTile() + range;
 
-                TileManager tileM = gp.tileM;
                 for (int x = leftLimit ; x <= rightLimit ; x++){
                     for (int y = upLimit ; y <= downLimit ; y++){
                         tileM.changeTile(x, y, 4);
@@ -64,26 +66,25 @@ public class SlamAttack extends ExtraAction {
                             iterMonster.solidArea.y += iterMonster.worldY;
                             if(iterMonster.solidArea.intersects(hitbox)){
                                 iterMonster.receiveDmg(damage);
-                                if(!iterMonster.noKnockback) iterMonster.giveForcedMovement(gp.interactionChecker.goingAwayFrom(iterMonster, executor), 8, 25);
+                                if(!iterMonster.noKnockback) iterMonster.giveForcedMovement(interactionChecker.goingAwayFrom(iterMonster, executor), 8, 25);
                             }
                             iterMonster.solidArea.x = iterMonster.solidAreaDefaultX;
                             iterMonster.solidArea.y = iterMonster.solidAreaDefaultY;
                         }
                     }
                 } else {
-                    gp.player.solidArea.x += gp.player.worldX;
-                    gp.player.solidArea.y += gp.player.worldY;
-                    if(gp.player.solidArea.intersects(hitbox)){
-                        gp.player.receiveDmg(damage);
-                        gp.player.giveForcedMovement(gp.interactionChecker.goingAwayFrom(gp.player, executor), 8, 25);
+                    player.solidArea.x += player.worldX;
+                    player.solidArea.y += player.worldY;
+                    if(player.solidArea.intersects(hitbox)){
+                        player.receiveDmg(damage);
+                        player.giveForcedMovement(interactionChecker.goingAwayFrom(player, executor), 8, 25);
                     }
-                    gp.player.solidArea.x = gp.player.solidAreaDefaultX;
-                    gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+                    player.solidArea.x = player.solidAreaDefaultX;
+                    player.solidArea.y = player.solidAreaDefaultY;
                 }
             }
 
             if(chronology == timeFrame){
-                TileManager tileM = gp.tileM;
                 for (int x = leftLimit ; x <= rightLimit ; x++){
                     for (int y = upLimit ; y <= downLimit ; y++){
                         tileM.changeTile(x, y, 5);

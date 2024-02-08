@@ -32,15 +32,11 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
-    // PLAYER'S TYPE OF MAGIC
-    // public String typeOfMagic;
-
-    //PLAYER'S OBJECT
-    public int healPotion = 0;
+    //PLAYER'S TYPE OF CLASS
+    public String playerType;
 
     //INDEX OF THE OBJECT THAT THE PLAYER IS CURRENTLY COLLIDING WITH
     public ArrayList<Integer> objIndexes;
-    //public ArrayList<Integer> npcIndexes;
     public int npcIndex;
     public ArrayList<Integer> monsterIndexes;
 
@@ -50,8 +46,6 @@ public class Player extends Entity {
     public boolean isPreviousStateMove;
 
     //PLAYER INVENTORY
-    // public ArrayList<BufferedImage> inventoryImage = new ArrayList<BufferedImage>();
-    // public ArrayList<Integer> inventoryQuantity = new ArrayList<Integer>();
     public Map<String, Integer> inventory = new HashMap<String, Integer>();
 
     public int index = 0;
@@ -65,13 +59,13 @@ public class Player extends Entity {
     private Player(GamePannel gp, KeyHandler keyH){
         super(gp);
 
-        this.keyHandler = keyH;
+        keyHandler = keyH;
 
         //PLAYER SCREEN POSITION
         screenX = gp.screenWidth/2 - tileSize/2;
         screenY = gp.screenHeight/2 - tileSize/2;
 
-        solidArea = new Rectangle(15, 24, 16, 12);
+        solidArea = new Rectangle(16, 24, 16, 12);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         setAllRoundedValues();
@@ -83,9 +77,13 @@ public class Player extends Entity {
         worldY = newCoords[1] * tileSize;
     }
 
+    public static boolean isInstanceNull() {
+        return instance == null;
+    }
+
     public static Player getInstance(GamePannel gp, KeyHandler keyH) {
 
-        if(instance == null){
+        if(isInstanceNull()){
             instance = new Player(gp, keyH);
         }
 
@@ -169,7 +167,7 @@ public class Player extends Entity {
     }
 
     public void restart(){
-        getValues(gp.ui.playerType);
+        getValues(playerType);
         inventory.clear();
     }
 
@@ -222,7 +220,8 @@ public class Player extends Entity {
 
         if(oneTimeSetup){
             oneTimeSetup = false;
-            getValues(gp.ui.playerType);
+            playerType = ui.playerType;
+            getValues(playerType);
         }
         
         updateAbilities();
@@ -267,7 +266,6 @@ public class Player extends Entity {
         openGate();
 
 
-        levelUp();
         playerDeath();
 
 
@@ -280,7 +278,7 @@ public class Player extends Entity {
         // s'occuper des intéractions entre le joueur et son environnement
         pickUpObject(objIndexes);
 
-        npcIndex = gp.interactionChecker.interactPossible(this, gp.npc);
+        npcIndex = interactionChecker.interactPossible(this, gp.npc);
         if(npcIndex != 999) interactNPC(npcIndex);
 
         for(int i = 0; i < monsterIndexes.size(); i++)
@@ -331,9 +329,9 @@ public class Player extends Entity {
 
 
     public boolean levelUp(){
-        if( xp >= maxXp){
+        if(xp >= maxXp){
             level++;
-            gp.ui.showMessage("     You leveled up!");
+            ui.showMessage("     You leveled up!");
             xp = xp - maxXp;
             maxXp += 250;
             
@@ -393,13 +391,13 @@ public class Player extends Entity {
 
     public void updateAbilities(){
         if(levelUp()){
-            if(gp.ui.playerType == "Mage"){
+            if(playerType == "Mage"){
                 MageLevelUp();
             }
-            if(gp.ui.playerType == "Fighter"){
+            if(playerType == "Fighter"){
                 FighterLevelUp();
             }
-            if(gp.ui.playerType == "AllRounded"){
+            if(playerType == "AllRounded"){
                 AllRoundedLevelUp();
             }
         }
@@ -421,10 +419,10 @@ public class Player extends Entity {
         blockedRight = false;
 
         // Vérifiaction des collisions
-        gp.collisionChecker.checkTile(this);
-        objIndexes = gp.collisionChecker.checkObject(this, true);
-        gp.collisionChecker.checkEntity(this, gp.npc);
-        monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
+        collisionChecker.checkTile(this);
+        objIndexes = collisionChecker.checkObject(this, true);
+        collisionChecker.checkEntity(this, gp.npc);
+        monsterIndexes = collisionChecker.checkEntity(this, gp.monster);
 
         // Mouvement effectué si la direction est non bloqué
         if((storeMovement[0] != 0 || storeMovement[1] != 0) && direction != null){
@@ -477,10 +475,10 @@ public class Player extends Entity {
         blockedRight = false;
 
         // Vérifiaction des collisions
-        gp.collisionChecker.checkTile(this);
-        objIndexes = gp.collisionChecker.checkObject(this, true);
-        gp.collisionChecker.checkEntity(this, gp.npc);
-        monsterIndexes = gp.collisionChecker.checkEntity(this, gp.monster);
+        collisionChecker.checkTile(this);
+        objIndexes = collisionChecker.checkObject(this, true);
+        collisionChecker.checkEntity(this, gp.npc);
+        monsterIndexes = collisionChecker.checkEntity(this, gp.monster);
 
         // Mouvements effectués individuellement si les directions sont non bloqués
         if(storeMovement[0] != 0 || storeMovement[1] != 0){
@@ -538,15 +536,15 @@ public class Player extends Entity {
                 
                 switch(objName){
                     case "healPotion":
-                        gp.ui.showMessage("You got a heal potion!");
+                        ui.showMessage("You got a heal potion!");
                         foundName = true;
                         break;
                     case "manaPotion":
-                        gp.ui.showMessage("You got a mana potion!");
+                        ui.showMessage("You got a mana potion!");
                         foundName = true;
                         break;
                     case "key":
-                        gp.ui.showMessage("You got a key!");
+                        ui.showMessage("You got a key!");
                         foundName = true;
                         break;
                 }
@@ -605,7 +603,7 @@ public class Player extends Entity {
     }
 
     public void openDoor(int worldX, int worldY, int tileNum){
-        gp.ui.showMessage("You opened the door!");
+        ui.showMessage("You opened the door!");
         gp.tileM.changeTile(worldX,worldY, tileNum);
         inventory.put("key", inventory.get("key") - 1); 
         if(inventory.get("key") == 0) inventory.remove("key");
@@ -712,7 +710,7 @@ public class Player extends Entity {
             Monster monster = gp.monster.get(monsterIndex);
 
             if (heroAttack && !monster.noKnockback){
-                monster.giveForcedMovement(gp.interactionChecker.goingAwayFrom(monster, this), monster.speed, 15);
+                monster.giveForcedMovement(interactionChecker.goingAwayFrom(monster, this), monster.speed, 15);
             }
     
             if(monster.isWithPlayer && monster.attackDelay >= monster.attackSpeed){
@@ -727,7 +725,7 @@ public class Player extends Entity {
             heroAttack = true;
             attackDelay = 0;
 
-            gp.interactionChecker.meleeHitMonsters(this);
+            interactionChecker.meleeHitMonsters(this);
             
             //to reset sprite Counter
             spriteCounter = 0;

@@ -3,12 +3,16 @@ package entity.ExtraActions;
 import java.util.Vector;
 
 import entity.Entity;
+import entity.Player;
 import entity.ExtraActions.BehaviorForActions.BehaviorForAction;
 import main.GamePannel;
+import main.InteractionChecker;
 
 public abstract class ExtraAction {
 
     GamePannel gp;
+    InteractionChecker interactionChecker;
+    Player player;
 
     protected Entity executor; // Entity using the action
     protected boolean isPlayer;
@@ -60,7 +64,9 @@ public abstract class ExtraAction {
     public ExtraAction(Entity inputedEntity, int numberFramesActive, BehaviorForAction firstBehavior){
         executor = inputedEntity;
         gp = executor.gp;
-        isPlayer = (executor == gp.player);
+        player = Player.getInstance(gp, gp.keyHandler);
+        isPlayer = (executor == player);
+        interactionChecker = gp.interactionChecker;
 
         setupTimeFrame(numberFramesActive);
         addPriorityBehavior(firstBehavior);

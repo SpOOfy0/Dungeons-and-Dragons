@@ -60,7 +60,7 @@ public abstract class Monster extends Entity{
             if(attackDelay < attackSpeed) attackDelay++;
 
             if(!aggravated){
-                gp.interactionChecker.noticePlayer(this);
+                interactionChecker.noticePlayer(this);
                 // si l'entité vient de changer de la non-traque à la traque, tous les blocages de choix de direction sont retirés
                 if(aggravated){
                     bufferDirection = null;
@@ -69,7 +69,7 @@ public abstract class Monster extends Entity{
                 }
             }
 
-            if (aggravated && (Math.abs(gp.player.worldX - worldX) <= aggroRange*tileSize) && (Math.abs(gp.player.worldY - worldY) <= aggroRange*tileSize)) {
+            if (aggravated && (Math.abs(player.worldX - worldX) <= aggroRange*tileSize) && (Math.abs(player.worldY - worldY) <= aggroRange*tileSize)) {
 
                 
                 if (!isWithPlayer){
@@ -99,12 +99,12 @@ public abstract class Monster extends Entity{
                         }
                     }
                     
-                    GoToPlayer(gp.player);
+                    GoToPlayer(player);
                     
                 // si l'entité est bloquée contre le joueur, elle ira en sa direction
                 } else {
                     bufferDirection = null;
-                    direction[0] = gp.interactionChecker.goingTowards(this, gp.player);
+                    direction[0] = interactionChecker.goingTowards(this, player);
                 }
 
             } else {
@@ -194,7 +194,7 @@ public abstract class Monster extends Entity{
 
             if(!condition){
                 forceLetGoVertical();
-                direction[0] = gp.interactionChecker.goingTowards(this, player);
+                direction[0] = interactionChecker.goingTowards(this, player);
             }
 
         } else if ((upM/tileSize <= upP/tileSize && downP/tileSize <= downM/tileSize) || (upP/tileSize <= upM/tileSize && downM/tileSize <= downP/tileSize)){
@@ -220,7 +220,7 @@ public abstract class Monster extends Entity{
             if(!condition){
                 
                 forceLetGoHorizontal();
-                direction[0] = gp.interactionChecker.goingTowards(this, player);
+                direction[0] = interactionChecker.goingTowards(this, player);
             }
         }
         
@@ -435,7 +435,7 @@ public abstract class Monster extends Entity{
 
 
     public void attackPlayer() {
-        if(gp.player.life > 0) gp.player.receiveDmg(damage);
+        if(player.life > 0) player.receiveDmg(damage);
         attackDelay = 0;
     }
 
@@ -447,7 +447,7 @@ public abstract class Monster extends Entity{
     }
 
     public void onDeath(){
-        gp.player.xp += xp;
+        player.xp += xp;
         if(gp.objSetter.monsterNumber > 0) gp.objSetter.monsterNumber--;
         DropObject();
     }
@@ -480,8 +480,8 @@ public abstract class Monster extends Entity{
         // Draw the life bar
         int reamningLife = maxLife - life;
         int lifeBarWidth =  tileSize - (tileSize * reamningLife / maxLife);
-        int screenX = worldX - gp.player.worldX + gp.player.screenX ;
-        int screenY = worldY - gp.player.worldY + gp.player.screenY ;
+        int screenX = worldX - player.worldX + player.screenX ;
+        int screenY = worldY - player.worldY + player.screenY ;
 
         g2.setColor(Color.RED);
         g2.fillRect(screenX, screenY - 10, lifeBarWidth, 8);

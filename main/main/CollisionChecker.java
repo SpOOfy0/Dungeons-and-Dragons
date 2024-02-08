@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import entity.Entity;
+import entity.Player;
 import object.SuperObject;
 
 
@@ -394,10 +395,12 @@ public class CollisionChecker {
         boolean[] isGoingToDirection = {entity.storeMovement[1] < 0, entity.storeMovement[0] < 0, entity.storeMovement[1] > 0, entity.storeMovement[0] > 0};
 
         // 0=Up, 1=Left, 2=Bottom, 3=Right
+
+        Player player = Player.getInstance(gp, gp.keyHandler);
         
         //Get object's solid area position
-        gp.player.solidArea.x = gp.player.worldX + gp.player.solidArea.x;
-        gp.player.solidArea.y = gp.player.worldY + gp.player.solidArea.y;
+        player.solidArea.x = player.worldX + player.solidArea.x;
+        player.solidArea.y = player.worldY + player.solidArea.y;
 
         int pos1 = 0, pos2 = 1;
 
@@ -415,50 +418,50 @@ public class CollisionChecker {
                 case 0: //up
                     entity.solidArea.y -= entity.speed;
                     pos1 = entity.solidArea.y + entity.solidArea.height/2;
-                    pos2 = gp.player.solidArea.y + gp.player.solidArea.height/2;
+                    pos2 = player.solidArea.y + player.solidArea.height/2;
                     break;
                 case 1: //left
                     entity.solidArea.x -= entity.speed;
                     pos1 = entity.solidArea.x + entity.solidArea.width/2;
-                    pos2 = gp.player.solidArea.x + gp.player.solidArea.width/2;
+                    pos2 = player.solidArea.x + player.solidArea.width/2;
                     break;
                 case 2: //down
                     entity.solidArea.y += entity.speed;
-                    pos1 = gp.player.solidArea.y + gp.player.solidArea.height/2;
+                    pos1 = player.solidArea.y + player.solidArea.height/2;
                     pos2 = entity.solidArea.y + entity.solidArea.height/2;
                     break;
                 case 3: //right
                     entity.solidArea.x += entity.speed;
-                    pos1 = gp.player.solidArea.x + gp.player.solidArea.width/2;
+                    pos1 = player.solidArea.x + player.solidArea.width/2;
                     pos2 = entity.solidArea.x + entity.solidArea.width/2;
                     break;
             }
 
-            if (entity.solidArea.intersects(gp.player.solidArea)){
+            if (entity.solidArea.intersects(player.solidArea)){
                 if(pos1 > pos2){
-                    intersection = entity.solidArea.intersection(gp.player.solidArea);
+                    intersection = entity.solidArea.intersection(player.solidArea);
                     if (j%2 == 0){
                         if(intersection.height <= intersection.width){
                             if(j == 0){
-                                newDistance = gp.player.solidArea.y + gp.player.solidArea.height - (entity.solidArea.y + entity.speed);
+                                newDistance = player.solidArea.y + player.solidArea.height - (entity.solidArea.y + entity.speed);
                                 if(newDistance < 0 && entity.storeMovement[1] < newDistance)
                                     entity.storeMovement[1] = newDistance;
                                 else {
                                     entity.blockedUp = true;
                                     if(isGoingToDirection[j]){
                                         entity.isBlocked = true;
-                                        if(entity != gp.player) entity.isWithPlayer = true;
+                                        if(entity != player) entity.isWithPlayer = true;
                                     }
                                 }
                             } else {
-                                newDistance = gp.player.solidArea.y - (entity.solidArea.y + entity.solidArea.height - entity.speed);
+                                newDistance = player.solidArea.y - (entity.solidArea.y + entity.solidArea.height - entity.speed);
                                 if(0 < newDistance && newDistance < entity.storeMovement[1])
                                     entity.storeMovement[1] = newDistance;
                                 else {
                                     entity.blockedDown = true;
                                     if(isGoingToDirection[j]){
                                         entity.isBlocked = true;
-                                        if(entity != gp.player) entity.isWithPlayer = true;
+                                        if(entity != player) entity.isWithPlayer = true;
                                     }
                                 }
                             }
@@ -466,25 +469,25 @@ public class CollisionChecker {
                     } else {
                         if(intersection.height >= intersection.width){
                             if(j == 1){
-                                newDistance = gp.player.solidArea.x + gp.player.solidArea.width - (entity.solidArea.x + entity.speed);
+                                newDistance = player.solidArea.x + player.solidArea.width - (entity.solidArea.x + entity.speed);
                                 if(newDistance < 0 && entity.storeMovement[0] < newDistance)
                                     entity.storeMovement[0] = newDistance;
                                 else {
                                     entity.blockedLeft = true;
                                     if(isGoingToDirection[j]){
                                         entity.isBlocked = true;
-                                        if(entity != gp.player) entity.isWithPlayer = true;
+                                        if(entity != player) entity.isWithPlayer = true;
                                     }
                                 }
                             } else {
-                                newDistance = gp.player.solidArea.x - (entity.solidArea.x + entity.solidArea.width - entity.speed);
+                                newDistance = player.solidArea.x - (entity.solidArea.x + entity.solidArea.width - entity.speed);
                                 if(0 < newDistance && newDistance < entity.storeMovement[0])
                                     entity.storeMovement[0] = newDistance;
                                 else {
                                     entity.blockedRight = true;
                                     if(isGoingToDirection[j]){
                                         entity.isBlocked = true;
-                                        if(entity != gp.player) entity.isWithPlayer = true;
+                                        if(entity != player) entity.isWithPlayer = true;
                                     }
                                 }
                             }
@@ -498,8 +501,8 @@ public class CollisionChecker {
         entity.solidArea.x = entity.solidAreaDefaultX;
         entity.solidArea.y = entity.solidAreaDefaultY;
         //Reset object's solid area position
-        gp.player.solidArea.x = gp.player.solidAreaDefaultX;
-        gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+        player.solidArea.x = player.solidAreaDefaultX;
+        player.solidArea.y = player.solidAreaDefaultY;
     } 
     
 }

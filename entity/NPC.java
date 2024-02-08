@@ -79,7 +79,7 @@ public abstract class NPC extends Entity{
 
             gp.interactingNPC = this;
 
-            gp.ui.currentDialogue = dialogues.get(dialogueIndex);
+            ui.currentDialogue = dialogues.get(dialogueIndex);
             dialogueIndex++;
             if(dialogueIndex >= dialogues.size()) dialogueIndex = 0;
 
@@ -89,14 +89,14 @@ public abstract class NPC extends Entity{
     }
 
     public void getNextDialogue(){
-        gp.ui.currentDialogue = dialogues.get(dialogueIndex);
+        ui.currentDialogue = dialogues.get(dialogueIndex);
         dialogueIndex++;
         if(dialogueIndex >= dialogues.size()) dialogueIndex = 0;
     }
 
     public void FacePlayer(){
 
-        switch(gp.player.facing){
+        switch(player.facing){
             case "up":
                 direction[0] = "down";
                 break;

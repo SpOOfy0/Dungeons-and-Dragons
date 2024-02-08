@@ -14,6 +14,8 @@ import main.GamePannel;
 
 public class Torero extends SpecialMonster implements MonsterInterface {
 
+    private int screenHeight;
+
     BufferedImage   up3, down3, left3, right3,
                     attackUp1, attackUp2, attackUp3,
                     attackDown1, attackDown2, attackDown3,
@@ -35,6 +37,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
 
         getThisMonsterImage();
         MonsterSetting(false);
+        screenHeight = gp.screenHeight;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         noKnockback = true;
 
         xp = 0;
-        monsterSize = 5 * gp.tileSize;
+        monsterSize = 4 * gp.tileSize;
 
         solidArea = new Rectangle(1,1, (tileSize*2) - 2, (tileSize*7/2) - 2);
         solidAreaDefaultX = solidArea.x;
@@ -152,13 +155,13 @@ public class Torero extends SpecialMonster implements MonsterInterface {
 
         BufferedImage image = null;
 
-        int screenX = worldX - gp.player.worldX + gp.player.screenX ;
-        int screenY = worldY - gp.player.worldY + gp.player.screenY ;
+        int screenX = worldX - player.worldX + player.screenX ;
+        int screenY = worldY - player.worldY + player.screenY ;
 
-        if( worldX + tileSize*5/2 > gp.player.worldX - gp.player.screenX &&
-            worldX - tileSize/2 - tileSize < gp.player.worldX + gp.player.screenX &&
-            worldY + (tileSize*7/2) > gp.player.worldY - gp.player.screenY &&
-            worldY - tileSize - tileSize < gp.player.worldY + gp.player.screenY) {
+        if( worldX + tileSize*5/2 > player.worldX - player.screenX &&
+            worldX - tileSize/2 - tileSize < player.worldX + player.screenX &&
+            worldY + (tileSize*7/2) > player.worldY - player.screenY &&
+            worldY - tileSize - tileSize < player.worldY + player.screenY) {
             
             if (isUsingSlam) {
                 switch(facing){
@@ -222,8 +225,8 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         int lifeBarWidth =  648 - (648 * reamningLife / maxLife);
 
         g2.setColor(Color.RED);
-        g2.drawRect(60, gp.screenHeight - 50, 648, 20);
-        g2.fillRect(60, gp.screenHeight - 50, lifeBarWidth, 20);
+        g2.drawRect(60, screenHeight - 50, 648, 20);
+        g2.fillRect(60, screenHeight - 50, lifeBarWidth, 20);
     }
 
 }

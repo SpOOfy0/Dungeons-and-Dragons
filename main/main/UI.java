@@ -18,10 +18,12 @@ public class UI {
     Graphics2D g2;
     Font arial_40;
     BufferedImage fullHeart, halfHeart, emptyHeart; 
-    BufferedImage HealPotionImage, ManaPotionImage;
+    BufferedImage HealPotionImage, ManaPotionImage, KeyImage;
     BufferedImage chooseCharacter , gameOver, theEnd, title, arrow, exit, start, quit, retry, mage, fighter, allRounded;
     
     public int tileSize;
+    public int screenWidth;
+    public int screenHeight;
 
     public boolean messageOn = false;
     public String message = "";
@@ -40,14 +42,17 @@ public class UI {
     boolean isHoldingN = false;
 
 
-    private UI(GamePannel gp) {
-        this.gp = gp;
+    private UI(GamePannel GP) {
+        gp = GP;
         tileSize = gp.tileSize;
+        screenWidth = gp.screenWidth;
+        screenHeight = gp.screenHeight;
 
         arial_40 = new Font("Arial", Font.PLAIN, 40);
         
         HealPotionImage = gp.healPotion.image;
         ManaPotionImage = gp.manaPotion.image;
+        KeyImage = gp.key.image;
 
         // CREAT HUD OBJET 
         fullHeart = gp.heart.image;
@@ -113,7 +118,7 @@ public class UI {
         if(messageOn){
             g2.setFont(new Font("Arial", Font.PLAIN, 20));
             g2.setColor(Color.white);
-            g2.drawString(message, gp.screenWidth / 2 - tileSize * 2 , gp.screenHeight / 4 - tileSize);
+            g2.drawString(message, screenWidth / 2 - tileSize * 2 , screenHeight / 4 - tileSize);
             messageCounter++;
         
             if(messageCounter > 100){
@@ -123,39 +128,11 @@ public class UI {
         }
     }
 
-    /*public void draw(Graphics2D g2) {
-
-        timer = setTimer(timer);
-
-        //Set the font
-        g2.setFont(arial_40);
-        g2.setColor(Color.white);
-
-        //Draw timer
-        g2.drawString("Time: " + df.format(timer), 650, 35);
-
-        //Draw Heal Potion
-        g2.drawImage(HealPotionImage, 20, 5, tileSize, tileSize, null);
-        g2.drawString("x" + gp.player.healPotion, tileSize+15, 35);
-
-        // IF PLAYER GOT A HEAL POTION
-        if(messageOn == true ){
-            
-            g2.drawString(message, 20, 100);
-            messageCounter++;
-        
-            if(messageCounter > 100){
-                messageOn = false;
-                messageCounter = 0;
-            }   
-        }
-    }*/
-
     
 
     public int getXScreenCenterText(String text){
         int textLength = g2.getFontMetrics().stringWidth(text);
-        int x = (gp.screenWidth - textLength)/2;
+        int x = (screenWidth - textLength)/2;
         return x;
     }
 
@@ -171,7 +148,7 @@ public class UI {
     public void drawDialogueScreen(){
         int x = tileSize*2;
         int y = tileSize/2;
-        int width = gp.screenWidth - tileSize*4;
+        int width = screenWidth - tileSize*4;
         int height = tileSize*4;
 
         drawSubWindow(x, y, width, height);
@@ -262,8 +239,8 @@ public class UI {
 
 
     public void drawInventory() {
-        int startX = gp.screenWidth / 2 + tileSize;
-        int startY = gp.screenHeight / 2 - tileSize * 4;
+        int startX = screenWidth / 2 + tileSize;
+        int startY = screenHeight / 2 - tileSize * 4;
         int itemsPerRow = 5;
         int spacing = 10;
 
@@ -321,7 +298,7 @@ public class UI {
                         break;
                     
                     case "key":
-                        image = gp.key.image;
+                        image = KeyImage;
                         count = gp.player.inventory.get(objName);
                         countInString = String.valueOf(count);
                         g2.drawImage(image, x, y, tileSize, tileSize, null);
@@ -356,10 +333,10 @@ public class UI {
         }
 
         if (showStatus){
-            int x = gp.screenWidth / 8 - tileSize;
-            int y = gp.screenHeight / 2 - tileSize * 4;
-            int width = gp.screenWidth / 2 - tileSize * 2;
-            int height = gp.screenHeight - tileSize * 4;
+            int x = screenWidth / 8 - tileSize;
+            int y = screenHeight / 2 - tileSize * 4;
+            int width = screenWidth / 2 - tileSize * 2;
+            int height = screenHeight - tileSize * 4;
             int arcWidth = 20;
             int arcHeight = 20; 
 
@@ -468,7 +445,7 @@ public class UI {
     public void drawGameStartScreen(){
         gameStartCommand = selectedCommand(gameStartCommand, 2);
         g2.setColor(new Color(0, 0, 0, 150));
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        g2.fillRect(0, 0, screenWidth, screenHeight);
     
         int textX;
         int textY;
@@ -502,7 +479,7 @@ public class UI {
     public void selectPlayer() {
         gameStartCommand = selectedCommand(gameStartCommand, 3);
         g2.setColor(new Color(0, 0, 0, 150));
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        g2.fillRect(0, 0, screenWidth, screenHeight);
     
         int textX;
         int textY;
@@ -548,7 +525,7 @@ public class UI {
     private void drawGameOverScreen() {
         gameStartCommand = selectedCommand(gameStartCommand, 2);
         g2.setColor(new Color(0, 0, 0, 150));
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        g2.fillRect(0, 0, screenWidth, screenHeight);
     
         int textX;
         int textY;
@@ -583,7 +560,7 @@ public class UI {
     public void drawTheEndScreen(){
         gameStartCommand = selectedCommand(gameStartCommand, 2);
         g2.setColor(new Color(0, 0, 0, 150));
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        g2.fillRect(0, 0, screenWidth, screenHeight);
     
         int textX;
         int textY;

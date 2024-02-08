@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import entity.Player;
 import main.GamePannel;
 
 
@@ -18,6 +19,9 @@ public abstract class SuperObject {
     public int worldX, worldY;
     public Rectangle solidArea;
     public int solidAreaDefaultX = 0, solidAreaDefaultY = 0;
+
+    public int tileSize = 0;
+    public Player player;
     
     public void newRectangle(int x, int y, int width, int height){
         solidArea = new Rectangle(x, y, width, height);
@@ -39,14 +43,16 @@ public abstract class SuperObject {
 
     public void draw(Graphics2D g2, GamePannel gp){
     
-        int tileSize = gp.tileSize;
+        if(tileSize == 0) tileSize = gp.tileSize;
+
+        if(player == null && !Player.isInstanceNull()) player = Player.getInstance(gp, gp.keyHandler);
         
-        int screenX = worldX - gp.player.worldX + gp.player.screenX ;
-        int screenY = worldY - gp.player.worldY + gp.player.screenY ;
-        if(worldX + tileSize > gp.player.worldX - gp.player.screenX &&
-            worldX - tileSize < gp.player.worldX + gp.player.screenX &&
-            worldY + tileSize > gp.player.worldY - gp.player.screenY &&
-            worldY - tileSize < gp.player.worldY + gp.player.screenY) { 
+        int screenX = worldX - player.worldX + player.screenX ;
+        int screenY = worldY - player.worldY + player.screenY ;
+        if(worldX + tileSize > player.worldX - player.screenX &&
+            worldX - tileSize < player.worldX + player.screenX &&
+            worldY + tileSize > player.worldY - player.screenY &&
+            worldY - tileSize < player.worldY + player.screenY) { 
             
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
         }

@@ -12,10 +12,6 @@ public class Ability extends Entity{
     public boolean abilityCollision = false;
     public int abilityCollisionIndex = 999;
 
-    //CodeMana
-    //Mana cost for each ability
-    //public int fireManaCost = 20;
-
     protected int range;
     protected int distanceTraveled;
 
@@ -45,7 +41,6 @@ public class Ability extends Entity{
 
 
     public Ability(GamePannel gp) {
-
         super(gp);
     }
 
@@ -53,13 +48,13 @@ public class Ability extends Entity{
 
         if(!canUseAllMagic()) MagicAtkDelay++;
 
-        if (gp.player.ballOn == 1) {
+        if (player.ballOn == 1) {
            
             if (direction[0] == null) {
-                direction[0] = gp.player.facing;
-                facing = gp.player.facing;
-                worldX = gp.player.worldX;
-                worldY = gp.player.worldY;
+                direction[0] = player.facing;
+                facing = player.facing;
+                worldX = player.worldX;
+                worldY = player.worldY;
                 distanceTraveled = 0;
 
             } else {
@@ -102,7 +97,7 @@ public class Ability extends Entity{
                 if (solidArea.intersects(iterMonster.solidArea)){
                     abilityCollision = true;
                     direction[0] = null;
-                    gp.player.ballOn = 0;
+                    player.ballOn = 0;
 
                     solidArea.x = solidAreaDefaultX;
                     solidArea.y = solidAreaDefaultY;
@@ -128,7 +123,7 @@ public class Ability extends Entity{
     public void rangeAbility(){
         if(gp.ability != null){
             if(distanceTraveled >= range*tileSize){
-                gp.player.ballOn = 0;
+                player.ballOn = 0;
                 direction[0] = null;
             }
         }
@@ -136,19 +131,19 @@ public class Ability extends Entity{
     }
 
     public void manaCost(){
-        gp.player.mana -= mana;
+        player.mana -= mana;
     }
 
     public void draw(Graphics2D g2) {
 
         BufferedImage image = null;
-        int screenX = worldX - gp.player.worldX + gp.player.screenX ;
-        int screenY = worldY - gp.player.worldY + gp.player.screenY ;
+        int screenX = worldX - player.worldX + player.screenX ;
+        int screenY = worldY - player.worldY + player.screenY ;
 
-        if(worldX + tileSize > gp.player.worldX - gp.player.screenX &&
-        worldX - tileSize < gp.player.worldX + gp.player.screenX &&
-        worldY + tileSize > gp.player.worldY - gp.player.screenY &&
-        worldY - tileSize < gp.player.worldY + gp.player.screenY &&
+        if(worldX + tileSize > player.worldX - player.screenX &&
+        worldX - tileSize < player.worldX + player.screenX &&
+        worldY + tileSize > player.worldY - player.screenY &&
+        worldY - tileSize < player.worldY + player.screenY &&
         direction[0] != null) { 
         
             switch(direction[0]){

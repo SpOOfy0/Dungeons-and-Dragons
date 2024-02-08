@@ -10,12 +10,20 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import main.CollisionChecker;
 import main.GamePannel;
+import main.InteractionChecker;
+import main.UI;
 
 public abstract class Entity {
 
     public GamePannel gp;
+    public Player player;
     public int tileSize;
+    public CollisionChecker collisionChecker;
+    public InteractionChecker interactionChecker;
+
+    protected UI ui;
 
     public int worldX, worldY;
     public int baseSpeed;
@@ -276,8 +284,12 @@ public abstract class Entity {
 
 
 
-    public Entity(GamePannel gp) {
-        this.gp = gp;
+    public Entity(GamePannel GP) {
+        this.gp = GP;
+        collisionChecker = gp.collisionChecker;
+        interactionChecker = gp.interactionChecker;
+        if(!Player.isInstanceNull()) player = Player.getInstance(gp, gp.keyHandler);
+        ui = UI.getInstance(gp);
         bufferDirection = null;
         isWithPlayer = false;
         tileSize = gp.tileSize;
@@ -294,6 +306,8 @@ public abstract class Entity {
     public void speak(){}
 
     public void update(){
+        
+        if(!Player.isInstanceNull()) player = Player.getInstance(gp, gp.keyHandler);
         
         stopMvmentForSpAction = setAction();
 
@@ -357,8 +371,8 @@ public abstract class Entity {
         blockedRight = false;
 
         // Vérifiaction des collisions
-        gp.collisionChecker.checkTile(this);
-        gp.collisionChecker.checkPlayer(this);
+        collisionChecker.checkTile(this);
+        collisionChecker.checkPlayer(this);
 
         // Mouvement effectué si la direction est non bloqué
         if((storeMovement[0] != 0 || storeMovement[1] != 0) && direction != null){
@@ -412,8 +426,8 @@ public abstract class Entity {
         blockedRight = false;
 
         // Vérifiaction des collisions
-        gp.collisionChecker.checkTile(this);
-        gp.collisionChecker.checkPlayer(this);
+        collisionChecker.checkTile(this);
+        collisionChecker.checkPlayer(this);
 
         // Mouvements effectués individuellement si les directions sont non bloqués
         if(storeMovement[0] != 0 || storeMovement[1] != 0){
@@ -675,13 +689,15 @@ public abstract class Entity {
     public void draw(Graphics2D g2){
 
         BufferedImage image = null;
-        int screenX = worldX - gp.player.worldX + gp.player.screenX ;
-        int screenY = worldY - gp.player.worldY + gp.player.screenY ;
 
-        if( worldX + tileSize > gp.player.worldX - gp.player.screenX &&
-            worldX - tileSize < gp.player.worldX + gp.player.screenX &&
-            worldY + tileSize > gp.player.worldY - gp.player.screenY &&
-            worldY - tileSize < gp.player.worldY + gp.player.screenY) { 
+        if(!Player.isInstanceNull()) player = Player.getInstance(gp, gp.keyHandler);
+        int screenX = worldX - player.worldX + player.screenX ;
+        int screenY = worldY - player.worldY + player.screenY ;
+
+        if( worldX + tileSize > player.worldX - player.screenX &&
+            worldX - tileSize < player.worldX + player.screenX &&
+            worldY + tileSize > player.worldY - player.screenY &&
+            worldY - tileSize < player.worldY + player.screenY) { 
             
                 switch(facing){
                     case "up":

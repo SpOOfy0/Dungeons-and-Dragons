@@ -11,9 +11,11 @@ import entity.Monsters.Monster;
 public class InteractionChecker {
 
     GamePannel gp;
+    int tileSize;
 
-    public InteractionChecker(GamePannel gp) {
-        this.gp = gp;
+    public InteractionChecker(GamePannel GP) {
+        gp = GP;
+        tileSize = gp.tileSize;
     }
 
 
@@ -69,8 +71,6 @@ public class InteractionChecker {
 
         entity.solidArea.x = entity.solidAreaDefaultX + entity.worldX;
         entity.solidArea.y = entity.solidAreaDefaultY + entity.worldY;
-
-        int tileSize = gp.tileSize;
 
         // Création de la zone d'interaction, un rectangle avec la moitié d'une case en longueur et 2 blocs en largeur, toujours en face du joueur
         Rectangle zoneDetect;
@@ -158,8 +158,6 @@ public class InteractionChecker {
         int entityMiddleX = entity.solidArea.x + entity.solidArea.width/2;
         int entityMiddleY = entity.solidArea.y + entity.solidArea.height/2;
 
-        int tileSize = gp.tileSize;
-
         int range = entity.noticeRange * tileSize;
         int leftLimitRange = entity.solidArea.x - range;
         int upLimitRange = entity.solidArea.y - range;
@@ -196,19 +194,21 @@ public class InteractionChecker {
                 break;
         }
 
+        
+        Player player = Player.getInstance(gp, gp.keyHandler);
 
         //Get object's solid area position
-        gp.player.solidArea.x = gp.player.worldX + gp.player.solidArea.x;
-        gp.player.solidArea.y = gp.player.worldY + gp.player.solidArea.y;
+        player.solidArea.x = player.worldX + player.solidArea.x;
+        player.solidArea.y = player.worldY + player.solidArea.y;
 
         // Vérification si le joueur est présent dans la zone d'observation
-        if (detectZone1.intersects(gp.player.solidArea)){
+        if (detectZone1.intersects(player.solidArea)){
 
-            if (detectZone2.intersects(gp.player.solidArea)) isCorner = false;
+            if (detectZone2.intersects(player.solidArea)) isCorner = false;
 
             isDetected = true;
 
-        } else if (detectZone2.intersects(gp.player.solidArea)){
+        } else if (detectZone2.intersects(player.solidArea)){
 
             isDetected = true;
             cornerIndex = (cornerIndex+1)%4;
@@ -232,27 +232,27 @@ public class InteractionChecker {
                 switch(cornerIndex){
                     case 0:
                         iterX = entityMiddleX / tileSize;
-                        endIterX = gp.player.solidArea.x / tileSize;
-                        startIterY = (gp.player.solidArea.y + gp.player.solidArea.height) / tileSize;
+                        endIterX = player.solidArea.x / tileSize;
+                        startIterY = (player.solidArea.y + player.solidArea.height) / tileSize;
                         endIterY = entityMiddleY / tileSize;
                         break;
                     case 1:
-                        iterX = (gp.player.solidArea.x + gp.player.solidArea.width) / tileSize;
+                        iterX = (player.solidArea.x + player.solidArea.width) / tileSize;
                         endIterX = entityMiddleX / tileSize;
-                        startIterY = (gp.player.solidArea.y + gp.player.solidArea.height) / tileSize;
+                        startIterY = (player.solidArea.y + player.solidArea.height) / tileSize;
                         endIterY = entityMiddleY / tileSize;
                         break;
                     case 2:
-                        iterX = (gp.player.solidArea.x + gp.player.solidArea.width) / tileSize;
+                        iterX = (player.solidArea.x + player.solidArea.width) / tileSize;
                         endIterX = entityMiddleX / tileSize;
                         startIterY = entityMiddleY / tileSize;
-                        endIterY = gp.player.solidArea.y / tileSize;
+                        endIterY = player.solidArea.y / tileSize;
                         break;
                     case 3:
                         iterX = entityMiddleX / tileSize;
-                        endIterX = gp.player.solidArea.x / tileSize;
+                        endIterX = player.solidArea.x / tileSize;
                         startIterY = entityMiddleY / tileSize;
-                        endIterY = gp.player.solidArea.y / tileSize;
+                        endIterY = player.solidArea.y / tileSize;
                         break;
                 }
                 iterY = startIterY;
@@ -282,28 +282,28 @@ public class InteractionChecker {
                 int alignedIterStart = 0, alignedIter, alignedIterEnd = 0, acrossIter = 0, acrossIterEnd = 0;
                 switch(cornerIndex){
                     case 0:
-                        alignedIterStart = (gp.player.solidArea.y + gp.player.solidArea.height) / tileSize;
+                        alignedIterStart = (player.solidArea.y + player.solidArea.height) / tileSize;
                         alignedIterEnd = entityMiddleY / tileSize;
-                        acrossIter = gp.player.solidArea.x / tileSize;
-                        acrossIterEnd = (gp.player.solidArea.x + gp.player.solidArea.width) / tileSize;
+                        acrossIter = player.solidArea.x / tileSize;
+                        acrossIterEnd = (player.solidArea.x + player.solidArea.width) / tileSize;
                         break;
                     case 1:
-                        alignedIterStart = (gp.player.solidArea.x + gp.player.solidArea.width) / tileSize;
+                        alignedIterStart = (player.solidArea.x + player.solidArea.width) / tileSize;
                         alignedIterEnd = entityMiddleX / tileSize;
-                        acrossIter = gp.player.solidArea.y / tileSize;
-                        acrossIterEnd = (gp.player.solidArea.y + gp.player.solidArea.height) / tileSize;
+                        acrossIter = player.solidArea.y / tileSize;
+                        acrossIterEnd = (player.solidArea.y + player.solidArea.height) / tileSize;
                         break;
                     case 2:
                         alignedIterStart = entityMiddleY / tileSize;
-                        alignedIterEnd = gp.player.solidArea.y / tileSize;
-                        acrossIter = gp.player.solidArea.x / tileSize;
-                        acrossIterEnd = (gp.player.solidArea.x + gp.player.solidArea.width) / tileSize;
+                        alignedIterEnd = player.solidArea.y / tileSize;
+                        acrossIter = player.solidArea.x / tileSize;
+                        acrossIterEnd = (player.solidArea.x + player.solidArea.width) / tileSize;
                         break;
                     case 3:
                         alignedIterStart = entityMiddleX / tileSize;
-                        alignedIterEnd = gp.player.solidArea.x / tileSize;
-                        acrossIter = gp.player.solidArea.y / tileSize;
-                        acrossIterEnd = (gp.player.solidArea.y + gp.player.solidArea.height) / tileSize;
+                        alignedIterEnd = player.solidArea.x / tileSize;
+                        acrossIter = player.solidArea.y / tileSize;
+                        acrossIterEnd = (player.solidArea.y + player.solidArea.height) / tileSize;
                         break;
                 }
 
@@ -342,9 +342,10 @@ public class InteractionChecker {
         entity.solidArea.x = entity.solidAreaDefaultX;
         entity.solidArea.y = entity.solidAreaDefaultY;
         //Reset object's solid area position
-        gp.player.solidArea.x = gp.player.solidAreaDefaultX;
-        gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+        player.solidArea.x = player.solidAreaDefaultX;
+        player.solidArea.y = player.solidAreaDefaultY;
     }
+
 
     public void meleeHitMonsters(Player player) {
 

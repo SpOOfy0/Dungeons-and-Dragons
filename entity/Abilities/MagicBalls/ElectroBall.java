@@ -57,13 +57,13 @@ public class ElectroBall extends Ability implements AbilityInterface {
         if(direction[0] != null){
 
             BufferedImage image = null;
-            int screenX = worldX - gp.player.worldX + gp.player.screenX ;
-            int screenY = worldY - gp.player.worldY + gp.player.screenY ;
+            int screenX = worldX - player.worldX + player.screenX ;
+            int screenY = worldY - player.worldY + player.screenY ;
 
-            if(worldX + tileSize > gp.player.worldX - gp.player.screenX &&
-            worldX - tileSize < gp.player.worldX + gp.player.screenX &&
-            worldY + tileSize > gp.player.worldY - gp.player.screenY &&
-            worldY - tileSize < gp.player.worldY + gp.player.screenY) { 
+            if(worldX + tileSize > player.worldX - player.screenX &&
+            worldX - tileSize < player.worldX + player.screenX &&
+            worldY + tileSize > player.worldY - player.screenY &&
+            worldY - tileSize < player.worldY + player.screenY) { 
             
                 switch(frameCount){
                     case 0:

@@ -42,20 +42,21 @@ public class GamePannel extends JPanel implements Runnable {
     public int FPS = 60;
     public int index = 0;
 
-    Thread  gameThread;
+    Thread gameThread;
 
     //INITIATE AUTHER OBJECT
-    public TileManager tileM = new TileManager(this);
     public KeyHandler keyHandler = new KeyHandler(this);
     public CollisionChecker collisionChecker = new CollisionChecker(this);
     public InteractionChecker interactionChecker = new InteractionChecker(this);
     public ClassSetter objSetter = new ClassSetter(this);
+    public TileManager tileM = new TileManager(this);
     
     public SuperObject healPotion = new OBJ_healPotion(this);
     public SuperObject manaPotion = new OBJ_manaPotion(this);
     public SuperObject key = new OBJ_Key(this);
     public SuperObject heart = new OBJ_LifeHeart(this);
     public UI ui = UI.getInstance(this);
+
     public Player player = Player.getInstance(this, keyHandler);
     public Vector<SuperObject> item = new Vector<SuperObject>();
     public Vector<NPC> npc = new Vector<NPC>();
