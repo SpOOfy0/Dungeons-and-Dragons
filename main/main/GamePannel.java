@@ -70,7 +70,7 @@ public class GamePannel extends JPanel implements Runnable {
     public SoundManager soundManger = new SoundManager(this);
 
     //GAME STATE
-    public int gameState = 6;
+    public int gameState;
     public int startState = 0;
     public int playState = 1;
     public int pauseState = 2;
