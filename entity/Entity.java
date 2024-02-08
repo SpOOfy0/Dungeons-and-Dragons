@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 import main.GamePannel;
 
-public class Entity {
+public abstract class Entity {
 
     public GamePannel gp;
     public int tileSize;
