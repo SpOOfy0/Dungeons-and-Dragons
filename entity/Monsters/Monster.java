@@ -12,8 +12,6 @@ import object.OBJ_healPotion;
 import object.OBJ_manaPotion;
 
 public abstract class Monster extends Entity{
-    
-    public int monsterSize;
 
     public boolean noKnockback = false;
 

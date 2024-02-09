@@ -29,6 +29,8 @@ public class Torero extends SpecialMonster implements MonsterInterface {
 
     public boolean isUsingSlam = false;
     private boolean isPreviousWalk2;
+
+    public int monsterSpawnRadius;
     
     Random random = new Random();
 
@@ -56,13 +58,13 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         noticeRange = 3;
         aggroRange = 20;
         initSpeed(1);
-        maxLife = 200;
+        maxLife = 225;
         life = maxLife;
         damage = 2;
         noKnockback = true;
 
         xp = 0;
-        monsterSize = 4 * gp.tileSize;
+        monsterSpawnRadius = 4 * gp.tileSize;
 
         solidArea = new Rectangle(1,1, (tileSize*2) - 2, (tileSize*7/2) - 2);
         solidAreaDefaultX = solidArea.x;
@@ -80,8 +82,17 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         
         if(aggravated){
 
-            healing = 0;
-            triggerHeal = 300;
+            if(life < maxLife/3){
+                if(healing < triggerHeal) healing++;
+                else{
+                    healing = 0;
+                    triggerHeal = 90;
+                    life++;
+                }
+            } else {
+                healing = 0;
+                triggerHeal = 300;
+            }
 
             ArmyCharge();
             isUsingSlam = slam.execute();
@@ -107,10 +118,10 @@ public class Torero extends SpecialMonster implements MonsterInterface {
     
 
     public void ArmyCharge(){
-        int randomWorldX = (random.nextInt(monsterSize) + worldX + solidAreaDefaultX + solidArea.width - monsterSize/2)/tileSize;
+        int randomWorldX = (random.nextInt(monsterSpawnRadius) + worldX + solidAreaDefaultX + (solidArea.width - monsterSpawnRadius)/2)/tileSize;
         if(randomWorldX < 7) randomWorldX = 7;
         else if(56 < randomWorldX) randomWorldX = 56;
-        int randomWorldY = (random.nextInt(monsterSize) + worldY + solidAreaDefaultY + solidArea.height - monsterSize/2)/tileSize;
+        int randomWorldY = (random.nextInt(monsterSpawnRadius) + worldY + solidAreaDefaultY + (solidArea.height - monsterSpawnRadius)/2)/tileSize;
         if(randomWorldY < 6) randomWorldX = 6;
         else if(55 < randomWorldY) randomWorldX = 55;
         summonArmy(randomWorldX, randomWorldY, 3);
