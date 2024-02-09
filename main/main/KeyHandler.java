@@ -99,6 +99,7 @@ public class KeyHandler implements ActionListener, KeyListener{
                 case KeyEvent.VK_SPACE:
                     spacePressed = true;
                     break;
+                case KeyEvent.VK_ENTER:
                 case KeyEvent.VK_X:
                     gp.gameState = gp.playState;
                     break;
