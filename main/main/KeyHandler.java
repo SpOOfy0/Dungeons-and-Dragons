@@ -224,6 +224,9 @@ public class KeyHandler implements ActionListener, KeyListener{
             case KeyEvent.VK_SPACE:
                 spacePressed = false;
                 break;
+            case KeyEvent.VK_ENTER:
+                enterPressed = false;
+                break;
         }
         
     }
