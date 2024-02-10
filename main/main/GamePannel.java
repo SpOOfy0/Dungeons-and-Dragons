@@ -13,11 +13,7 @@ import entity.Player;
 import entity.Monsters.Monster;
 import entity.Abilities.Ability;
 import entity.Abilities.MagicBalls.*;
-import object.SuperObject;
-import object.OBJ_LifeHeart;
-import object.OBJ_healPotion;
-import object.OBJ_manaPotion;
-import object.OBJ_Key;
+import object.*;
 import tile.TileManager;
 
 

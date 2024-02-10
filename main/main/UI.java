@@ -10,12 +10,15 @@ import java.text.DecimalFormat;
 
 import javax.imageio.ImageIO;
 
+import entity.Player;
+
 
 public class UI {
 
     private static UI instance;
     GamePannel gp;
     Graphics2D g2;
+    Player player;
     Font arial_40;
     BufferedImage fullHeart, halfHeart, emptyHeart; 
     BufferedImage HealPotionImage, ManaPotionImage, KeyImage;
@@ -37,7 +40,7 @@ public class UI {
 
     int gameStartCommand = 0, gameOverCommand = 0;
 
-    //new
+
     boolean showStatus = false;
     boolean isHoldingN = false;
 
@@ -162,8 +165,8 @@ public class UI {
             y += 40;
         }
 
-        if(gp.keyHandler.spacePressed){
-            gp.keyHandler.spacePressed = false;
+        if(gp.keyHandler.enterPressed){
+            gp.keyHandler.enterPressed = false;
             gp.interactingNPC.getNextDialogue();
         }
     }
@@ -182,14 +185,14 @@ public class UI {
 
     public void drawPlayerLife(){
 
-       //gp.player.life = 5; //for testing
+       //player.life = 5; //for testing
 
         int x = tileSize/2;
         int y = tileSize/2;
-        int life = gp.player.life;
+        int life = player.life;
 
         // DRAW PLAYER MAXLIFE
-        for(int i = 0; i < gp.player.maxLife/2; i++){
+        for(int i = 0; i < player.maxLife/2; i++){
             g2.drawImage(emptyHeart, x, y, tileSize, tileSize, null);
             x += tileSize;
         }
@@ -210,9 +213,9 @@ public class UI {
     }
 
     public void drawPlayerXp() {
-        if (gp.player.maxXp > gp.player.xp){
+        if (player.maxXp > player.xp){
             int maxBarWidth = 200;
-            double percentage = (double) gp.player.xp / gp.player.maxXp;
+            double percentage = (double) player.xp / player.maxXp;
             double xpBarWidth = maxBarWidth * percentage;
             int screenX = tileSize / 2;
             int screenY = tileSize * 3 - 35;
@@ -224,9 +227,9 @@ public class UI {
     }
 
     public void drawPlayerMana() {
-        if (gp.player.maxMana >= gp.player.mana){
+        if (player.maxMana >= player.mana){
             int maxBarWidth = 200;
-            double percentage = (double) gp.player.mana / gp.player.maxMana;
+            double percentage = (double) player.mana / player.maxMana;
             double manaBarWidth = maxBarWidth * percentage;
             int screenX = tileSize / 2;
             int screenY = tileSize * 2 - 10;
@@ -261,14 +264,14 @@ public class UI {
             g2.setColor(new Color(100, 100, 100));
             g2.fillRect(x, y, tileSize, tileSize);
             
-            if (gp.player.index == i){
-                gp.player.selectOPbject(x, y,tileSize, tileSize);
-                gp.player.useObject(i);
+            if (player.index == i){
+                player.selectOPbject(x, y,tileSize, tileSize);
+                player.useObject(i);
                 colorBorder(x, y, tileSize, tileSize);
             }
             // Si l'inventaire contient un objet à cet emplacement, dessinez-le
-            if (itemIndex < gp.player.inventory.size()) {
-                String objName = gp.player.inventory.keySet().toArray(new String[0])[itemIndex];
+            if (itemIndex < player.inventory.size()) {
+                String objName = player.inventory.keySet().toArray(new String[0])[itemIndex];
 
                 BufferedImage image;
                 int count;
@@ -277,7 +280,7 @@ public class UI {
                 switch (objName) {
                     case "healPotion":
                         image = HealPotionImage;
-                        count = gp.player.inventory.get(objName);
+                        count = player.inventory.get(objName);
                         countInString = String.valueOf(count);
                         g2.drawImage(image, x, y, tileSize, tileSize, null);
                         //Add count
@@ -288,7 +291,7 @@ public class UI {
 
                     case "manaPotion":
                         image = ManaPotionImage;
-                        count = gp.player.inventory.get(objName);
+                        count = player.inventory.get(objName);
                         countInString = String.valueOf(count);
                         g2.drawImage(image, x, y, tileSize, tileSize, null);
                         //Add count
@@ -299,7 +302,7 @@ public class UI {
                     
                     case "key":
                         image = KeyImage;
-                        count = gp.player.inventory.get(objName);
+                        count = player.inventory.get(objName);
                         countInString = String.valueOf(count);
                         g2.drawImage(image, x, y, tileSize, tileSize, null);
                         //Add count
@@ -352,14 +355,14 @@ public class UI {
 
             // Add lines of text
             String[] lines = {
-                "Level: " , "" + gp.player.level,
-                "XP: " , "" + gp.player.xp + "/" + gp.player.maxXp,
-                "Life: " , "" + gp.player.life + "/" + gp.player.maxLife,
-                "Strengh: " , "" + gp.player.damage,
-                "Mana:" , "" + gp.player.mana + "/" + gp.player.maxMana,
+                "Level: " , "" + player.level,
+                "XP: " , "" + player.xp + "/" + player.maxXp,
+                "Life: " , "" + player.life + "/" + player.maxLife,
+                "Strengh: " , "" + player.damage,
+                "Mana:" , "" + player.mana + "/" + player.maxMana,
                 "Fireball Power: " , "" + gp.fireBall.damage,
                 "Electroball Power: " , "" + gp.electroBall.damage,
-                "Attack Speed: " , "" + gp.player.attackSpeed,
+                "Attack Speed: " , "" + player.attackSpeed,
                 // Add other lines of text
             };
 
@@ -601,6 +604,8 @@ public class UI {
     // Modifier la méthode draw pour appeler drawInventory
     public void draw(Graphics2D g2) {
         this.g2 = g2;
+
+        if(!Player.isInstanceNull()) player = Player.getInstance(gp, gp.keyHandler);
 
         g2.setFont(arial_40);
         g2.setColor(Color.white);

@@ -4,6 +4,8 @@ import main.GamePannel;
 
 public abstract class NPC extends Entity{
 
+    boolean willSpeak;
+
     public NPC(GamePannel gp, String inputedDirection, int coordX, int coordY){
 
         super(gp);
@@ -21,6 +23,8 @@ public abstract class NPC extends Entity{
         facing = direction[0];
         bufferDirection = null;
         initSpeed(1);
+
+        willSpeak = false;
     }
     
 
@@ -32,6 +36,8 @@ public abstract class NPC extends Entity{
 
     // ici, "bufferDirection" enregistre la direction auquel le NPC fait face avant de "discuter" avec le joueur en sorte de lui redonner cette direction après discussion
     public boolean setAction(){
+
+        if(gp.gameState == gp.playState) willSpeak = true;
 
         actionCounter++;
 
@@ -79,19 +85,21 @@ public abstract class NPC extends Entity{
 
             gp.interactingNPC = this;
 
-            ui.currentDialogue = dialogues.get(dialogueIndex);
-            dialogueIndex++;
-            if(dialogueIndex >= dialogues.size()) dialogueIndex = 0;
-
-            gp.gameState = gp.dialogueState;
+            getNextDialogue();
         }
 
     }
 
     public void getNextDialogue(){
-        ui.currentDialogue = dialogues.get(dialogueIndex);
-        dialogueIndex++;
-        if(dialogueIndex >= dialogues.size()) dialogueIndex = 0;
+        if(willSpeak){
+            ui.currentDialogue = dialogues.get(dialogueIndex);
+            dialogueIndex++;
+            if(dialogueIndex >= dialogues.size()){
+                dialogueIndex = 0;
+                willSpeak = false;
+            }
+            gp.gameState = gp.dialogueState;
+        } else gp.gameState = gp.playState;
     }
 
     public void FacePlayer(){

@@ -30,7 +30,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
     public boolean isUsingSlam = false;
     private boolean isPreviousWalk2;
 
-    public int monsterSpawnRadius;
+    public int monsterSpawnRange;
     
     Random random = new Random();
 
@@ -64,7 +64,7 @@ public class Torero extends SpecialMonster implements MonsterInterface {
         noKnockback = true;
 
         xp = 0;
-        monsterSpawnRadius = 4 * gp.tileSize;
+        monsterSpawnRange = 2 * tileSize;
 
         solidArea = new Rectangle(1,1, (tileSize*2) - 2, (tileSize*7/2) - 2);
         solidAreaDefaultX = solidArea.x;
@@ -118,10 +118,10 @@ public class Torero extends SpecialMonster implements MonsterInterface {
     
 
     public void ArmyCharge(){
-        int randomWorldX = (random.nextInt(monsterSpawnRadius) + worldX + solidAreaDefaultX + (solidArea.width - monsterSpawnRadius)/2)/tileSize;
+        int randomWorldX = (random.nextInt(monsterSpawnRange*2) - monsterSpawnRange + worldX + solidAreaDefaultX + (solidArea.width/2))/tileSize;
         if(randomWorldX < 7) randomWorldX = 7;
         else if(56 < randomWorldX) randomWorldX = 56;
-        int randomWorldY = (random.nextInt(monsterSpawnRadius) + worldY + solidAreaDefaultY + (solidArea.height - monsterSpawnRadius)/2)/tileSize;
+        int randomWorldY = (random.nextInt(monsterSpawnRange*2) - monsterSpawnRange + worldY + solidAreaDefaultY + (solidArea.height/2))/tileSize;
         if(randomWorldY < 6) randomWorldX = 6;
         else if(55 < randomWorldY) randomWorldX = 55;
         summonArmy(randomWorldX, randomWorldY, 3);

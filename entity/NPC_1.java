@@ -10,6 +10,8 @@ public class NPC_1 extends NPC{
 
         getThisNPCImage();
         setDialogues();
+
+        willSpeak = true;
     }
 
 

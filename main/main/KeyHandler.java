@@ -96,10 +96,11 @@ public class KeyHandler implements ActionListener, KeyListener{
 
         else if(gp.gameState == gp.dialogueState){
             switch (keyCode) {
+                case KeyEvent.VK_ENTER:
+                    enterPressed = true;
+                    break;
                 case KeyEvent.VK_SPACE:
                     spacePressed = true;
-                    break;
-                case KeyEvent.VK_ENTER:
                 case KeyEvent.VK_X:
                     gp.gameState = gp.playState;
                     break;
