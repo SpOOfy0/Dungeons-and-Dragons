@@ -341,13 +341,14 @@ public class Player extends Entity {
     }
 
     public void AllRoundedLevelUp(){
-        maxLife += 1;
-        life = maxLife;
+        maxLife++;
+        life++;
         maxMana += 10;
         mana += 40;
         if(mana > maxMana) mana = maxMana;
 
         if(level % 2 == 0){
+            life = maxLife;
             damage += 1;
             gp.fireBall.damage += 1;
         }
@@ -358,8 +359,10 @@ public class Player extends Entity {
     }
 
     public void MageLevelUp(){
+        life++;
         maxMana += 20;
-        mana = maxMana;
+        mana += 75;
+        if(mana > maxMana) mana = maxMana;
         gp.fireBall.damage += 1;
 
         if(level % 2 == 0){
@@ -371,6 +374,8 @@ public class Player extends Entity {
         if(level % 8 == 0){
             damage += 1;
         }
+
+        if(life > maxLife) life = maxLife;
     }
 
     public void FighterLevelUp(){
